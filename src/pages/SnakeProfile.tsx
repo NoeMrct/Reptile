@@ -120,7 +120,7 @@ const SnakeProfile = () => {
     setSnake(updatedSnake);
   };
   const exportToPDF = () => {
-    if (user?.plan !== 'free') {
+    if (user?.plan === 'free') {
       setShowUpgradeModal(true);
       return;
     }
