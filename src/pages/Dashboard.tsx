@@ -41,28 +41,28 @@ const Dashboard = () => {
     const mockSnakes: Snake[] = [
       {
         id: '1',
-        name: 'Luna',
-        species: 'Ball Python',
+        name: 'Mira',
+        species: 'Python Regius',
         morph: 'Pastel',
         sex: 'Female',
         birthDate: '2022-03-15',
         weight: 1200,
         length: 120,
-        imageUrl: 'https://images.pexels.com/photos/45863/python-snake-reptile-green-45863.jpeg?auto=compress&cs=tinysrgb&w=400',
-        notes: 'Very docile and easy to handle',
+        imageUrl: 'https://images.pexels.com/photos/8142977/pexels-photo-8142977.jpeg?auto=compress&cs=tinysrgb&w=400',
+        notes: 'Très docile et facile à manipuler',
         userId: user?.id || ''
       },
       {
         id: '2',
-        name: 'Thor',
-        species: 'Corn Snake',
-        morph: 'Anery',
+        name: 'Yuzu',
+        species: 'Python Regius',
+        morph: 'Pastel',
         sex: 'Male',
         birthDate: '2021-08-20',
         weight: 800,
         length: 95,
         imageUrl: 'https://images.pexels.com/photos/8142977/pexels-photo-8142977.jpeg?auto=compress&cs=tinysrgb&w=400',
-        notes: 'Great feeder, very active',
+        notes: 'Excellent nourrisseur, très actif',
         userId: user?.id || ''
       }
     ];
@@ -73,7 +73,7 @@ const Dashboard = () => {
         snakeId: '1',
         type: 'feeding',
         date: '2025-01-10',
-        notes: 'Adult mouse, ate well',
+        notes: 'Souris adulte, a bien mangé',
         weight: 1210,
         userId: user?.id || ''
       },
@@ -82,7 +82,7 @@ const Dashboard = () => {
         snakeId: '2',
         type: 'shed',
         date: '2025-01-08',
-        notes: 'Complete shed, perfect',
+        notes: 'Mue complète, parfaite',
         userId: user?.id || ''
       },
       {
@@ -90,7 +90,7 @@ const Dashboard = () => {
         snakeId: '1',
         type: 'vet_visit',
         date: '2025-01-05',
-        notes: 'Annual checkup - healthy',
+        notes: 'Visite annuelle - en bonne santé',
         userId: user?.id || ''
       }
     ];
@@ -278,7 +278,7 @@ const Dashboard = () => {
             title={t('dashboard.stats.totalEvents')}
             value={stats.totalEvents}
             icon={<Calendar className="h-6 w-6 text-orange-600" />}
-            change={t('dashboard.stats.allTime')}
+            change={t('dashboard.stats.lastWeek')}
           />
         </div>
 

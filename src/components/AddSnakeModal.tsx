@@ -76,7 +76,7 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900">Add New Snake</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t('addSnake.title')}</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -90,7 +90,7 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
             {/* Photo Upload Section */}
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Photo du serpent
+                {t('addSnake.photo')}
               </label>
               <div className="flex items-center space-x-4">
                 {formData.imageUrl && (
@@ -104,7 +104,7 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
                   <label className="flex items-center justify-center w-full h-20 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
                     <div className="flex flex-col items-center">
                       <Camera className="h-6 w-6 text-gray-400 mb-1" />
-                      <span className="text-sm text-gray-500">Ajouter une photo</span>
+                      <span className="text-sm text-gray-500">{t('addSnake.addPhoto')}</span>
                     </div>
                     <input
                       type="file"
@@ -119,7 +119,7 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
 
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                Name *
+                {t('addSnake.name')} *
               </label>
               <input
                 type="text"
@@ -135,7 +135,7 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
 
             <div>
               <label htmlFor="species" className="block text-sm font-medium text-gray-700 mb-2">
-                Species *
+                {t('addSnake.species')} *
               </label>
               <input
                 type="text"
@@ -151,7 +151,7 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
 
             <div>
               <label htmlFor="morph" className="block text-sm font-medium text-gray-700 mb-2">
-                Morph
+                {t('addSnake.morph')}
               </label>
               <input
                 type="text"
@@ -166,7 +166,7 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
 
             <div>
               <label htmlFor="sex" className="block text-sm font-medium text-gray-700 mb-2">
-                Sex
+                {t('addSnake.sex')}
               </label>
               <select
                 id="sex"
@@ -175,15 +175,15 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               >
-                <option value="Unknown">Unknown</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
+                <option value="Unknown">{t('addSnake.unknown')}</option>
+                <option value="Male">{t('addSnake.male')}</option>
+                <option value="Female">{t('addSnake.female')}</option>
               </select>
             </div>
 
             <div>
               <label htmlFor="birthDate" className="block text-sm font-medium text-gray-700 mb-2">
-                Birth Date *
+                {t('addSnake.birthDate')} *
               </label>
               <input
                 type="date"
@@ -198,7 +198,7 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
 
             <div>
               <label htmlFor="weight" className="block text-sm font-medium text-gray-700 mb-2">
-                Weight (grams) *
+                {t('addSnake.weight')} *
               </label>
               <input
                 type="number"
@@ -214,7 +214,7 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
 
             <div>
               <label htmlFor="length" className="block text-sm font-medium text-gray-700 mb-2">
-                Length (cm) *
+                {t('addSnake.length')} *
               </label>
               <input
                 type="number"
@@ -230,7 +230,7 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
 
             <div>
               <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-2">
-                Image URL
+                {t('addSnake.imageUrl')}
               </label>
               <input
                 type="url"
@@ -246,7 +246,7 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
 
           <div>
             <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
-              Notes
+              {t('addSnake.notes')}
             </label>
             <textarea
               id="notes"
@@ -255,7 +255,7 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
               onChange={handleChange}
               rows={4}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              placeholder="Any additional notes about this snake..."
+              placeholder={t('addSnake.notesPlaceholder')}
             />
           </div>
 
@@ -265,7 +265,7 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
               onClick={onClose}
               className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
             >
-              Cancel
+              {t('common.cancel')}
             </button>
             <button
               type="submit"
@@ -275,12 +275,12 @@ const AddSnakeModal: React.FC<AddSnakeModalProps> = ({ onClose, onAdd }) => {
               {isLoading ? (
                 <div className="flex items-center">
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Ajout en cours...
+                  {t('addSnake.adding')}
                 </div>
               ) : showSuccess ? (
                 <div className="flex items-center">
                   <Check className="h-4 w-4 mr-2" />
-                  Ajouté !
+                  {t('addSnake.added')}
                 </div>
               ) : (
                 t('addSnake.add')

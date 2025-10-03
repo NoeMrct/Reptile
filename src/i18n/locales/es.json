@@ -97,7 +97,7 @@
     }
   },
   "upgrade": {
-    "limitReached": "Has alcanzado el límite de 5 serpientes",
+    "limitReached": "¿Te gustaría crecer?",
     "description": "Actualiza a un plan de pago para gestionar una colección ilimitada y acceder a todas las funciones avanzadas.",
     "processing": "Procesando...",
     "choosePlan": "Elegir este plan",
@@ -189,7 +189,8 @@
       "totalEvents": "Total Eventos",
       "thisMonth": "este mes",
       "thisWeek": "Esta semana",
-      "allTime": "Todo el tiempo"
+      "allTime": "Todo el tiempo",
+      "lastWeek": "La semana pasada"
     },
     "mySnakes": "Mis Serpientes",
     "search": "Buscar serpientes...",
@@ -239,7 +240,8 @@
     "growthTrend": "Tendencia de crecimiento: Saludable",
     "exportPDF": "Exportar PDF",
     "editPhoto": "Editar Foto",
-    "editInfo": "Editar Info"
+    "editInfo": "Editar Info",
+    "yearsOld": "{{count}} años"
   },
   "events": {
     "all": "Todos",
@@ -268,6 +270,11 @@
     "add": "Agregar Evento"
   },
   "addSnake": {
+    "photo": "Foto de la serpiente",
+    "addPhoto": "Agregar una foto",
+    "imageUrlPlaceholder": "p. ej.: https://ejemplo.com/imagen.jpg",
+    "adding": "Añadiendo...",
+    "added": "¡Añadido!",
     "title": "Agregar Nueva Serpiente",
     "name": "Nombre",
     "species": "Especie",
@@ -295,9 +302,22 @@
     "edit": "Editar",
     "delete": "Eliminar",
     "confirm": "Confirmar",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "error": "Error",
+    "saving": "Guardando...",
+    "saved": "Guardado!"
+  },
+  "units": {
+    "grams": "g",
+    "cm": "cm"
   },
   "settings": {
+    "planFreeBadge": "GRATUITO",
+    "exporting": "Exportando...",
+    "deleting": "Eliminando...",
+    "saveError": "Se produjo un error al guardar. Por favor, inténtalo de nuevo.",
+    "deleteError": "Error al eliminar la cuenta.",
+    "exportError": "Error al exportar datos.",
     "profileImage": "Imagen de Perfil",
     "profileImageDescription": "Haz clic en el icono para cambiar tu foto de perfil",
     "title": "Configuración",

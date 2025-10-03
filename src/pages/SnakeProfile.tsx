@@ -28,29 +28,29 @@ const SnakeProfile = () => {
     const mockSnakes: Snake[] = [
       {
         id: '1',
-        name: 'Luna',
-        species: 'Ball Python',
+        name: 'Mira',
+        species: 'Python Regius',
         morph: 'Pastel',
         sex: 'Female',
         birthDate: '2022-03-15',
         weight: 1200,
         length: 120,
-        imageUrl: 'https://images.pexels.com/photos/45863/python-snake-reptile-green-45863.jpeg?auto=compress&cs=tinysrgb&w=800',
-        notes: 'Very docile and easy to handle. Excellent feeder, rarely refuses meals.',
-        userId: 'user1'
+        imageUrl: 'https://images.pexels.com/photos/8142977/pexels-photo-8142977.jpeg?auto=compress&cs=tinysrgb&w=400',
+        notes: 'Très docile et facile à manipuler',
+        userId: user?.id || ''
       },
       {
         id: '2',
-        name: 'Thor',
-        species: 'Corn Snake',
-        morph: 'Anery',
+        name: 'Yuzu',
+        species: 'Python Regius',
+        morph: 'Pastel',
         sex: 'Male',
         birthDate: '2021-08-20',
         weight: 800,
         length: 95,
         imageUrl: 'https://images.pexels.com/photos/8142977/pexels-photo-8142977.jpeg?auto=compress&cs=tinysrgb&w=400',
-        notes: 'Great feeder, very active',
-        userId: 'user1'
+        notes: 'Excellent nourrisseur, très actif',
+        userId: user?.id || ''
       }
     ];
 
@@ -62,7 +62,7 @@ const SnakeProfile = () => {
         snakeId: id!,
         type: 'feeding',
         date: '2025-01-10',
-        notes: 'Adult mouse, ate well',
+        notes: 'Souris adulte, a bien mangé',
         weight: 1210,
         userId: 'user1'
       },
@@ -71,7 +71,7 @@ const SnakeProfile = () => {
         snakeId: id!,
         type: 'shed',
         date: '2025-01-08',
-        notes: 'Complete shed, perfect',
+        notes: 'Mue complète, parfaite',
         userId: 'user1'
       },
       {
@@ -79,7 +79,7 @@ const SnakeProfile = () => {
         snakeId: id!,
         type: 'feeding',
         date: '2025-01-03',
-        notes: 'Adult mouse',
+        notes: 'Souris adulte',
         weight: 1200,
         userId: 'user1'
       },
@@ -88,7 +88,7 @@ const SnakeProfile = () => {
         snakeId: id!,
         type: 'vet_visit',
         date: '2024-12-15',
-        notes: 'Annual checkup - healthy',
+        notes: 'Visite annuelle - en bonne santé',
         weight: 1180,
         userId: 'user1'
       },
@@ -97,7 +97,7 @@ const SnakeProfile = () => {
         snakeId: id!,
         type: 'feeding',
         date: '2024-12-20',
-        notes: 'Adult mouse',
+        notes: 'Souris adulte',
         weight: 1190,
         userId: 'user1'
       }
@@ -120,7 +120,7 @@ const SnakeProfile = () => {
     setSnake(updatedSnake);
   };
   const exportToPDF = () => {
-    if (user?.plan === 'free') {
+    if (user?.plan !== 'free') {
       setShowUpgradeModal(true);
       return;
     }

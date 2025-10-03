@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Calendar, Scale, Ruler } from 'lucide-react';
 import { Snake } from '../types';
@@ -10,6 +11,7 @@ interface SnakeCardProps {
 
 const SnakeCard: React.FC<SnakeCardProps> = ({ snake }) => {
   const age = differenceInYears(new Date(), new Date(snake.birthDate));
+  const { t } = useTranslation();
 
   return (
     <Link
@@ -37,15 +39,15 @@ const SnakeCard: React.FC<SnakeCardProps> = ({ snake }) => {
           <div className="flex items-center space-x-4 text-sm text-gray-500">
             <div className="flex items-center">
               <Calendar className="h-4 w-4 mr-1" />
-              <span>{age} years old</span>
+              <span>{t('snake.yearsOld', { count: age })}</span>
             </div>
             <div className="flex items-center">
               <Scale className="h-4 w-4 mr-1" />
-              <span>{snake.weight}g</span>
+              <span>{snake.weight}{t('units.grams')}</span>
             </div>
             <div className="flex items-center">
               <Ruler className="h-4 w-4 mr-1" />
-              <span>{snake.length}cm</span>
+              <span>{snake.length}{t('units.cm')}</span>
             </div>
           </div>
         </div>

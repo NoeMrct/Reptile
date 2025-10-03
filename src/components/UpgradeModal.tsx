@@ -65,25 +65,28 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ onClose, onUpgrade }) => {
               </button>
               <button
                 onClick={() => setIsYearly(true)}
-                className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all relative ${
+                className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
                   isYearly
                     ? 'bg-green-600 text-white shadow-md'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
                 {t('pricing.yearly')}
-                <span className="absolute -top-2 -right-2 bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-0.5 rounded-full shadow-sm animate-pulse">
-                  {t('pricing.save2Months')}
-                </span>
               </button>
             </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             {/* Plan Mensuel */}
-            <div className={`border-2 rounded-xl p-6 hover:border-green-500 transition-colors ${
-              !isYearly ? 'border-green-500 bg-green-50' : 'border-gray-200'
-            }`}>
+            <div className="border-2 border-gray-200 bg-gray-50 rounded-xl p-6 hover:border-green-500 hover:bg-green-50 transition-colors relative">
+              {isYearly && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    {t('pricing.save2Months')}
+                  </span>
+                </div>
+              )}
+
               <div className="text-center mb-6">
                 <h4 className="text-xl font-bold text-gray-900 mb-2">{t('pricing.professional.title')}</h4>
                 <div className="text-3xl font-bold text-green-600 mb-1">
@@ -135,9 +138,7 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ onClose, onUpgrade }) => {
             </div>
 
             {/* Plan Enterprise */}
-            <div className={`border-2 rounded-xl p-6 hover:border-green-500 transition-colors relative ${
-              isYearly ? 'border-green-500 bg-green-50' : 'border-gray-200'
-            }`}>
+            <div className="border-2 border-gray-200 bg-gray-50 rounded-xl p-6 hover:border-green-500 hover:bg-green-50 transition-colors relative">
               {isYearly && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                   <span className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">

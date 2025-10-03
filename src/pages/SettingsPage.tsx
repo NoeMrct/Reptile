@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Crown } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
@@ -66,7 +67,7 @@ const SettingsPage = () => {
       }, 2000);
       
     } catch (error) {
-      setError('Une erreur est survenue lors de la sauvegarde. Veuillez réessayer.');
+      setError(t('settings.saveError'));
     } finally {
       setIsLoading(false);
     }
@@ -80,7 +81,7 @@ const SettingsPage = () => {
         await new Promise(resolve => setTimeout(resolve, 1000));
         console.log('Deleting account');
       } catch (error) {
-        setError('Erreur lors de la suppression du compte.');
+        setError(t('settings.deleteError'));
       } finally {
         setIsLoading(false);
       }
@@ -107,7 +108,7 @@ const SettingsPage = () => {
       a.click();
       URL.revokeObjectURL(url);
     } catch (error) {
-      setError('Erreur lors de l\'export des données.');
+      setError(t('settings.exportError'));
     } finally {
       setIsLoading(false);
     }
@@ -174,13 +175,13 @@ const SettingsPage = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Erreur</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('common.error')}</h3>
                 <p className="text-gray-600 mb-6">{error}</p>
                 <button
                   onClick={() => setError('')}
                   className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
                 >
-                  Fermer
+                  {t('common.close')}
                 </button>
               </div>
             </div>
@@ -328,12 +329,13 @@ const SettingsPage = () => {
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('settings.currentPlan')}</h3>
                         <p className="text-gray-600">{t('settings.freePlan')}</p>
                       </div>
-                      <span className="bg-gray-900 text-white px-3 py-1 rounded-full text-sm font-semibold">FREE</span>
+                      <span className="bg-gray-900 text-white px-3 py-1 rounded-full text-sm font-semibold">{t('settings.planFreeBadge')}</span>
                     </div>
                     <button
                       onClick={() => setShowUpgradeModal(true)}
-                      className="bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-lg hover:from-green-700 hover:to-green-800 transition-all font-semibold shadow-lg transform hover:scale-105"
+                      className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-lg hover:from-green-700 hover:to-green-800 transition-all font-semibold shadow-lg transform hover:scale-105"
                     >
+                      <Crown className="h-5 w-5 text-yellow-500" aria-hidden="true" />
                       {t('settings.upgrade')}
                     </button>
                   </div>
@@ -356,7 +358,7 @@ const SettingsPage = () => {
                         {isLoading ? (
                           <>
                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            Export en cours...
+                            {t('settings.exporting')}
                           </>
                         ) : (
                           <>
@@ -377,7 +379,7 @@ const SettingsPage = () => {
                         {isLoading ? (
                           <>
                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            Suppression...
+                            {t('settings.deleting')}
                           </>
                         ) : (
                           <>
@@ -417,12 +419,12 @@ const SettingsPage = () => {
                     {isLoading ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Sauvegarde...
+                        {t('common.saving')}
                       </>
                     ) : showSuccess ? (
                       <>
                         <Check className="h-4 w-4 mr-2" />
-                        Sauvegardé !
+                        {t('common.saved')}
                       </>
                     ) : (
                       <>

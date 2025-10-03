@@ -97,7 +97,7 @@
     }
   },
   "upgrade": {
-    "limitReached": "Vous avez atteint la limite de 5 serpents",
+    "limitReached": "Vous souhaitez évoluer ?",
     "description": "Passez à un plan payant pour gérer une collection illimitée et accéder à toutes les fonctionnalités avancées.",
     "processing": "Traitement...",
     "choosePlan": "Choisir ce plan",
@@ -172,7 +172,7 @@
     "createAccountBtn": "Créer un Compte",
     "signInBtn": "Se Connecter",
     "trialExpired": "Votre essai gratuit de 14 jours a expiré. Veuillez vous abonner pour continuer à utiliser Snake Manager.",
-    "subscribe": "S'abonner Maintenant"
+    "subscribe": "Démarrer Maintenant"
   },
   "dashboard": {
     "title": "Tableau de Bord",
@@ -180,13 +180,14 @@
     "addEvent": "Ajouter un Événement",
     "addSnake": "Ajouter un Serpent",
     "stats": {
-      "totalSnakes": "Total Serpents",
-      "recentFeedings": "Repas Récents",
-      "recentSheds": "Mues Récentes",
-      "totalEvents": "Total Événements",
-      "thisMonth": "ce mois",
+      "totalSnakes": "Nombre de serpents",
+      "recentFeedings": "Repas récents",
+      "recentSheds": "Mues récentes",
+      "totalEvents": "Nombre d'événements",
+      "thisMonth": "Ce mois-ci",
       "thisWeek": "Cette semaine",
-      "allTime": "Tout le temps"
+      "allTime": "Depuis toujours",
+      "lastWeek": "La semaine dernière"
     },
     "mySnakes": "Mes Serpents",
     "search": "Rechercher des serpents...",
@@ -232,11 +233,12 @@
     "growthRate": "Taux de Croissance",
     "avgInterval": "Intervalle d'alimentation moyen : 7 jours",
     "lastFeeding": "Dernier repas :",
-    "weightGain": "Gain de poids : +30g ce mois",
+    "weightGain": "Gain de poids : +30g ce mois-ci",
     "growthTrend": "Tendance de croissance : Saine",
     "exportPDF": "Exporter PDF",
     "editPhoto": "Modifier la Photo",
-    "editInfo": "Modifier les Infos"
+    "editInfo": "Modifier les Infos",
+    "yearsOld": "{{count}} ans"
   },
   "events": {
     "all": "Tous",
@@ -265,6 +267,11 @@
     "add": "Ajouter l'Événement"
   },
   "addSnake": {
+    "photo": "Photo du serpent",
+    "addPhoto": "Ajouter une photo",
+    "imageUrlPlaceholder": "ex : https://exemple.com/image.jpg",
+    "adding": "Ajout en cours...",
+    "added": "Ajouté !",
     "title": "Ajouter un Nouveau Serpent",
     "name": "Nom",
     "species": "Espèce",
@@ -292,9 +299,22 @@
     "edit": "Modifier",
     "delete": "Supprimer",
     "confirm": "Confirmer",
-    "close": "Fermer"
+    "close": "Fermer",
+    "error": "Erreur",
+    "saving": "Sauvegarde...",
+    "saved": "Sauvegardé !"
+  },
+  "units": {
+    "grams": "g",
+    "cm": "cm"
   },
   "settings": {
+    "planFreeBadge": "GRATUIT",
+    "exporting": "Exportation...",
+    "deleting": "Suppression...",
+    "saveError": "Une erreur s'est produite lors de l'enregistrement. Veuillez réessayer.",
+    "deleteError": "Erreur lors de la suppression du compte.",
+    "exportError": "Erreur lors de l'exportation des données.",
     "profileImage": "Photo de profil",
     "profileImageDescription": "Cliquez sur l'icône pour changer votre photo de profil",
     "title": "Paramètres",

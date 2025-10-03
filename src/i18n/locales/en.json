@@ -97,7 +97,7 @@
     }
   },
   "upgrade": {
-    "limitReached": "You've reached the limit of 5 snakes",
+    "limitReached": "Would you like to grow?",
     "description": "Upgrade to a paid plan to manage an unlimited collection and access all advanced features.",
     "processing": "Processing...",
     "choosePlan": "Choose this plan",
@@ -189,7 +189,8 @@
       "totalEvents": "Total Events",
       "thisMonth": "this month",
       "thisWeek": "This week",
-      "allTime": "All time"
+      "allTime": "All time",
+      "lastWeek": "Last week"
     },
     "mySnakes": "My Snakes",
     "search": "Search snakes...",
@@ -239,7 +240,8 @@
     "growthTrend": "Growth trend: Healthy",
     "exportPDF": "Export PDF",
     "editPhoto": "Edit Photo",
-    "editInfo": "Edit Info"
+    "editInfo": "Edit Info",
+    "yearsOld": "{{count}} years old"
   },
   "events": {
     "all": "All",
@@ -268,6 +270,11 @@
     "add": "Add Event"
   },
   "addSnake": {
+    "photo": "Snake photo",
+    "addPhoto": "Add a photo",
+    "imageUrlPlaceholder": "e.g. https://example.com/image.jpg",
+    "adding": "Adding...",
+    "added": "Added!",
     "title": "Add New Snake",
     "name": "Name",
     "species": "Species",
@@ -295,9 +302,22 @@
     "edit": "Edit",
     "delete": "Delete",
     "confirm": "Confirm",
-    "close": "Close"
+    "close": "Close",
+    "error": "Error",
+    "saving": "Saving...",
+    "saved": "Saved!"
+  },
+  "units": {
+    "grams": "g",
+    "cm": "cm"
   },
   "settings": {
+    "planFreeBadge": "FREE",
+    "exporting": "Exporting...",
+    "deleting": "Deleting...",
+    "saveError": "An error occurred while saving. Please try again.",
+    "deleteError": "Error deleting account.",
+    "exportError": "Error exporting data.",
     "profileImage": "Profile Image",
     "profileImageDescription": "Click the icon to change your profile picture",
     "title": "Settings",

@@ -19,28 +19,28 @@ const EventsPage = () => {
     const mockSnakes: Snake[] = [
       {
         id: '1',
-        name: 'Luna',
-        species: 'Ball Python',
+        name: 'Mira',
+        species: 'Python Regius',
         morph: 'Pastel',
         sex: 'Female',
         birthDate: '2022-03-15',
         weight: 1200,
         length: 120,
-        imageUrl: 'https://images.pexels.com/photos/45863/python-snake-reptile-green-45863.jpeg?auto=compress&cs=tinysrgb&w=400',
-        notes: 'Very docile and easy to handle',
+        imageUrl: 'https://images.pexels.com/photos/8142977/pexels-photo-8142977.jpeg?auto=compress&cs=tinysrgb&w=400',
+        notes: 'Très docile et facile à manipuler',
         userId: user?.id || ''
       },
       {
         id: '2',
-        name: 'Thor',
-        species: 'Corn Snake',
-        morph: 'Anery',
+        name: 'Yuzu',
+        species: 'Python Regius',
+        morph: 'Pastel',
         sex: 'Male',
         birthDate: '2021-08-20',
         weight: 800,
         length: 95,
         imageUrl: 'https://images.pexels.com/photos/8142977/pexels-photo-8142977.jpeg?auto=compress&cs=tinysrgb&w=400',
-        notes: 'Great feeder, very active',
+        notes: 'Excellent nourrisseur, très actif',
         userId: user?.id || ''
       }
     ];
@@ -51,7 +51,7 @@ const EventsPage = () => {
         snakeId: '1',
         type: 'feeding',
         date: '2025-01-10',
-        notes: 'Adult mouse, ate well',
+        notes: 'Souris adulte, a bien mangé',
         weight: 1210,
         userId: user?.id || ''
       },
@@ -60,7 +60,7 @@ const EventsPage = () => {
         snakeId: '2',
         type: 'shed',
         date: '2025-01-08',
-        notes: 'Complete shed, perfect',
+        notes: 'Mue complète, parfaite',
         userId: user?.id || ''
       },
       {
@@ -68,7 +68,7 @@ const EventsPage = () => {
         snakeId: '1',
         type: 'vet_visit',
         date: '2025-01-05',
-        notes: 'Annual checkup - healthy',
+        notes: 'Visite annuelle - en bonne santé',
         weight: 1200,
         userId: user?.id || ''
       },
@@ -77,7 +77,7 @@ const EventsPage = () => {
         snakeId: '2',
         type: 'feeding',
         date: '2025-01-03',
-        notes: 'Adult mouse',
+        notes: 'Souris adulte',
         weight: 810,
         userId: user?.id || ''
       },
@@ -86,7 +86,7 @@ const EventsPage = () => {
         snakeId: '1',
         type: 'handling',
         date: '2025-01-01',
-        notes: 'Gentle handling session',
+        notes: 'Séance de manipulation douce',
         userId: user?.id || ''
       },
       {
@@ -94,7 +94,7 @@ const EventsPage = () => {
         snakeId: '2',
         type: 'shed',
         date: '2024-12-28',
-        notes: 'Perfect shed',
+        notes: 'Mue parfaite',
         userId: user?.id || ''
       },
       {
@@ -102,7 +102,7 @@ const EventsPage = () => {
         snakeId: '1',
         type: 'feeding',
         date: '2024-12-25',
-        notes: 'Holiday feeding',
+        notes: 'Repas de vacances',
         weight: 1190,
         userId: user?.id || ''
       }
