@@ -190,7 +190,7 @@
       "thisMonth": "este mes",
       "thisWeek": "Esta semana",
       "allTime": "Todo el tiempo",
-      "lastWeek": "La semana pasada"
+      "lastWeek": "Las últimas 7 días"
     },
     "mySnakes": "Mis Serpientes",
     "search": "Buscar serpientes...",
@@ -244,6 +244,10 @@
     "yearsOld": "{{count}} años"
   },
   "events": {
+    "actions": {
+      "ariaLabel": "Acciones del evento",
+      "menuLabel": "Menú de acciones del evento"
+    },
     "all": "Todos",
     "allEvents": "Todos los Eventos",
     "searchPlaceholder": "Buscar eventos...",
@@ -267,7 +271,8 @@
     "weightOptional": "Opcional - peso al momento del evento",
     "notesPlaceholder": "Detalles adicionales sobre este evento...",
     "cancel": "Cancelar",
-    "add": "Agregar Evento"
+    "add": "Agregar Evento",
+    "delete": "¿Eliminar este evento? Esta acción es definitiva."
   },
   "addSnake": {
     "photo": "Foto de la serpiente",
@@ -305,7 +310,8 @@
     "close": "Cerrar",
     "error": "Error",
     "saving": "Guardando...",
-    "saved": "Guardado!"
+    "saved": "Guardado!",
+    "formatCard": "dd MMM, yyyy"
   },
   "units": {
     "grams": "g",

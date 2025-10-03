@@ -190,7 +190,7 @@
       "thisMonth": "this month",
       "thisWeek": "This week",
       "allTime": "All time",
-      "lastWeek": "Last week"
+      "lastWeek": "Lasts 7 days"
     },
     "mySnakes": "My Snakes",
     "search": "Search snakes...",
@@ -244,6 +244,11 @@
     "yearsOld": "{{count}} years old"
   },
   "events": {
+    "actions": {
+      "ariaLabel": "Event actions",
+      "menuLabel": "Event actions menu"
+    },
+
     "all": "All",
     "allEvents": "All Events",
     "searchPlaceholder": "Search events...",
@@ -267,7 +272,8 @@
     "weightOptional": "Optional - weight at time of event",
     "notesPlaceholder": "Any additional details about this event...",
     "cancel": "Cancel",
-    "add": "Add Event"
+    "add": "Add Event",
+    "delete": "Delete this event? This action is permanent."
   },
   "addSnake": {
     "photo": "Snake photo",
@@ -305,7 +311,8 @@
     "close": "Close",
     "error": "Error",
     "saving": "Saving...",
-    "saved": "Saved!"
+    "saved": "Saved!",
+    "formatCard": "dd MMM, yyyy"
   },
   "units": {
     "grams": "g",

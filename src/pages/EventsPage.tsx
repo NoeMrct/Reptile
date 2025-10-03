@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar, Filter, Search } from 'lucide-react';
 import { Event, Snake } from '../types';
 import EventCard from '../components/EventCard';
 import { useAuth } from '../context/AuthContext';
+import EventEditModal, { EditableEvent } from '../components/EventEditModal';
 
 const EventsPage = () => {
   const { t } = useTranslation();
@@ -13,9 +14,35 @@ const EventsPage = () => {
   const [snakes, setSnakes] = useState<Snake[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
+  const [editOpen, setEditOpen] = useState(false);
+  const [editEvent, setEditEvent] = useState<EditableEvent | null>(null);
+
+  const handleEditOpen = (id: string) => {
+    const ev = events.find(e => e.id === id);
+    if (!ev) return;
+    setEditEvent({
+      id: ev.id,
+      snakeId: ev.snakeId,
+      type: ev.type as EditableEvent['type'],
+      date: ev.date,
+      weight: ev.weight ?? null,
+      notes: ev.notes ?? null,
+    });
+    setEditOpen(true);
+  };
+
+  const handleEditSave = async (updated: EditableEvent) => {
+    setEvents(prev => prev.map(e => (e.id === updated.id ? { ...e, ...updated } : e)));
+    setEditOpen(false);
+    setEditEvent(null);
+  };
+
+  const handleEditClose = () => {
+    setEditOpen(false);
+    setEditEvent(null);
+  };
 
   useEffect(() => {
-    // Mock data - in real app, fetch from API
     const mockSnakes: Snake[] = [
       {
         id: '1',
@@ -126,11 +153,16 @@ const EventsPage = () => {
     return event.type === selectedFilter;
   }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
+  const handleDeleteEvent = (id: string) => {
+    if (!window.confirm(t('events.delete'))) return;
+    setEvents(prev => prev.filter(e => e.id !== id));
+  };
+
   const eventTypes = [
     { value: 'all', label: t('events.all') },
     { value: 'feeding', label: t('events.feeding') },
     { value: 'shed', label: t('events.shed') },
-    { value: 'vet_visit', label: t('events.vetVisit') },
+    { value: 'vetVisit', label: t('events.vetVisit') },
     { value: 'handling', label: t('events.handling') },
     { value: 'other', label: t('events.other') }
   ];
@@ -202,7 +234,9 @@ const EventsPage = () => {
                   <EventCard 
                     key={event.id} 
                     event={event} 
-                    snakeName={snake?.name || 'Unknown'} 
+                    snakeName={snake?.name || 'Unknown'}
+                    onDelete={handleDeleteEvent}
+                    onEdit={handleEditOpen}
                   />
                 );
               })}
@@ -223,6 +257,12 @@ const EventsPage = () => {
           )}
         </div>
       </div>
+      <EventEditModal
+        open={editOpen}
+        event={editEvent}
+        onClose={handleEditClose}
+        onSave={handleEditSave}
+      />
     </div>
   );
 };

@@ -11,6 +11,8 @@ import UpgradeModal from '../components/UpgradeModal';
 import { format } from 'date-fns';
 import jsPDF from 'jspdf';
 import { useAuth } from '../context/AuthContext';
+import EventEditModal, { EditableEvent } from '../components/EventEditModal';
+
 
 const SnakeProfile = () => {
   const { t } = useTranslation();
@@ -23,8 +25,35 @@ const SnakeProfile = () => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
+  const [editOpen, setEditOpen] = useState(false);
+  const [editEvent, setEditEvent] = useState<EditableEvent | null>(null);
+  
+  const handleEditOpen = (id: string) => {
+    const ev = events.find(e => e.id === id);
+    if (!ev) return;
+    setEditEvent({
+      id: ev.id,
+      snakeId: ev.snakeId,
+      type: ev.type as EditableEvent['type'],
+      date: ev.date,
+      weight: ev.weight ?? null,
+      notes: ev.notes ?? null,
+    });
+    setEditOpen(true);
+  };
+  
+  const handleEditSave = async (updated: EditableEvent) => {
+    setEvents(prev => prev.map(e => (e.id === updated.id ? { ...e, ...updated } : e)));
+    setEditOpen(false);
+    setEditEvent(null);
+  };
+  
+  const handleEditClose = () => {
+    setEditOpen(false);
+    setEditEvent(null);
+  };
+
   useEffect(() => {
-    // Mock data - in real app, fetch from API
     const mockSnakes: Snake[] = [
       {
         id: '1',
@@ -106,6 +135,11 @@ const SnakeProfile = () => {
     setSnake(mockSnake);
     setEvents(mockEvents);
   }, [id]);
+
+  const handleDeleteEvent = (id: string) => {
+    if (!window.confirm(t('events.delete'))) return;
+    setEvents(prev => prev.filter(e => e.id !== id));
+  };
 
   const addEvent = (event: Omit<Event, 'id' | 'userId'>) => {
     const newEvent: Event = {
@@ -366,7 +400,7 @@ const SnakeProfile = () => {
                       <h3 className="text-lg font-semibold mb-4">{t('snake.recentActivity')}</h3>
                       <div className="space-y-3">
                         {events.slice(0, 5).map(event => (
-                          <EventCard key={event.id} event={event} snakeName={snake.name} />
+                          <EventCard key={event.id} event={event} snakeName={snake.name} onDelete={handleDeleteEvent} onEdit={handleEditOpen} />
                         ))}
                       </div>
                     </div>
@@ -387,7 +421,7 @@ const SnakeProfile = () => {
                     </div>
                     <div className="space-y-3">
                       {events.map(event => (
-                        <EventCard key={event.id} event={event} snakeName={snake.name} />
+                        <EventCard key={event.id} event={event} snakeName={snake.name} onDelete={handleDeleteEvent} onEdit={handleEditOpen} />
                       ))}
                     </div>
                   </div>
@@ -448,7 +482,6 @@ const SnakeProfile = () => {
         </div>
       </div>
 
-      {/* Add Event Modal */}
       {showAddEvent && (
         <AddEventModal
           onClose={() => setShowAddEvent(false)}
@@ -458,7 +491,6 @@ const SnakeProfile = () => {
         />
       )}
 
-      {/* Edit Snake Modal */}
       {showEditSnake && (
         <EditSnakeModal
           snake={snake}
@@ -466,6 +498,13 @@ const SnakeProfile = () => {
           onSave={updateSnake}
         />
       )}
+      
+      <EventEditModal
+        open={editOpen}
+        event={editEvent}
+        onClose={handleEditClose}
+        onSave={handleEditSave}
+      />
     </div>
   );
 };

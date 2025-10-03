@@ -22,6 +22,7 @@ import FilterDropdown from '../components/FilterDropdown';
 import UpgradeModal from '../components/UpgradeModal';
 import LanguageSelector from '../components/LanguageSelector';
 import { Snake, Event } from '../types';
+import EventEditModal, { EditableEvent } from '../components/EventEditModal';
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -35,6 +36,34 @@ const Dashboard = () => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+
+  const [editOpen, setEditOpen] = useState(false);
+  const [editEvent, setEditEvent] = useState<EditableEvent | null>(null);
+
+  const handleEditOpen = (id: string) => {
+    const ev = events.find(e => e.id === id);
+    if (!ev) return;
+    setEditEvent({
+      id: ev.id,
+      snakeId: ev.snakeId,
+      type: ev.type as EditableEvent['type'],
+      date: ev.date,
+      weight: ev.weight ?? null,
+      notes: ev.notes ?? null,
+    });
+    setEditOpen(true);
+  };
+
+  const handleEditSave = async (updated: EditableEvent) => {
+    setEvents(prev => prev.map(e => (e.id === updated.id ? { ...e, ...updated } : e)));
+    setEditOpen(false);
+    setEditEvent(null);
+  };
+
+  const handleEditClose = () => {
+    setEditOpen(false);
+    setEditEvent(null);
+  };
 
   // Mock data
   useEffect(() => {
@@ -105,7 +134,6 @@ const Dashboard = () => {
   };
 
   const addSnake = (snake: Omit<Snake, 'id' | 'userId'>) => {
-    // Check if user has reached the limit of 5 snakes
     if (snakes.length >= 5) {
       setShowUpgradeModal(true);
       return;
@@ -129,10 +157,8 @@ const Dashboard = () => {
   };
 
   const handleUpgrade = (plan: 'monthly' | 'yearly') => {
-    // Here you would integrate with your payment processor
     console.log(`Upgrading to ${plan} plan`);
     setShowUpgradeModal(false);
-    // Redirect to payment page or handle subscription
   };
 
   const filteredSnakes = snakes.filter(snake => {
@@ -149,21 +175,33 @@ const Dashboard = () => {
       case 'unknown':
         return snake.sex === 'Unknown';
       case 'recent':
-        // Mock recent changes logic
         return true;
       case 'feeding':
-        // Mock needs feeding logic
         return Math.random() > 0.5;
       default:
         return true;
     }
   });
 
+  const handleDeleteEvent = (id: string) => {
+    if (!window.confirm(t('events.delete'))) return;
+    setEvents(prev => prev.filter(e => e.id !== id));
+  };
+
   const recentEvents = events
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
 
   const getSnakeById = (id: string) => snakes.find(snake => snake.id === id);
+
+  const now = new Date();
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(now.getDate() - 7);
+
+  const eventsLast7Days = events.filter(e => {
+    const d = new Date(e.date);
+    return d >= sevenDaysAgo && d <= now;
+  });
 
   const stats = {
     totalSnakes: snakes.length,
@@ -276,7 +314,7 @@ const Dashboard = () => {
           />
           <StatsCard
             title={t('dashboard.stats.totalEvents')}
-            value={stats.totalEvents}
+            value={eventsLast7Days.length}
             icon={<Calendar className="h-6 w-6 text-orange-600" />}
             change={t('dashboard.stats.lastWeek')}
           />
@@ -349,7 +387,7 @@ const Dashboard = () => {
                   {recentEvents.map(event => {
                     const snake = getSnakeById(event.snakeId);
                     return (
-                      <EventCard key={event.id} event={event} snakeName={snake?.name || 'Unknown'} />
+                      <EventCard key={event.id} event={event} snakeName={snake?.name || 'Unknown'} onDelete={handleDeleteEvent} onEdit={handleEditOpen} />
                     );
                   })}
                 </div>
@@ -387,6 +425,13 @@ const Dashboard = () => {
           onUpgrade={handleUpgrade}
         />
       )}
+
+      <EventEditModal
+        open={editOpen}
+        event={editEvent}
+        onClose={handleEditClose}
+        onSave={handleEditSave}
+      />
     </div>
   );
 };
