@@ -1,0 +1,332 @@
+{
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "signIn": "Sign In",
+    "backToHome": "Back to Home"
+  },
+  "hero": {
+    "title": "Professional Snake Management",
+    "subtitle": "Made Simple",
+    "description": "Track, manage, and monitor your reptile collection with comprehensive health records, feeding schedules, and detailed analytics.",
+    "tryFree": "Start Now",
+    "learnMore": "Learn More"
+  },
+  "features": {
+    "title": "Everything You Need to Manage Your Collection",
+    "subtitle": "Comprehensive tools designed specifically for reptile enthusiasts and professional breeders.",
+    "detailedProfiles": {
+      "title": "Detailed Profiles",
+      "description": "Complete snake profiles with photos, species info, genetics, and health records."
+    },
+    "eventTracking": {
+      "title": "Event Tracking",
+      "description": "Monitor feeding schedules, shedding cycles, and veterinary appointments."
+    },
+    "analytics": {
+      "title": "Analytics & Charts",
+      "description": "Visual insights into growth patterns, feeding success, and health trends."
+    },
+    "photoManagement": {
+      "title": "Photo Management",
+      "description": "Organize and track photos with date stamps and automatic galleries."
+    },
+    "exportReports": {
+      "title": "Export Reports",
+      "description": "Generate PDF and Excel reports for veterinarians or breeding records."
+    },
+    "multiUser": {
+      "title": "Multi-User Access",
+      "description": "Share access with partners, veterinarians, or breeding collaborators."
+    }
+  },
+  "testimonials": {
+    "title": "Trusted by Reptile Enthusiasts",
+    "testimonial1": "Snake Manager has revolutionized how I track my collection. The feeding schedules and health monitoring are invaluable.",
+    "testimonial2": "The analytics features help me optimize feeding schedules and track growth patterns like never before.",
+    "testimonial3": "As a veterinarian, the detailed health records and export features make my job so much easier."
+  },
+  "pricing": {
+    "title": "Simple, Transparent Pricing",
+    "subtitle": "Choose the plan that fits your collection size",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "save2Months": "2 months free",
+    "starter": {
+      "title": "Starter",
+      "price": "Free",
+      "duration": "",
+      "features": {
+        "snakes": "Up to 5 snakes",
+        "tracking": "Basic event tracking",
+        "photos": "Photo storage"
+      },
+      "cta": "Start Now"
+    },
+    "professional": {
+      "title": "Professional",
+      "price": "$19",
+      "yearlyPrice": "$190",
+      "duration": "/month",
+      "yearlyDuration": "/year",
+      "yearlySavings": "Save $38",
+      "popular": "Most Popular",
+      "features": {
+        "snakes": "Up to 50 snakes",
+        "analytics": "Advanced analytics",
+        "exports": "PDF/Excel exports",
+        "multiUser": "Multi-user access"
+      },
+      "cta": "Subscribe Now"
+    },
+    "enterprise": {
+      "title": "Enterprise",
+      "price": "$49",
+      "yearlyPrice": "$490",
+      "duration": "/month",
+      "yearlyDuration": "/year",
+      "yearlySavings": "Save $98",
+      "features": {
+        "snakes": "Unlimited snakes",
+        "support": "Priority support",
+        "integrations": "Custom integrations",
+        "api": "API access"
+      },
+      "cta": "Contact Us"
+    }
+  },
+  "upgrade": {
+    "limitReached": "You've reached the limit of 5 snakes",
+    "description": "Upgrade to a paid plan to manage an unlimited collection and access all advanced features.",
+    "processing": "Processing...",
+    "choosePlan": "Choose this plan",
+    "guarantee": "Cancel anytime • Secure payment • 24/7 support"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "q1": {
+      "question": "Is my data secure?",
+      "answer": "Yes, we use enterprise-grade encryption and security measures to protect your data. All information is stored securely and backed up regularly."
+    },
+    "q2": {
+      "question": "Can I export my data?",
+      "answer": "Absolutely. You can export all your data in PDF or Excel format at any time. We believe your data belongs to you."
+    },
+    "q3": {
+      "question": "What if I need help getting started?",
+      "answer": "We offer comprehensive onboarding support and documentation. Our team is available to help you migrate your existing records."
+    }
+  },
+  "footer": {
+    "description": "Professional reptile management for enthusiasts and breeders.",
+    "product": "Product",
+    "support": "Support",
+    "company": "Company",
+    "about": "About",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "rights": "All rights reserved."
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "Have questions about Snake Manager? We'd love to hear from you.",
+    "info": "Contact Information",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "hours": "Support Hours",
+    "hoursText": "Monday - Friday: 9:00 AM - 6:00 PM PST\nSaturday: 10:00 AM - 4:00 PM PST\nSunday: Closed",
+    "form": {
+      "title": "Send us a Message",
+      "name": "Your Name",
+      "namePlaceholder": "Enter your full name",
+      "email": "Email Address",
+      "emailPlaceholder": "Enter your email",
+      "message": "Message",
+      "placeholder": "Tell us how we can help...",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "success": "Message Sent!",
+      "successText": "Thank you for contacting us. We'll get back to you within 24 hours."
+    }
+  },
+  "auth": {
+    "welcomeBack": "Welcome Back",
+    "createAccount": "Create Account",
+    "signInSubtitle": "Sign in to your account",
+    "signUpSubtitle": "Start managing your snake collection today",
+    "resetPassword": "Reset Password",
+    "resetSubtitle": "Enter your email to receive a password reset link.",
+    "email": "Email Address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot your password?",
+    "backToSignIn": "Back to Sign In",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signUp": "Sign up",
+    "signIn": "Sign in",
+    "processing": "Processing...",
+    "sendReset": "Send Reset Email",
+    "createAccountBtn": "Create Account",
+    "signInBtn": "Sign In",
+    "emailPlaceholder": "Enter your email",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "trialExpired": "Your 14-day free trial has expired. Please subscribe to continue using Snake Manager.",
+    "subscribe": "Subscribe Now"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Manage your snake collection",
+    "addEvent": "Add Event",
+    "addSnake": "Add Snake",
+    "stats": {
+      "totalSnakes": "Total Snakes",
+      "recentFeedings": "Recent Feedings",
+      "recentSheds": "Recent Sheds",
+      "totalEvents": "Total Events",
+      "thisMonth": "this month",
+      "thisWeek": "This week",
+      "allTime": "All time"
+    },
+    "mySnakes": "My Snakes",
+    "search": "Search snakes...",
+    "filter": "Filter",
+    "noSnakes": "No snakes found",
+    "noSnakesSubtitle": "No snakes match your search.",
+    "addFirstSnake": "Start by adding your first snake to the collection.",
+    "addFirstSnakeBtn": "Add Your First Snake",
+    "recentEvents": "Recent Events",
+    "noEvents": "No recent events",
+    "signOut": "Sign Out",
+    "settings": "Settings",
+    "viewAllEvents": "View All Events",
+    "filters": {
+      "all": "All Snakes",
+      "male": "Male",
+      "female": "Female",
+      "unknown": "Unknown Sex",
+      "recentChanges": "Recent Changes",
+      "needsFeeding": "Needs Feeding"
+    }
+  },
+  "snake": {
+    "profile": "Profile",
+    "species": "Species",
+    "morph": "Morph",
+    "sex": "Sex",
+    "age": "Age",
+    "weight": "Weight",
+    "length": "Length",
+    "notes": "Notes",
+    "years": "years",
+    "overview": "Overview",
+    "events": "Events",
+    "analytics": "Analytics",
+    "feedings": "Feedings",
+    "sheds": "Sheds",
+    "vetVisits": "Vet Visits",
+    "recentActivity": "Recent Activity",
+    "eventHistory": "Event History",
+    "weightTrend": "Weight Trend",
+    "feedingSchedule": "Feeding Schedule",
+    "growthRate": "Growth Rate",
+    "avgInterval": "Average feeding interval: 7 days",
+    "lastFeeding": "Last feeding:",
+    "weightGain": "Weight gain: +30g this month",
+    "growthTrend": "Growth trend: Healthy",
+    "exportPDF": "Export PDF",
+    "editPhoto": "Edit Photo",
+    "editInfo": "Edit Info"
+  },
+  "events": {
+    "all": "All",
+    "allEvents": "All Events",
+    "searchPlaceholder": "Search events...",
+    "eventHistory": "Event History",
+    "noEventsFound": "No events found",
+    "noEventsMatch": "No events match your search.",
+    "noEventsYet": "No events recorded yet.",
+    "feeding": "Feeding",
+    "shed": "Shedding",
+    "vetVisit": "Vet Visit",
+    "handling": "Handling",
+    "other": "Other",
+    "addEvent": "Add Event",
+    "eventType": "Event Type",
+    "date": "Date",
+    "weight": "Weight (grams)",
+    "notes": "Notes",
+    "photos": "Photos",
+    "addPhotos": "Add Photos (max 5)",
+    "selectSnake": "Select a snake",
+    "weightOptional": "Optional - weight at time of event",
+    "notesPlaceholder": "Any additional details about this event...",
+    "cancel": "Cancel",
+    "add": "Add Event"
+  },
+  "addSnake": {
+    "title": "Add New Snake",
+    "name": "Name",
+    "species": "Species",
+    "morph": "Morph",
+    "sex": "Sex",
+    "birthDate": "Birth Date",
+    "weight": "Weight (grams)",
+    "length": "Length (cm)",
+    "notes": "Notes",
+    "imageUrl": "Image URL",
+    "namePlaceholder": "Enter snake name",
+    "speciesPlaceholder": "e.g., Ball Python",
+    "morphPlaceholder": "e.g., Pastel",
+    "notesPlaceholder": "Any additional notes about this snake...",
+    "cancel": "Cancel",
+    "add": "Add Snake",
+    "unknown": "Unknown",
+    "male": "Male",
+    "female": "Female"
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "close": "Close"
+  },
+  "settings": {
+    "profileImage": "Profile Image",
+    "profileImageDescription": "Click the icon to change your profile picture",
+    "title": "Settings",
+    "profile": "Profile",
+    "notifications": "Notifications",
+    "language": "Language",
+    "subscription": "Subscription",
+    "data": "Data",
+    "security": "Security",
+    "name": "Name",
+    "email": "Email",
+    "namePlaceholder": "Enter your name",
+    "emailPlaceholder": "Enter your email",
+    "feedingReminders": "Feeding reminders",
+    "shedReminders": "Shedding reminders",
+    "vetReminders": "Vet reminders",
+    "emailNotifications": "Email notifications",
+    "languageDescription": "Choose your preferred language",
+    "currentPlan": "Current plan",
+    "freePlan": "Free plan - Up to 5 snakes",
+    "upgrade": "Upgrade",
+    "exportData": "Export data",
+    "exportDescription": "Download all your data in JSON format",
+    "exportButton": "Export",
+    "deleteAccount": "Delete account",
+    "deleteDescription": "This action is irreversible",
+    "deleteButton": "Delete account",
+    "deleteConfirm": "Are you sure you want to delete your account?",
+    "changePassword": "Change password",
+    "changePasswordButton": "Change"
+  }
+}

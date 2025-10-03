@@ -1,0 +1,332 @@
+{
+  "nav": {
+    "features": "Características",
+    "pricing": "Precios",
+    "contact": "Contacto",
+    "signIn": "Iniciar Sesión",
+    "backToHome": "Volver al Inicio"
+  },
+  "hero": {
+    "title": "Gestión Profesional de Serpientes",
+    "subtitle": "Simplificada",
+    "description": "Rastrea, gestiona y monitorea tu colección de reptiles con registros de salud completos, horarios de alimentación y análisis detallados.",
+    "tryFree": "Comenzar ahora",
+    "learnMore": "Saber Más"
+  },
+  "features": {
+    "title": "Todo lo que necesitas para gestionar tu colección",
+    "subtitle": "Herramientas completas diseñadas específicamente para entusiastas de reptiles y criadores profesionales.",
+    "detailedProfiles": {
+      "title": "Perfiles Detallados",
+      "description": "Perfiles completos de serpientes con fotos, información de especies, genética y registros de salud."
+    },
+    "eventTracking": {
+      "title": "Seguimiento de Eventos",
+      "description": "Monitorea horarios de alimentación, ciclos de muda y citas veterinarias."
+    },
+    "analytics": {
+      "title": "Análisis y Gráficos",
+      "description": "Perspectivas visuales sobre patrones de crecimiento, éxito alimentario y tendencias de salud."
+    },
+    "photoManagement": {
+      "title": "Gestión de Fotos",
+      "description": "Organiza y rastrea fotos con marcas de tiempo y galerías automáticas."
+    },
+    "exportReports": {
+      "title": "Reportes de Exportación",
+      "description": "Genera reportes PDF y Excel para veterinarios o registros de cría."
+    },
+    "multiUser": {
+      "title": "Acceso Multi-Usuario",
+      "description": "Comparte acceso con socios, veterinarios o colaboradores de cría."
+    }
+  },
+  "testimonials": {
+    "title": "Confiado por Entusiastas de Reptiles",
+    "testimonial1": "Snake Manager ha revolucionado cómo rastrea mi colección. Los horarios de alimentación y el monitoreo de salud son invaluables.",
+    "testimonial2": "Las características de análisis me ayudan a optimizar horarios de alimentación y rastrear patrones de crecimiento como nunca antes.",
+    "testimonial3": "Como veterinario, los registros de salud detallados y las características de exportación facilitan mucho mi trabajo."
+  },
+  "pricing": {
+    "title": "Precios Simples y Transparentes",
+    "subtitle": "Elige el plan que se ajuste al tamaño de tu colección",
+    "monthly": "Mensual",
+    "yearly": "Anual",
+    "save2Months": "2 meses gratis",
+    "starter": {
+      "title": "Principiante",
+      "price": "Gratis",
+      "duration": "",
+      "features": {
+        "snakes": "Hasta 5 serpientes",
+        "tracking": "Seguimiento básico de eventos",
+        "photos": "Almacenamiento de fotos"
+      },
+      "cta": "Comenzar ahora"
+    },
+    "professional": {
+      "title": "Profesional",
+      "price": "$19",
+      "yearlyPrice": "$190",
+      "duration": "/mes",
+      "yearlyDuration": "/año",
+      "yearlySavings": "Ahorra $38",
+      "popular": "Más Popular",
+      "features": {
+        "snakes": "Hasta 50 serpientes",
+        "analytics": "Análisis avanzados",
+        "exports": "Exportaciones PDF/Excel",
+        "multiUser": "Acceso multi-usuario"
+      },
+      "cta": "Suscribirse Ahora"
+    },
+    "enterprise": {
+      "title": "Empresa",
+      "price": "$49",
+      "yearlyPrice": "$490",
+      "duration": "/mes",
+      "yearlyDuration": "/año",
+      "yearlySavings": "Ahorra $98",
+      "features": {
+        "snakes": "Serpientes ilimitadas",
+        "support": "Soporte prioritario",
+        "integrations": "Integraciones personalizadas",
+        "api": "Acceso API"
+      },
+      "cta": "Contáctanos"
+    }
+  },
+  "upgrade": {
+    "limitReached": "Has alcanzado el límite de 5 serpientes",
+    "description": "Actualiza a un plan de pago para gestionar una colección ilimitada y acceder a todas las funciones avanzadas.",
+    "processing": "Procesando...",
+    "choosePlan": "Elegir este plan",
+    "guarantee": "Cancela en cualquier momento • Pago seguro • Soporte 24/7"
+  },
+  "faq": {
+    "title": "Preguntas Frecuentes",
+    "q1": {
+      "question": "¿Están seguros mis datos?",
+      "answer": "Sí, utilizamos encriptación y medidas de seguridad de nivel empresarial para proteger tus datos. Toda la información se almacena de forma segura y se respalda regularmente."
+    },
+    "q2": {
+      "question": "¿Puedo exportar mis datos?",
+      "answer": "Absolutamente. Puedes exportar todos tus datos en formato PDF o Excel en cualquier momento. Creemos que tus datos te pertenecen."
+    },
+    "q3": {
+      "question": "¿Qué pasa si necesito ayuda para comenzar?",
+      "answer": "Ofrecemos soporte de incorporación completo y documentación. Nuestro equipo está disponible para ayudarte a migrar tus registros existentes."
+    }
+  },
+  "footer": {
+    "description": "Gestión profesional de reptiles para entusiastas y criadores.",
+    "product": "Producto",
+    "support": "Soporte",
+    "company": "Empresa",
+    "about": "Acerca de",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "rights": "Todos los derechos reservados."
+  },
+  "contact": {
+    "title": "Ponte en Contacto",
+    "subtitle": "¿Tienes preguntas sobre Snake Manager? Nos encantaría saber de ti.",
+    "info": "Información de Contacto",
+    "email": "Email",
+    "phone": "Teléfono",
+    "address": "Dirección",
+    "hours": "Horas de Soporte",
+    "hoursText": "Lunes - Viernes: 9:00 AM - 6:00 PM PST\nSábado: 10:00 AM - 4:00 PM PST\nDomingo: Cerrado",
+    "form": {
+      "title": "Envíanos un Mensaje",
+      "name": "Tu Nombre",
+      "namePlaceholder": "Ingresa tu nombre completo",
+      "email": "Dirección de Email",
+      "emailPlaceholder": "Ingresa tu email",
+      "message": "Mensaje",
+      "placeholder": "Dinos cómo podemos ayudarte...",
+      "send": "Enviar Mensaje",
+      "sending": "Enviando...",
+      "success": "¡Mensaje Enviado!",
+      "successText": "Gracias por contactarnos. Te responderemos dentro de 24 horas."
+    }
+  },
+  "auth": {
+    "welcomeBack": "Bienvenido de Vuelta",
+    "createAccount": "Crear Cuenta",
+    "signInSubtitle": "Inicia sesión en tu cuenta",
+    "signUpSubtitle": "Comienza a gestionar tu colección de serpientes hoy",
+    "resetPassword": "Restablecer Contraseña",
+    "resetSubtitle": "Ingresa tu email para recibir un enlace de restablecimiento.",
+    "email": "Dirección de Email",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "backToSignIn": "Volver al Inicio de Sesión",
+    "noAccount": "¿No tienes una cuenta?",
+    "hasAccount": "¿Ya tienes una cuenta?",
+    "signUp": "Registrarse",
+    "signIn": "Iniciar sesión",
+    "processing": "Procesando...",
+    "sendReset": "Enviar Email de Restablecimiento",
+    "createAccountBtn": "Crear Cuenta",
+    "signInBtn": "Iniciar Sesión",
+    "emailPlaceholder": "Ingresa tu email",
+    "passwordPlaceholder": "Ingresa tu contraseña",
+    "confirmPasswordPlaceholder": "Confirma tu contraseña",
+    "trialExpired": "Tu prueba gratuita de 14 días ha expirado. Por favor suscríbete para continuar usando Snake Manager.",
+    "subscribe": "Suscribirse Ahora"
+  },
+  "dashboard": {
+    "title": "Panel de Control",
+    "subtitle": "Gestiona tu colección de serpientes",
+    "addEvent": "Agregar Evento",
+    "addSnake": "Agregar Serpiente",
+    "stats": {
+      "totalSnakes": "Total Serpientes",
+      "recentFeedings": "Alimentaciones Recientes",
+      "recentSheds": "Mudas Recientes",
+      "totalEvents": "Total Eventos",
+      "thisMonth": "este mes",
+      "thisWeek": "Esta semana",
+      "allTime": "Todo el tiempo"
+    },
+    "mySnakes": "Mis Serpientes",
+    "search": "Buscar serpientes...",
+    "filter": "Filtrar",
+    "noSnakes": "No se encontraron serpientes",
+    "noSnakesSubtitle": "Ninguna serpiente coincide con tu búsqueda.",
+    "addFirstSnake": "Comienza agregando tu primera serpiente a la colección.",
+    "addFirstSnakeBtn": "Agregar Tu Primera Serpiente",
+    "recentEvents": "Eventos Recientes",
+    "noEvents": "No hay eventos recientes",
+    "signOut": "Cerrar Sesión",
+    "settings": "Configuración",
+    "viewAllEvents": "Ver Todos los Eventos",
+    "filters": {
+      "all": "Todas las Serpientes",
+      "male": "Macho",
+      "female": "Hembra",
+      "unknown": "Sexo Desconocido",
+      "recentChanges": "Cambios Recientes",
+      "needsFeeding": "Necesita Alimentación"
+    }
+  },
+  "snake": {
+    "profile": "Perfil",
+    "species": "Especie",
+    "morph": "Morfo",
+    "sex": "Sexo",
+    "age": "Edad",
+    "weight": "Peso",
+    "length": "Longitud",
+    "notes": "Notas",
+    "years": "años",
+    "overview": "Resumen",
+    "events": "Eventos",
+    "analytics": "Análisis",
+    "feedings": "Alimentaciones",
+    "sheds": "Mudas",
+    "vetVisits": "Visitas Veterinarias",
+    "recentActivity": "Actividad Reciente",
+    "eventHistory": "Historial de Eventos",
+    "weightTrend": "Tendencia de Peso",
+    "feedingSchedule": "Horario de Alimentación",
+    "growthRate": "Tasa de Crecimiento",
+    "avgInterval": "Intervalo promedio de alimentación: 7 días",
+    "lastFeeding": "Última alimentación:",
+    "weightGain": "Ganancia de peso: +30g este mes",
+    "growthTrend": "Tendencia de crecimiento: Saludable",
+    "exportPDF": "Exportar PDF",
+    "editPhoto": "Editar Foto",
+    "editInfo": "Editar Info"
+  },
+  "events": {
+    "all": "Todos",
+    "allEvents": "Todos los Eventos",
+    "searchPlaceholder": "Buscar eventos...",
+    "eventHistory": "Historial de Eventos",
+    "noEventsFound": "No se encontraron eventos",
+    "noEventsMatch": "Ningún evento coincide con tu búsqueda.",
+    "noEventsYet": "Aún no se han registrado eventos.",
+    "feeding": "Alimentación",
+    "shed": "Muda",
+    "vetVisit": "Visita Veterinaria",
+    "handling": "Manipulación",
+    "other": "Otro",
+    "addEvent": "Agregar Evento",
+    "eventType": "Tipo de Evento",
+    "date": "Fecha",
+    "weight": "Peso (gramos)",
+    "notes": "Notas",
+    "photos": "Fotos",
+    "addPhotos": "Agregar Fotos (máx 5)",
+    "selectSnake": "Seleccionar una serpiente",
+    "weightOptional": "Opcional - peso al momento del evento",
+    "notesPlaceholder": "Detalles adicionales sobre este evento...",
+    "cancel": "Cancelar",
+    "add": "Agregar Evento"
+  },
+  "addSnake": {
+    "title": "Agregar Nueva Serpiente",
+    "name": "Nombre",
+    "species": "Especie",
+    "morph": "Morfo",
+    "sex": "Sexo",
+    "birthDate": "Fecha de Nacimiento",
+    "weight": "Peso (gramos)",
+    "length": "Longitud (cm)",
+    "notes": "Notas",
+    "imageUrl": "URL de Imagen",
+    "namePlaceholder": "Ingresa el nombre de la serpiente",
+    "speciesPlaceholder": "ej: Pitón Bola",
+    "morphPlaceholder": "ej: Pastel",
+    "notesPlaceholder": "Notas adicionales sobre esta serpiente...",
+    "cancel": "Cancelar",
+    "add": "Agregar Serpiente",
+    "unknown": "Desconocido",
+    "male": "Macho",
+    "female": "Hembra"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "close": "Cerrar"
+  },
+  "settings": {
+    "profileImage": "Imagen de Perfil",
+    "profileImageDescription": "Haz clic en el icono para cambiar tu foto de perfil",
+    "title": "Configuración",
+    "profile": "Perfil",
+    "notifications": "Notificaciones",
+    "language": "Idioma",
+    "subscription": "Suscripción",
+    "data": "Datos",
+    "security": "Seguridad",
+    "name": "Nombre",
+    "email": "Email",
+    "namePlaceholder": "Ingresa tu nombre",
+    "emailPlaceholder": "Ingresa tu email",
+    "feedingReminders": "Recordatorios de alimentación",
+    "shedReminders": "Recordatorios de muda",
+    "vetReminders": "Recordatorios veterinarios",
+    "emailNotifications": "Notificaciones por email",
+    "languageDescription": "Elige tu idioma preferido",
+    "currentPlan": "Plan actual",
+    "freePlan": "Plan gratuito - Hasta 5 serpientes",
+    "upgrade": "Actualizar",
+    "exportData": "Exportar datos",
+    "exportDescription": "Descarga todos tus datos en formato JSON",
+    "exportButton": "Exportar",
+    "deleteAccount": "Eliminar cuenta",
+    "deleteDescription": "Esta acción es irreversible",
+    "deleteButton": "Eliminar cuenta",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar tu cuenta?",
+    "changePassword": "Cambiar contraseña",
+    "changePasswordButton": "Cambiar"
+  }
+}
