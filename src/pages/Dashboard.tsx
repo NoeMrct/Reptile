@@ -5,15 +5,12 @@ import {
   Shield, 
   Plus, 
   Search, 
-  Filter, 
-  MoreVertical, 
   Calendar, 
   TrendingUp, 
   Users, 
   Activity,
   LogOut,
-  Settings,
-  User
+  Settings
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import SnakeCard from '../components/SnakeCard';

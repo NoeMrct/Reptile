@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Mail, Phone, MapPin, ArrowLeft, Loader2, Check } from 'lucide-react';
+import { t } from 'i18next';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
