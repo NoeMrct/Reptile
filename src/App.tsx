@@ -9,6 +9,7 @@ import SnakeProfile from './pages/SnakeProfile';
 import SettingsPage from './pages/SettingsPage';
 import EventsPage from './pages/EventsPage';
 import BreedingPage from './pages/BreedingPage';
+import ContributePage from './pages/ContributePage';
 import './App.css';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -25,6 +26,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/contribute" element={<ContributePage />} />
             <Route
               path="/dashboard"
               element={

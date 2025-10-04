@@ -11,7 +11,9 @@ import {
   Activity,
   LogOut,
   Settings,
-  Heart
+  Heart,
+  Sparkles,
+  Coins
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import SnakeCard from '../components/SnakeCard';
@@ -233,6 +235,14 @@ const Dashboard = () => {
                   <span>Reproduction</span>
                 </Link>
               )}
+              {/* NEW: Contribute quick access */}
+              <Link
+                to="/contribute"
+                className="flex items-center space-x-2 text-gray-700 hover:text-green-600 transition-colors"
+              >
+                <Sparkles className="h-5 w-5" />
+                <span>Contribuer</span>
+              </Link>
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
@@ -380,8 +390,9 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Recent Events */}
+          {/* Right column */}
           <div>
+            {/* Recent Events */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold text-gray-900">{t('dashboard.recentEvents')}</h2>
@@ -407,6 +418,27 @@ const Dashboard = () => {
                   <p className="text-gray-600">{t('dashboard.noEvents')}</p>
                 </div>
               )}
+            </div>
+
+            {/* NEW: Contribute promo card */}
+            <div className="bg-white rounded-xl shadow-sm p-6 mt-8">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <Sparkles className="h-5 w-5 text-green-600" />
+                  <h2 className="text-lg font-bold text-gray-900">Contribuer au projet</h2>
+                </div>
+                <Link to="/contribute" className="text-green-600 hover:text-green-700 text-sm font-medium">
+                  Découvrir
+                </Link>
+              </div>
+              <p className="text-gray-600 text-sm">Propose des morphs, localités, alias, gènes, etc. et gagne des Écailles utilisables pour les plans payants.</p>
+              <Link
+                to="/contribute"
+                className="inline-flex items-center mt-4 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg"
+              >
+                <Coins className="h-4 w-4 mr-2" />
+                Commencer à contribuer
+              </Link>
             </div>
           </div>
         </div>
