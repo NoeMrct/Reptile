@@ -271,7 +271,7 @@ const LandingPage = () => {
                 </li>
               </ul>
               <Link to="/auth" className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-4 px-4 rounded-lg font-bold hover:from-green-700 hover:to-green-800 transition-all transform hover:scale-105 block text-center shadow-lg text-lg">
-                {t('pricing.professional.cta')}
+                {t('upgrade.choosePlan')}
               </Link>
             </div>
 
@@ -306,8 +306,8 @@ const LandingPage = () => {
                   {t('pricing.enterprise.features.api')}
                 </li>
               </ul>
-              <Link to="/contact" className="w-full bg-gray-900 text-white py-3 px-4 rounded-lg font-semibold hover:bg-gray-800 transition-all transform hover:scale-105 block text-center shadow-sm">
-                {t('pricing.enterprise.cta')}
+              <Link to="/auth" className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transition-all transform hover:scale-105 block text-center shadow-sm">
+                {t('upgrade.choosePlan')}
               </Link>
             </div>
           </div>

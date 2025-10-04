@@ -1,0 +1,102 @@
+{
+  "version": 2,
+  "species": {
+    "id": "python-bivittatus",
+    "label": "Burmese Python",
+    "aliases": [
+      "Python bivittatus",
+      "Burmese python",
+      "Python birman"
+    ]
+  },
+  "groups": [
+    {
+      "id": "TPlusCaramelLines",
+      "label": "T+ Albino (Caramel) lines — treated as separate, non‑compatible",
+      "exclusive": true,
+      "allowInterallelicNames": false,
+      "members": []
+    }
+  ],
+  "loci": [
+    {
+      "name": "Albino (T−)",
+      "label": "Albino (t−)",
+      "type": "recessive",
+      "aliases": [
+        "amelanistic",
+        "T- Albino"
+      ]
+    },
+    {
+      "name": "Patternless (Green)",
+      "label": "Patternless (green)",
+      "type": "recessive",
+      "aliases": [
+        "green",
+        "patternless"
+      ]
+    },
+    {
+      "name": "Granite",
+      "label": "Granite",
+      "type": "recessive"
+    },
+    {
+      "name": "Labyrinth",
+      "label": "Labyrinth",
+      "type": "recessive",
+      "aliases": [
+        "laby"
+      ]
+    },
+    {
+      "name": "Hypomelanistic",
+      "label": "Hypomelanistic",
+      "type": "incomplete",
+      "aliases": [
+        "hypo"
+      ]
+    },
+    {
+      "name": "Caramel (Ultramel T+)",
+      "label": "Caramel (ultramel t+)",
+      "type": "recessive",
+      "aliases": [
+        "Ultramel Caramel",
+        "Ultramel"
+      ],
+      "group": "TPlusCaramelLines"
+    },
+    {
+      "name": "Caramel (Gulf Coast T+)",
+      "label": "Caramel (gulf coast t+)",
+      "type": "recessive",
+      "aliases": [
+        "Gulf Coast Caramel"
+      ],
+      "group": "TPlusCaramelLines"
+    },
+    {
+      "name": "Caramel (Waterview/WEI T+)",
+      "label": "Caramel (waterview/wei t+)",
+      "type": "recessive",
+      "aliases": [
+        "Waterview Caramel",
+        "WEI Caramel"
+      ],
+      "group": "TPlusCaramelLines"
+    },
+    {
+      "name": "Piebald",
+      "label": "Piebald",
+      "type": "recessive",
+      "aliases": [
+        "pied"
+      ]
+    }
+  ],
+  "superNames": {},
+  "interallelicPhenotypes": {},
+  "namedCombos": {}
+}

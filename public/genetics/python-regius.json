@@ -1,0 +1,208 @@
+{
+  "version": 1,
+  "meta": { "revision": "1.1", "updated": "2025-10-04" },
+  "species": {
+    "id": "python-regius",
+    "label": "Ball Python",
+    "aliases": ["ball python", "python regius", "royal python", "python royal"]
+  },
+  "groups": [
+    { "id": "BEL", "label": "Blue-Eyed Leucistic complex", "exclusive": true, "allowInterallelicNames": true, "status": "confirmed" },
+    { "id": "FireCx", "label": "Black-Eyed Leucistic complex (Fire/Vanilla/Disco/Lemonback/Sulfur/Lucifer)", "exclusive": true, "allowInterallelicNames": true, "status": "confirmed" },
+    { "id": "YB", "label": "Yellow Belly complex", "exclusive": true, "allowInterallelicNames": true, "status": "confirmed" },
+    { "id": "ClownCryptic", "label": "Clown/Cryptic", "exclusive": true, "allowInterallelicNames": true, "status": "confirmed", "notes": "Clown x Cryptic = Krypton (visual interallélique)" },
+    { "id": "CandyToffee", "label": "Albino/Candy/Toffee complex", "exclusive": true, "allowInterallelicNames": true, "status": "confirmed" },
+    { "id": "BlackCin", "label": "Black Pastel/Cinnamon", "exclusive": true, "allowInterallelicNames": true, "status": "confirmed" },
+    { "id": "AcidCx", "label": "Acid/Confusion/Static", "exclusive": true, "allowInterallelicNames": false, "status": "confirmed" },
+    { "id": "TrickCx", "label": "Trick/Blitz/Hurricane", "exclusive": true, "allowInterallelicNames": false, "status": "confirmed" },
+    { "id": "SpiderCx", "label": "Spider/Woma/Hidden Gene Woma/Champagne", "exclusive": true, "allowInterallelicNames": true, "status": "mixed", "notes": "HGW x Woma = Pearl. Supers/combos potentiellement problématiques pour la santé chez certaines lignées." },
+    { "id": "AxanthicLines", "label": "Axanthic lines (VPI/TSK/MJ/Jolliff — non compatibles entre elles)", "exclusive": true, "allowInterallelicNames": false, "status": "confirmed" },
+    { "id": "DGEnhancer", "label": "Desert Ghost/Enhancer", "exclusive": true, "allowInterallelicNames": true, "status": "consensus", "notes": "Souvent considérés alléliques/compatibles (visuels en croisement)" },
+    { "id": "PaintSentinel", "label": "Paint/Sentinel", "exclusive": true, "allowInterallelicNames": true, "status": "consensus" },
+    { "id": "ChocSableCx", "label": "Chocolate/Sable/Wookie/Huffman", "exclusive": true, "allowInterallelicNames": false, "status": "disputed", "notes": "Allélisme partiel débattu selon éleveurs/rapports" },
+    { "id": "UltramelCaramel", "label": "Ultramel/Caramel Albino", "exclusive": true, "allowInterallelicNames": true, "status": "caution", "notes": "Compatibilité rapportée; ‘Caramel Albino’ associé à des soucis (kinking) dans certaines lignées" }
+  ],
+  "loci": [
+    { "name": "albino", "label": "Albino", "type": "recessive", "group": "CandyToffee", "aliases": [] },
+    { "name": "candy", "label": "Candy", "type": "recessive", "group": "CandyToffee", "aliases": [] },
+    { "name": "toffee", "label": "Toffee", "type": "recessive", "group": "CandyToffee", "aliases": [] },
+
+    { "name": "lavender", "label": "Lavender Albino", "type": "recessive", "aliases": ["lav", "lav albino"] },
+    { "name": "pied", "label": "Pied", "type": "recessive", "aliases": ["piebald"] },
+    { "name": "hypo", "label": "Hypo (Ghost)", "type": "recessive", "aliases": ["ghost", "orange ghost", "og"] },
+
+    { "name": "desertghost", "label": "Desert Ghost", "type": "recessive", "group": "DGEnhancer", "aliases": ["dg", "desert ghost"] },
+    { "name": "enhancer", "label": "Enhancer", "type": "recessive", "group": "DGEnhancer", "aliases": [] },
+
+    { "name": "axanthic_vpi", "label": "Axanthic (VPI)", "type": "recessive", "group": "AxanthicLines", "aliases": ["vpi axanthic"] },
+    { "name": "axanthic_tsk", "label": "Axanthic (TSK)", "type": "recessive", "group": "AxanthicLines", "aliases": ["tsk axanthic"] },
+    { "name": "axanthic_mj", "label": "Axanthic (MJ)", "type": "recessive", "group": "AxanthicLines", "aliases": ["mj axanthic"] },
+    { "name": "axanthic_jolliff", "label": "Axanthic (Jolliff)", "type": "recessive", "group": "AxanthicLines", "aliases": ["jolliff axanthic"] },
+
+    { "name": "ultramel", "label": "Ultramel", "type": "recessive", "group": "UltramelCaramel", "aliases": ["ultra"] },
+    { "name": "caramel", "label": "Caramel Albino", "type": "recessive", "group": "UltramelCaramel", "aliases": ["caramel"] },
+
+    { "name": "genetic_stripe", "label": "Genetic Stripe", "type": "recessive", "aliases": ["gs", "g-stripe"] },
+    { "name": "tri_stripe", "label": "Tri-Stripe", "type": "recessive", "aliases": ["tristripe", "tri stripe"] },
+    { "name": "puzzle", "label": "Puzzle", "type": "recessive", "aliases": [] },
+    { "name": "monsoon", "label": "Monsoon", "type": "recessive", "aliases": [] },
+    { "name": "sunset", "label": "Sunset", "type": "recessive", "aliases": [] },
+    { "name": "rainbow", "label": "Rainbow", "type": "recessive", "aliases": [] },
+    { "name": "monarch", "label": "Monarch", "type": "recessive", "aliases": [] },
+
+    { "name": "clown", "label": "Clown", "type": "recessive", "group": "ClownCryptic" },
+    { "name": "cryptic", "label": "Cryptic", "type": "recessive", "group": "ClownCryptic" },
+
+    { "name": "pastel", "label": "Pastel", "type": "incomplete", "aliases": [] },
+    { "name": "banana", "label": "Banana", "type": "incomplete", "aliases": ["coral glow", "coralglow", "cg"] },
+    { "name": "enchi", "label": "Enchi", "type": "incomplete", "aliases": [] },
+    { "name": "leopard", "label": "Leopard", "type": "incomplete", "aliases": ["leo"] },
+    { "name": "pinstripe", "label": "Pinstripe", "type": "dominant", "aliases": ["pin"] },
+    { "name": "ghi", "label": "GHI", "type": "incomplete", "aliases": [] },
+    { "name": "calico", "label": "Calico", "type": "incomplete", "aliases": ["sugar"] },
+    { "name": "spotnose", "label": "Spotnose", "type": "incomplete", "aliases": [] },
+    { "name": "redstripe", "label": "Red Stripe", "type": "incomplete", "aliases": [] },
+    { "name": "cypress", "label": "Cypress", "type": "incomplete", "aliases": [] },
+
+    { "name": "chocolate", "label": "Chocolate", "type": "incomplete", "group": "ChocSableCx", "aliases": [] },
+    { "name": "sable", "label": "Sable", "type": "incomplete", "group": "ChocSableCx", "aliases": [] },
+    { "name": "wookie", "label": "Wookie", "type": "incomplete", "group": "ChocSableCx", "aliases": [] },
+    { "name": "huffman", "label": "Huffman", "type": "incomplete", "group": "ChocSableCx", "aliases": [] },
+
+    { "name": "mahogany", "label": "Mahogany", "type": "incomplete", "aliases": [] },
+    { "name": "het_red_axanthic", "label": "Het Red Axanthic", "type": "incomplete", "aliases": ["hra"] },
+    { "name": "blackhead", "label": "Blackhead", "type": "incomplete", "aliases": [] },
+    { "name": "bongo", "label": "Bongo", "type": "incomplete", "aliases": [] },
+    { "name": "stranger", "label": "Stranger", "type": "incomplete", "aliases": [] },
+    { "name": "lace", "label": "Lace", "type": "incomplete", "aliases": [] },
+
+    { "name": "yellowbelly", "label": "Yellow Belly", "type": "incomplete", "group": "YB", "aliases": ["yb"] },
+    { "name": "gravel", "label": "Gravel", "type": "incomplete", "group": "YB", "aliases": [] },
+    { "name": "asphalt", "label": "Asphalt", "type": "incomplete", "group": "YB", "aliases": [] },
+    { "name": "specter", "label": "Specter", "type": "incomplete", "group": "YB", "aliases": ["spector"] },
+    { "name": "spark", "label": "Spark", "type": "incomplete", "group": "YB", "aliases": [] },
+
+    { "name": "mojave", "label": "Mojave", "type": "incomplete", "group": "BEL", "aliases": [] },
+    { "name": "lesser", "label": "Lesser", "type": "incomplete", "group": "BEL", "aliases": ["butter"] },
+    { "name": "phantom", "label": "Phantom", "type": "incomplete", "group": "BEL", "aliases": [] },
+    { "name": "mystic", "label": "Mystic", "type": "incomplete", "group": "BEL", "aliases": [] },
+    { "name": "special", "label": "Special", "type": "incomplete", "group": "BEL", "aliases": [] },
+    { "name": "russo", "label": "Russo (Het Leucistic)", "type": "incomplete", "group": "BEL", "aliases": ["het leucistic", "russo het leu", "russo het leucistic"] },
+    { "name": "bamboo", "label": "Bamboo", "type": "incomplete", "group": "BEL", "aliases": [] },
+    { "name": "mocha", "label": "Mocha", "type": "incomplete", "group": "BEL", "aliases": [] },
+
+    { "name": "fire", "label": "Fire", "type": "incomplete", "group": "FireCx", "aliases": [] },
+    { "name": "vanilla", "label": "Vanilla", "type": "incomplete", "group": "FireCx", "aliases": [] },
+    { "name": "disco", "label": "Disco", "type": "incomplete", "group": "FireCx", "aliases": [] },
+    { "name": "lemonback", "label": "Lemonback", "type": "incomplete", "group": "FireCx", "aliases": [] },
+    { "name": "sulfur", "label": "Sulfur", "type": "incomplete", "group": "FireCx", "aliases": ["sulphur"] },
+    { "name": "lucifer", "label": "Lucifer", "type": "incomplete", "group": "FireCx", "aliases": [] },
+
+    { "name": "acid", "label": "Acid", "type": "incomplete", "group": "AcidCx", "aliases": [] },
+    { "name": "confusion", "label": "Confusion", "type": "incomplete", "group": "AcidCx", "aliases": [] },
+    { "name": "static", "label": "Static", "type": "incomplete", "group": "AcidCx", "aliases": [] },
+
+    { "name": "trick", "label": "Trick", "type": "incomplete", "group": "TrickCx", "aliases": [] },
+    { "name": "blitz", "label": "Blitz", "type": "incomplete", "group": "TrickCx", "aliases": [] },
+    { "name": "hurricane", "label": "Hurricane", "type": "incomplete", "group": "TrickCx", "aliases": [] },
+
+    { "name": "spider", "label": "Spider", "type": "incomplete", "group": "SpiderCx", "aliases": [] },
+    { "name": "woma", "label": "Woma", "type": "incomplete", "group": "SpiderCx", "aliases": [] },
+    { "name": "hiddenGeneWoma", "label": "Hidden Gene Woma", "type": "incomplete", "group": "SpiderCx", "aliases": ["hgw", "hidden gene woma"] },
+    { "name": "champagne", "label": "Champagne", "type": "incomplete", "group": "SpiderCx", "aliases": [] }
+  ],
+  "superNames": {
+    "pastel": "Super Pastel",
+    "banana": "Super Banana",
+    "enchi": "Super Enchi",
+    "leopard": "Super Leopard",
+    "ghi": "Super GHI",
+    "calico": "Super Calico",
+    "spotnose": "Powerball",
+    "redstripe": "Super Red Stripe",
+    "cypress": "Super Cypress",
+
+    "chocolate": "Super Chocolate",
+    "sable": "Super Sable",
+    "wookie": "Super Wookie",
+    "huffman": "Super Huffman",
+
+    "mahogany": "Suma",
+    "het_red_axanthic": "Red Axanthic",
+    "blackhead": "Super Blackhead",
+    "bongo": "Super Bongo",
+    "stranger": "Super Stranger",
+    "lace": "White Lace",
+
+    "yellowbelly": "Ivory",
+    "gravel": "Super Gravel",
+    "asphalt": "Super Asphalt",
+    "specter": "Super Specter",
+    "spark": "Super Spark",
+
+    "mojave": "BEL (Super Mojave)",
+    "lesser": "BEL (Super Lesser)",
+    "phantom": "Super Phantom",
+    "mystic": "Super Mystic",
+    "special": "Super Special",
+    "russo": "White Wedding",
+    "bamboo": "Super Bamboo",
+    "mocha": "Super Mocha",
+
+    "fire": "Black-Eyed Leucistic (Super Fire)",
+    "vanilla": "Super Vanilla",
+    "disco": "Super Disco",
+    "lemonback": "Super Lemonback",
+    "sulfur": "Super Sulfur",
+    "lucifer": "Super Lucifer"
+  },
+  "interallelicPhenotypes": {
+    "BEL": {
+      "lesser+mojave": "BEL (Lesser Mojave)",
+      "lesser+phantom": "BEL (Lesser Phantom)",
+      "mojave+special": "Crystal",
+      "mystic+mojave": "Mystic Potion",
+      "phantom+mojave": "Purple Passion",
+      "mystic+phantom": "Potion",
+      "russo+russo": "White Wedding",
+      "lesser+lesser": "BEL (Super Lesser)",
+      "mojave+mojave": "BEL (Super Mojave)"
+    },
+    "YB": {
+      "yellowbelly+yellowbelly": "Ivory",
+      "yellowbelly+gravel": "Highway",
+      "yellowbelly+asphalt": "Freeway",
+      "yellowbelly+specter": "Super Stripe",
+      "yellowbelly+spark": "Puma",
+      "asphalt+gravel": "Asphalt×Gravel (pas de nom établi)"
+    },
+    "ClownCryptic": {
+      "clown+cryptic": "Krypton"
+    },
+    "CandyToffee": {
+      "albino+candy": "Candino",
+      "albino+toffee": "Toffino",
+      "candy+toffee": "Candy/Toffee (visuel allélique)"
+    },
+    "BlackCin": {
+      "blackpastel+cinnamon": "8-Ball"
+    },
+    "SpiderCx": {
+      "woma+hiddenGeneWoma": "Pearl"
+    },
+    "FireCx": {
+      "fire+fire": "Black-Eyed Leucistic (Super Fire)",
+      "fire+vanilla": "Vanilla Cream",
+      "fire+disco": "Disco Inferno",
+      "lemonback+lemonback": "Black-Eyed Leucistic (Super Lemonback)",
+      "lucifer+lucifer": "Black-Eyed Leucistic (Super Lucifer)",
+      "sulfur+sulfur": "Black-Eyed Leucistic (Super Sulfur)"
+    },
+    "DGEnhancer": {
+      "desertghost+enhancer": "DG/Enhancer (visuel compatible)"
+    },
+    "PaintSentinel": {
+      "paint+sentinel": "Paint/Sentinel (visuel)"
+    }
+  }
+}

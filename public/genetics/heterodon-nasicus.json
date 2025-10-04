@@ -1,0 +1,142 @@
+{
+  "version": 2,
+  "species": {
+    "id": "heterodon-nasicus",
+    "label": "Western Hognose",
+    "aliases": [
+      "Heterodon nasicus",
+      "Western hognose",
+      "Hognose de l'Ouest",
+      "Plains hognose"
+    ]
+  },
+  "groups": [
+    {
+      "id": "melanin-reduction-tplus-set",
+      "label": "T+ Albino-type recessives (distinct loci)",
+      "exclusive": false,
+      "allowInterallelicNames": true,
+      "members": [
+        "evans_hypo_tplus",
+        "toffee_belly_tplus",
+        "lavender_tplus",
+        "caramel_tplus",
+        "pink_pastel"
+      ]
+    }
+  ],
+  "loci": [
+    {
+      "name": "Anaconda (Conda)",
+      "label": "Anaconda (conda)",
+      "type": "incomplete",
+      "aliases": [
+        "Conda"
+      ]
+    },
+    {
+      "name": "Arctic",
+      "label": "Arctic",
+      "type": "incomplete",
+      "aliases": [
+        "JMG Arctic",
+        "JMG Axanthic (historic name)"
+      ]
+    },
+    {
+      "name": "Albino (T−)",
+      "label": "Albino (t−)",
+      "type": "recessive",
+      "aliases": [
+        "Amelanistic",
+        "T- Albino"
+      ]
+    },
+    {
+      "name": "Axanthic",
+      "label": "Axanthic",
+      "type": "recessive"
+    },
+    {
+      "name": "Evans Hypo (T+)",
+      "label": "Evans hypo (t+)",
+      "type": "recessive",
+      "aliases": [
+        "Dutch Hypo (Evans)",
+        "Evans/Dutch Hypo"
+      ]
+    },
+    {
+      "name": "Toffee Belly (T+)",
+      "label": "Toffee belly (t+)",
+      "type": "recessive",
+      "aliases": [
+        "Toffee"
+      ]
+    },
+    {
+      "name": "Lavender (T+)",
+      "label": "Lavender (t+)",
+      "type": "recessive"
+    },
+    {
+      "name": "Caramel (T+)",
+      "label": "Caramel (t+)",
+      "type": "recessive",
+      "aliases": [
+        "Caramel Albino",
+        "Ultra (in combo names: Ultramel/Ultracaramel)"
+      ]
+    },
+    {
+      "name": "True Hypo",
+      "label": "True hypo",
+      "type": "recessive",
+      "aliases": [
+        "Hypo (True)"
+      ]
+    },
+    {
+      "name": "Sable",
+      "label": "Sable",
+      "type": "recessive"
+    },
+    {
+      "name": "Swiss Chocolate",
+      "label": "Swiss chocolate",
+      "type": "recessive",
+      "aliases": [
+        "Hypermelanistic (Swiss Chocolate)"
+      ]
+    },
+    {
+      "name": "Pink Pastel",
+      "label": "Pink pastel",
+      "type": "recessive"
+    },
+    {
+      "name": "Leucistic",
+      "label": "Leucistic",
+      "type": "recessive",
+      "aliases": [
+        "Lucy"
+      ]
+    },
+    {
+      "name": "RBE Pastel",
+      "label": "Rbe pastel",
+      "type": "dominant",
+      "aliases": [
+        "RBE"
+      ]
+    },
+    {
+      "name": "Shadow",
+      "label": "Shadow",
+      "type": "dominant"
+    }
+  ],
+  "superNames": {},
+  "interallelicPhenotypes": {},
+  "namedCombos": {}
+}

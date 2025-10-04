@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "species": {
+    "id": "morelia-spilota",
+    "label": "Carpet Python",
+    "aliases": [
+      "Morelia spilota",
+      "Carpet python",
+      "Python tapis"
+    ]
+  },
+  "groups": [
+    {
+      "id": "JaguarLethalSuper",
+      "label": "Jaguar (lethal homozygous / wobble in het)",
+      "exclusive": true,
+      "allowInterallelicNames": false,
+      "members": []
+    },
+    {
+      "id": "ZebraRisk",
+      "label": "Zebra (patternless super; hatch/tail‑kink risk reported)",
+      "exclusive": false,
+      "allowInterallelicNames": false,
+      "members": []
+    }
+  ],
+  "loci": [
+    {
+      "name": "Jaguar",
+      "label": "Jaguar",
+      "type": "incomplete",
+      "aliases": [
+        "jag"
+      ],
+      "group": "JaguarLethalSuper"
+    },
+    {
+      "name": "Zebra",
+      "label": "Zebra",
+      "type": "incomplete",
+      "group": "ZebraRisk"
+    },
+    {
+      "name": "Granite (IJ)",
+      "label": "Granite (ij)",
+      "type": "recessive",
+      "aliases": [
+        "IJ Granite"
+      ]
+    },
+    {
+      "name": "Albino (T−)",
+      "label": "Albino (t−)",
+      "type": "recessive",
+      "aliases": [
+        "amelanistic",
+        "Darwin Albino"
+      ]
+    },
+    {
+      "name": "Axanthic",
+      "label": "Axanthic",
+      "type": "recessive"
+    },
+    {
+      "name": "Caramel",
+      "label": "Caramel",
+      "type": "incomplete",
+      "aliases": [
+        "caramel hypo"
+      ]
+    },
+    {
+      "name": "Hypomelanistic (Coastal)",
+      "label": "Hypomelanistic (coastal)",
+      "type": "incomplete",
+      "aliases": [
+        "hypo"
+      ]
+    }
+  ],
+  "superNames": {},
+  "interallelicPhenotypes": {},
+  "namedCombos": {}
+}

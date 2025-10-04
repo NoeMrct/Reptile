@@ -1,0 +1,53 @@
+{
+  "version": 2,
+  "meta": {
+    "revision": "2.0",
+    "updated": "2025-10-04"
+  },
+  "species": {
+    "id": "morelia-viridis",
+    "label": "Green Tree Python",
+    "aliases": [
+      "Morelia viridis",
+      "Chondro",
+      "Green python"
+    ],
+    "localities": [
+      "Aru",
+      "Biak",
+      "Jayapura",
+      "Manokwari",
+      "Sorong",
+      "Wamena (Highland)",
+      "Merauke",
+      "Kofiau",
+      "Yapen",
+      "Aru Islands (Aru)"
+    ]
+  },
+  "groups": [
+    {
+      "id": "DesignerPolygenic",
+      "label": "Designer/locality-driven polygenic traits",
+      "exclusive": false,
+      "allowInterallelicNames": false,
+      "status": "informational",
+      "notes": "Non-Mendelian influences used in designer projects (e.g., high blue, high yellow)."
+    }
+  ],
+  "loci": [
+    {
+      "name": "albino",
+      "label": "Albino (T−)",
+      "type": "recessive",
+      "aliases": [
+        "amelanistic",
+        "T- Albino"
+      ],
+      "notes": "Only widely accepted simple recessive in M. viridis; established merauke-origin line (VPI project)."
+    }
+  ],
+  "superNames": {},
+  "interallelicPhenotypes": {},
+  "namedCombos": {}
+}

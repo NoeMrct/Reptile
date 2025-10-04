@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "meta": {
+    "revision": "1.0",
+    "updated": "2025-10-04",
+    "notes": "Draft registry for Boa imperator (Common Boa). Lines/compatibilities reflect widely accepted hobby consensus; some are debated."
+  },
+  "species": {
+    "id": "boa-imperator",
+    "label": "Common Boa",
+    "aliases": [
+      "boa imperator",
+      "boa constrictor imperator",
+      "bci",
+      "common boa"
+    ]
+  },
+  "groups": [
+    {
+      "id": "AlbinoLines",
+      "label": "Albino lines (Kahl/Sharp/VPI T+) — not compatible",
+      "exclusive": true,
+      "allowInterallelicNames": false,
+      "status": "confirmed",
+      "notes": "Different albino lineages generally do not produce visual albinos when crossed (hets for each line)."
+    },
+    {
+      "id": "AneryLines",
+      "label": "Anerythristic lines (Type I / Type II) — not compatible",
+      "exclusive": true,
+      "allowInterallelicNames": false,
+      "status": "consensus",
+      "notes": "Type I and Type II are typically treated as separate/non‑compatible lines."
+    }
+  ],
+  "loci": [
+    {
+      "name": "albino_kahl",
+      "label": "Albino (Kahl)",
+      "type": "recessive",
+      "group": "AlbinoLines",
+      "aliases": [
+        "kahl albino",
+        "t- albino (kahl)"
+      ]
+    },
+    {
+      "name": "albino_sharp",
+      "label": "Albino (Sharp)",
+      "type": "recessive",
+      "group": "AlbinoLines",
+      "aliases": [
+        "sharp albino",
+        "t- albino (sharp)"
+      ]
+    },
+    {
+      "name": "albino_vpi_tpos",
+      "label": "Albino (VPI T+)",
+      "type": "recessive",
+      "group": "AlbinoLines",
+      "aliases": [
+        "vpi t+",
+        "t+ albino (vpi)"
+      ]
+    },
+    {
+      "name": "anery_type1",
+      "label": "Anerythristic (Type I)",
+      "type": "recessive",
+      "group": "AneryLines",
+      "aliases": [
+        "anery type i"
+      ]
+    },
+    {
+      "name": "anery_type2",
+      "label": "Anerythristic (Type II)",
+      "type": "recessive",
+      "group": "AneryLines",
+      "aliases": [
+        "anery type ii"
+      ]
+    },
+    {
+      "name": "hypo",
+      "label": "Hypomelanistic",
+      "type": "incomplete",
+      "aliases": [
+        "hypo"
+      ]
+    },
+    {
+      "name": "img",
+      "label": "IMG (Increased Melanistic Gene)",
+      "type": "incomplete",
+      "aliases": [
+        "i.m.g.",
+        "increased melanistic"
+      ]
+    },
+    {
+      "name": "jungle",
+      "label": "Jungle",
+      "type": "incomplete",
+      "aliases": []
+    },
+    {
+      "name": "motley",
+      "label": "Motley",
+      "type": "incomplete",
+      "aliases": []
+    },
+    {
+      "name": "arabesque",
+      "label": "Arabesque",
+      "type": "incomplete",
+      "aliases": []
+    },
+    {
+      "name": "aztec",
+      "label": "Aztec",
+      "type": "incomplete",
+      "aliases": []
+    },
+    {
+      "name": "labyrinth",
+      "label": "Labyrinth",
+      "type": "incomplete",
+      "aliases": []
+    },
+    {
+      "name": "leopard",
+      "label": "Leopard",
+      "type": "recessive",
+      "aliases": []
+    },
+    {
+      "name": "blood",
+      "label": "Blood",
+      "type": "recessive",
+      "aliases": [
+        "blood boa"
+      ]
+    }
+  ],
+  "superNames": {
+    "hypo": "Super Hypo",
+    "img": "Super IMG",
+    "jungle": "Super Jungle",
+    "motley": "Super Motley",
+    "arabesque": "Super Arabesque",
+    "aztec": "Super Aztec",
+    "labyrinth": "Super Labyrinth"
+  },
+  "interallelicPhenotypes": {},
+  "namedCombos": {
+    "albino_kahl+hypo": "Sunglow (Kahl line)",
+    "albino_sharp+hypo": "Sunglow (Sharp line)",
+    "albino_vpi_tpos+hypo": "Sunglow T+ (VPI)",
+    "albino_kahl+anery_type1": "Snow (Kahl × Type I)",
+    "albino_sharp+anery_type1": "Snow (Sharp × Type I)",
+    "albino_vpi_tpos+anery_type1": "Snow T+ (VPI × Type I)",
+    "hypo+anery_type1": "Ghost (Hypo × Type I Anery)",
+    "hypo+anery_type2": "Ghost (Hypo × Type II Anery)",
+    "albino_kahl+hypo+anery_type1": "Moonglow (a.k.a. Snowglow)",
+    "albino_sharp+hypo+anery_type1": "Moonglow (Sharp line)",
+    "albino_vpi_tpos+hypo+anery_type1": "Moonglow T+ (VPI)"
+  }
+}

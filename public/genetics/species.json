@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "species": [
+    {
+      "id": "boa-imperator",
+      "names": [
+        "Boa imperator",
+        "Common Boa"
+      ],
+      "registry_file": "/genetics/boa-imperator.json"
+    },
+    {
+      "id": "heterodon-nasicus",
+      "names": [
+        "Heterodon nasicus",
+        "Western Hognose"
+      ],
+      "registry_file": "/genetics/heterodon-nasicus.json"
+    },
+    {
+      "id": "lampropeltis-californiae",
+      "names": [
+        "Lampropeltis californiae",
+        "California Kingsnake"
+      ],
+      "registry_file": "/genetics/lampropeltis-californiae.json"
+    },
+    {
+      "id": "morelia-spilota",
+      "names": [
+        "Morelia spilota",
+        "Carpet Python"
+      ],
+      "registry_file": "/genetics/morelia-spilota.json"
+    },
+    {
+      "id": "morelia-viridis",
+      "names": [
+        "Morelia viridis",
+        "Green Tree Python"
+      ],
+      "registry_file": "/genetics/morelia-viridis.json"
+    },
+    {
+      "id": "pantherophis-guttatus",
+      "names": [
+        "Pantherophis guttatus",
+        "Corn Snake"
+      ],
+      "registry_file": "/genetics/pantherophis-guttatus.json"
+    },
+    {
+      "id": "python-bivittatus",
+      "names": [
+        "Python bivittatus",
+        "Burmese Python"
+      ],
+      "registry_file": "/genetics/python-bivittatus.json"
+    },
+    {
+      "id": "python-brongersmai",
+      "names": [
+        "Python brongersmai",
+        "Blood Python"
+      ],
+      "registry_file": "/genetics/python-brongersmai.json"
+    },
+    {
+      "id": "python-regius",
+      "names": [
+        "Python regius",
+        "Ball Python"
+      ],
+      "registry_file": "/genetics/python-regius.json"
+    },
+    {
+      "id": "python-reticulatus",
+      "names": [
+        "Python reticulatus",
+        "Reticulated Python"
+      ],
+      "registry_file": "/genetics/python-reticulatus.json"
+    }
+  ]
+}

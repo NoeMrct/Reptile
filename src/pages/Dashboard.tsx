@@ -10,7 +10,8 @@ import {
   Users, 
   Activity,
   LogOut,
-  Settings
+  Settings,
+  Heart
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import SnakeCard from '../components/SnakeCard';
@@ -223,6 +224,15 @@ const Dashboard = () => {
             
             <div className="flex items-center space-x-6">
               <LanguageSelector />
+              {user?.plan !== 'professional' && (
+                <Link
+                  to="/breeding"
+                  className="flex items-center space-x-2 text-gray-700 hover:text-green-600 transition-colors"
+                >
+                  <Heart className="h-5 w-5" />
+                  <span>Reproduction</span>
+                </Link>
+              )}
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}

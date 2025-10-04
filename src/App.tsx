@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import SnakeProfile from './pages/SnakeProfile';
 import SettingsPage from './pages/SettingsPage';
 import EventsPage from './pages/EventsPage';
+import BreedingPage from './pages/BreedingPage';
 import './App.css';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -53,6 +54,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <EventsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/breeding"
+              element={
+                <ProtectedRoute>
+                  <BreedingPage />
                 </ProtectedRoute>
               }
             />

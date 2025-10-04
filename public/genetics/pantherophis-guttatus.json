@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "meta": { "revision": "1.1", "updated": "2025-10-04" },
+  "species": {
+    "id": "pantherophis-guttatus",
+    "label": "Corn Snake",
+    "aliases": ["corn snake", "pantherophis guttatus", "elaphe guttata"]
+  },
+  "groups": [
+    {
+      "id": "AmelUltra",
+      "label": "Amel/Ultra complex",
+      "exclusive": true,
+      "allowInterallelicNames": true,
+      "status": "confirmed",
+      "notes": "Amel et Ultra sont alléliques ; Amel+Ultra = Ultramel (visuel)."
+    },
+    {
+      "id": "HypoCx",
+      "label": "Hypo complex (Hypo/Strawberry/Christmas)",
+      "exclusive": true,
+      "allowInterallelicNames": false,
+      "status": "consensus",
+      "notes": "Hypo, Strawberry et Christmas prouvés/allégués alléliques. Lava est un autre hypo-like mais géré ici comme locus séparé."
+    },
+    {
+      "id": "MotleyStripe",
+      "label": "Motley/Stripe (CLCN2 pattern locus)",
+      "exclusive": true,
+      "allowInterallelicNames": true,
+      "status": "confirmed",
+      "notes": "Deux allèles récessifs au même locus. L’hétérozygote Motley+Stripe donne souvent un motif intermédiaire (‘Motley-Stripe’)."
+    }
+  ],
+  "loci": [
+    { "name": "amel",      "label": "Amel (Albino)", "type": "recessive", "group": "AmelUltra", "aliases": ["albino", "amelanistic"] },
+    { "name": "ultra",     "label": "Ultra",         "type": "recessive", "group": "AmelUltra", "aliases": [] },
+
+    { "name": "anery",     "label": "Anery (Type A)", "type": "recessive", "aliases": ["anerythristic", "anery a", "anerythristic a"] },
+    { "name": "charcoal",  "label": "Charcoal (Anery B)", "type": "recessive", "aliases": ["anery b", "anerythristic b"] },
+
+    { "name": "hypo",      "label": "Hypomelanistic", "type": "recessive", "group": "HypoCx", "aliases": ["hypo a"] },
+    { "name": "strawberry","label": "Strawberry",     "type": "recessive", "group": "HypoCx", "aliases": [] },
+    { "name": "christmas", "label": "Christmas",      "type": "recessive", "group": "HypoCx", "aliases": [] },
+
+    { "name": "lava",      "label": "Lava",           "type": "recessive", "aliases": [] },
+    { "name": "dilute",    "label": "Dilute",         "type": "recessive", "aliases": [] },
+
+    { "name": "caramel",   "label": "Caramel",        "type": "recessive", "aliases": [] },
+    { "name": "lavender",  "label": "Lavender",       "type": "recessive", "aliases": ["lav"] },
+    { "name": "cinder",    "label": "Cinder",         "type": "recessive", "aliases": ["ashy", "anery c", "morph z"] },
+    { "name": "kastanie",  "label": "Kastanie",       "type": "recessive", "aliases": ["chestnut"] },
+
+    { "name": "diffused",  "label": "Diffused",       "type": "recessive", "aliases": ["bloodred"] },
+    { "name": "masque",    "label": "Masque",         "type": "incomplete", "aliases": ["mask"] },
+
+    { "name": "sunkissed", "label": "Sunkissed",      "type": "recessive", "aliases": [] },
+    { "name": "terrazzo",  "label": "Terrazzo",       "type": "recessive", "aliases": [] },
+
+    { "name": "motley",    "label": "Motley",         "type": "recessive", "group": "MotleyStripe", "aliases": [] },
+    { "name": "stripe",    "label": "Stripe",         "type": "recessive", "group": "MotleyStripe", "aliases": ["striped"] },
+
+    { "name": "tessera",   "label": "Tessera",        "type": "dominant",  "aliases": [] },
+
+    { "name": "palmetto",  "label": "Palmetto",       "type": "incomplete", "aliases": [] },
+    { "name": "microscale","label": "Microscale",     "type": "recessive", "aliases": [] },
+    { "name": "scaleless","label": "Scaleless",       "type": "recessive", "aliases": ["scaleless corn"] }
+  ],
+  "superNames": {
+    "masque": "Super Masque",
+    "palmetto": "Palmetto (leucistic, homozygote)"
+  },
+  "interallelicPhenotypes": {
+    "AmelUltra": {
+      "amel+ultra": "Ultramel"
+    },
+    "MotleyStripe": {
+      "motley+stripe": "Motley-Stripe (intermédiaire)"
+    },
+    "HypoCx": {
+      "hypo+strawberry": "Hypo/Strawberry (allelic visual)",
+      "hypo+christmas": "Hypo/Christmas (allelic visual)",
+      "strawberry+christmas": "Strawberry/Christmas (allelic visual)"
+    }
+  },
+  "namedCombos": {
+    "amel+anery": "Snow",
+    "amel+charcoal": "Blizzard",
+    "anery+hypo": "Ghost",
+    "caramel+amel": "Butter",
+    "caramel+hypo": "Amber",
+    "lavender+amel": "Opal",
+    "lavender+diffused": "Plasma",
+    "lavender+anery": "Moonstone",
+    "diffused+anery": "Granite",
+    "diffused+charcoal": "Pewter",
+    "diffused+amel": "Fire",
+    "anery+lava": "Ice",
+    "sunkissed+caramel": "Honey",
+    "amel+anery+diffused": "Avalanche",
+    "amel+ultra+caramel": "Gold Dust"
+  }
+}

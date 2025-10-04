@@ -1,0 +1,168 @@
+{
+  "version": 2,
+  "species": {
+    "id": "python-reticulatus",
+    "label": "Reticulated Python",
+    "aliases": [
+      "Python reticulatus",
+      "Reticulated python",
+      "Retic"
+    ]
+  },
+  "groups": [
+    {
+      "id": "ClarkAlbinoPhases",
+      "label": "Clark Albino (T−) phases — treated as allelic variants",
+      "exclusive": true,
+      "allowInterallelicNames": true,
+      "members": []
+    },
+    {
+      "id": "AlbinoComplexTminusTplus",
+      "label": "Albino complex: T− (Clark) and T+ lines (Indo Caramel, Mocha, Foulsham Caramel)",
+      "exclusive": true,
+      "allowInterallelicNames": true,
+      "members": []
+    }
+  ],
+  "loci": [
+    {
+      "name": "Albino (T−, Clark — White phase)",
+      "label": "Albino (t−, clark — white phase)",
+      "type": "recessive",
+      "aliases": [
+        "white albino",
+        "clark white"
+      ]
+    },
+    {
+      "name": "Albino (T−, Clark — Purple phase)",
+      "label": "Albino (t−, clark — purple phase)",
+      "type": "recessive",
+      "aliases": [
+        "purple albino",
+        "clark purple"
+      ]
+    },
+    {
+      "name": "Indo Caramel (T+ Albino)",
+      "label": "Indo caramel (t+ albino)",
+      "type": "recessive",
+      "aliases": [
+        "indo caramel albino",
+        "caramel indo",
+        "T+ (Indo)"
+      ]
+    },
+    {
+      "name": "Mocha (T+ Albino)",
+      "label": "Mocha (t+ albino)",
+      "type": "recessive",
+      "aliases": [
+        "T+ Mocha"
+      ]
+    },
+    {
+      "name": "Caramel Albino (Foulsham T+)",
+      "label": "Caramel albino (foulsham t+)",
+      "type": "recessive",
+      "aliases": [
+        "Foulsham Caramel",
+        "Caramel Albino (F)"
+      ]
+    },
+    {
+      "name": "Anerythristic (Anery)",
+      "label": "Anerythristic (anery)",
+      "type": "recessive",
+      "aliases": [
+        "axanthic (retic usage)"
+      ]
+    },
+    {
+      "name": "Orange Ghost Stripe (OGS)",
+      "label": "Orange ghost stripe (ogs)",
+      "type": "recessive",
+      "aliases": [
+        "OGS",
+        "Orange Ghost"
+      ]
+    },
+    {
+      "name": "Genetic Stripe",
+      "label": "Genetic stripe",
+      "type": "recessive",
+      "aliases": [
+        "GS"
+      ]
+    },
+    {
+      "name": "Anthrax",
+      "label": "Anthrax",
+      "type": "recessive"
+    },
+    {
+      "name": "Piebald (Pied)",
+      "label": "Piebald (pied)",
+      "type": "recessive",
+      "aliases": [
+        "pied"
+      ]
+    },
+    {
+      "name": "Tiger",
+      "label": "Tiger",
+      "type": "incomplete"
+    },
+    {
+      "name": "Sunfire",
+      "label": "Sunfire",
+      "type": "incomplete",
+      "aliases": [
+        "sun"
+      ]
+    },
+    {
+      "name": "Platinum",
+      "label": "Platinum",
+      "type": "incomplete",
+      "aliases": [
+        "fire",
+        "lemonback (older usage)"
+      ]
+    },
+    {
+      "name": "Phantom",
+      "label": "Phantom",
+      "type": "incomplete",
+      "aliases": [
+        "Het BluEL",
+        "Het Blue‑eyed Leucistic"
+      ]
+    },
+    {
+      "name": "Motley",
+      "label": "Motley",
+      "type": "incomplete"
+    },
+    {
+      "name": "Golden Child",
+      "label": "Golden child",
+      "type": "incomplete",
+      "aliases": [
+        "GC"
+      ]
+    },
+    {
+      "name": "Jaguar",
+      "label": "Jaguar",
+      "type": "incomplete",
+      "aliases": [
+        "jag"
+      ]
+    }
+  ],
+  "superNames": {},
+  "interallelicPhenotypes": {},
+  "namedCombos": {}
+}

@@ -1,0 +1,159 @@
+{
+  "version": 2,
+  "species": {
+    "id": "lampropeltis-californiae",
+    "label": "California Kingsnake",
+    "aliases": [
+      "Lampropeltis californiae",
+      "California kingsnake",
+      "Cal king",
+      "Lampropeltis getula californiae",
+      "California King"
+    ]
+  },
+  "groups": [
+    {
+      "id": "AlbinoLookalikes",
+      "label": "Albino-like lines (non‑compatible)",
+      "exclusive": false,
+      "allowInterallelicNames": false,
+      "members": []
+    },
+    {
+      "id": "HypermelSet",
+      "label": "Hypermelanistic set (pattern & shade modifiers)",
+      "exclusive": false,
+      "allowInterallelicNames": false,
+      "members": []
+    }
+  ],
+  "loci": [
+    {
+      "name": "Albino (T−)",
+      "label": "Albino (t−)",
+      "type": "recessive",
+      "aliases": [
+        "amelanistic",
+        "albino"
+      ],
+      "group": "AlbinoLookalikes"
+    },
+    {
+      "name": "Lavender Albino (T+)",
+      "label": "Lavender albino (t+)",
+      "type": "recessive",
+      "aliases": [
+        "lavender",
+        "ruby‑eyed lavender"
+      ],
+      "group": "AlbinoLookalikes"
+    },
+    {
+      "name": "Blue‑eyed Blonde",
+      "label": "Blue‑eyed blonde",
+      "type": "recessive",
+      "aliases": [
+        "BEB",
+        "blue eyed blond",
+        "blue-eyed blond"
+      ],
+      "group": "AlbinoLookalikes"
+    },
+    {
+      "name": "Palomar Ghost",
+      "label": "Palomar ghost",
+      "type": "recessive",
+      "aliases": [
+        "ghost (Palomar)"
+      ]
+    },
+    {
+      "name": "Hypomelanistic",
+      "label": "Hypomelanistic",
+      "type": "recessive",
+      "aliases": [
+        "hypo",
+        "Whitewater Hypo",
+        "Corwin Hypo",
+        "Merker Hypo"
+      ]
+    },
+    {
+      "name": "Chocolate / Nitida (hypermelanistic)",
+      "label": "Chocolate / nitida (hypermelanistic)",
+      "type": "recessive",
+      "aliases": [
+        "nitida",
+        "chocolate"
+      ],
+      "group": "HypermelSet"
+    },
+    {
+      "name": "Newport (Long Beach)",
+      "label": "Newport (long beach)",
+      "type": "incomplete",
+      "aliases": [
+        "Newporter",
+        "Newport‑Long Beach"
+      ]
+    },
+    {
+      "name": "Newport Mud",
+      "label": "Newport mud",
+      "type": "incomplete"
+    },
+    {
+      "name": "Long Beach hypermelanistic (Grease king)",
+      "label": "Long beach hypermelanistic (grease king)",
+      "type": "incomplete",
+      "aliases": [
+        "LB hyper",
+        "Grease king"
+      ],
+      "group": "HypermelSet"
+    },
+    {
+      "name": "San Diego striped",
+      "label": "San diego striped",
+      "type": "incomplete",
+      "aliases": [
+        "SD striped"
+      ]
+    },
+    {
+      "name": "High White",
+      "label": "High white",
+      "type": "dominant",
+      "aliases": [
+        "Osborn line high white",
+        "Desert phase high white"
+      ]
+    },
+    {
+      "name": "Banana",
+      "label": "Banana",
+      "type": "incomplete"
+    },
+    {
+      "name": "Whittier",
+      "label": "Whittier",
+      "type": "recessive"
+    },
+    {
+      "name": "Whittier Mud",
+      "label": "Whittier mud",
+      "type": "recessive",
+      "aliases": [
+        "striped mud (historic)"
+      ]
+    },
+    {
+      "name": "Whittier Unicolor",
+      "label": "Whittier unicolor",
+      "type": "recessive"
+    }
+  ],
+  "superNames": {},
+  "interallelicPhenotypes": {},
+  "namedCombos": {}
+}

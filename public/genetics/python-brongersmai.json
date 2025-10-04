@@ -1,0 +1,100 @@
+{
+  "version": 2,
+  "species": {
+    "id": "python-brongersmai",
+    "label": "Blood Python",
+    "aliases": [
+      "Python brongersmai",
+      "Blood python",
+      "Red blood python"
+    ]
+  },
+  "groups": [
+    {
+      "id": "GoldeneyeComplex",
+      "label": "Goldeneye allelic complex (super = Magpie)",
+      "exclusive": true,
+      "allowInterallelicNames": false,
+      "members": []
+    },
+    {
+      "id": "BatikRisk",
+      "label": "Batik (super leucistic; viability concerns)",
+      "exclusive": false,
+      "allowInterallelicNames": false,
+      "members": []
+    },
+    {
+      "id": "GeneticStripeLines",
+      "label": "Genetic Stripe compatible lines (VPI, CBE, PE)",
+      "exclusive": false,
+      "allowInterallelicNames": false,
+      "members": []
+    }
+  ],
+  "loci": [
+    {
+      "name": "Albino (T+)",
+      "label": "Albino (t+)",
+      "type": "recessive",
+      "aliases": [
+        "T+ Albino",
+        "Caramel Albino",
+        "Red Albino"
+      ]
+    },
+    {
+      "name": "Albino (T−)",
+      "label": "Albino (t−)",
+      "type": "recessive",
+      "aliases": [
+        "T- Albino",
+        "amelanistic"
+      ]
+    },
+    {
+      "name": "Matrix",
+      "label": "Matrix",
+      "type": "incomplete"
+    },
+    {
+      "name": "Goldeneye",
+      "label": "Goldeneye",
+      "type": "incomplete",
+      "aliases": [
+        "GE",
+        "Carmine (GE lineage)"
+      ],
+      "group": "GoldeneyeComplex"
+    },
+    {
+      "name": "Batik",
+      "label": "Batik",
+      "type": "incomplete",
+      "group": "BatikRisk"
+    },
+    {
+      "name": "Genetic Stripe",
+      "label": "Genetic stripe",
+      "type": "incomplete",
+      "aliases": [
+        "VPI GS",
+        "CBE GS",
+        "PE GS",
+        "Stripe"
+      ],
+      "group": "GeneticStripeLines"
+    },
+    {
+      "name": "Piebald",
+      "label": "Piebald",
+      "type": "recessive",
+      "aliases": [
+        "Pied"
+      ]
+    }
+  ],
+  "superNames": {},
+  "interallelicPhenotypes": {},
+  "namedCombos": {}
+}
