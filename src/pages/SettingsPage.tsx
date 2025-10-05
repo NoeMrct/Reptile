@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Crown } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { t } from 'i18next';
 import { 
   ArrowLeft, 
   User, 
@@ -45,22 +46,16 @@ const SettingsPage = () => {
     setError('');
     
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Update user context with new profile data
       if (user) {
-        // In a real app, you would call an API to update the user
-        // For now, we'll simulate the update
         const updatedUser = {
           ...user,
           name: profileData.name,
           profileImage: profileData.profileImage
         };
-        // This would normally update the auth context
       }
       
-      // Show success animation
       setShowSuccess(true);
       setTimeout(() => {
         setShowSuccess(false);
@@ -77,7 +72,6 @@ const SettingsPage = () => {
     if (window.confirm(t('settings.deleteConfirm'))) {
       setIsLoading(true);
       try {
-        // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1000));
         console.log('Deleting account');
       } catch (error) {
@@ -96,9 +90,7 @@ const SettingsPage = () => {
 
     setIsLoading(true);
     try {
-      // Simulate export
       await new Promise(resolve => setTimeout(resolve, 2000));
-      // Create and download file
       const data = { user: profileData, exported: new Date().toISOString() };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -139,7 +131,6 @@ const SettingsPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center space-x-4">
@@ -154,7 +145,6 @@ const SettingsPage = () => {
         </div>
       </div>
 
-      {/* Upgrade Modal */}
       {showUpgradeModal && (
         <UpgradeModal
           onClose={() => setShowUpgradeModal(false)}
@@ -165,7 +155,6 @@ const SettingsPage = () => {
         />
       )}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Error Modal */}
         {error && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl max-w-md w-full p-6">
@@ -189,7 +178,6 @@ const SettingsPage = () => {
         )}
 
         <div className="grid lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-sm p-6">
               <nav className="space-y-2">
@@ -211,15 +199,12 @@ const SettingsPage = () => {
             </div>
           </div>
 
-          {/* Main Content */}
           <div className="lg:col-span-3">
             <div className="bg-white rounded-xl shadow-sm p-6">
-              {/* Profile Tab */}
               {activeTab === 'profile' && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-900 mb-6">{t('settings.profile')}</h2>
                   
-                  {/* Profile Image */}
                   <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-4">
                       {t('settings.profileImage')}
@@ -279,7 +264,6 @@ const SettingsPage = () => {
                 </div>
               )}
 
-              {/* Notifications Tab */}
               {activeTab === 'notifications' && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-900 mb-6">{t('settings.notifications')}</h2>
@@ -308,7 +292,6 @@ const SettingsPage = () => {
                 </div>
               )}
 
-              {/* Language Tab */}
               {activeTab === 'language' && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-900 mb-6">{t('settings.language')}</h2>
@@ -319,7 +302,6 @@ const SettingsPage = () => {
                 </div>
               )}
 
-              {/* Subscription Tab */}
               {activeTab === 'subscription' && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-900 mb-6">{t('settings.subscription')}</h2>
@@ -342,7 +324,6 @@ const SettingsPage = () => {
                 </div>
               )}
 
-              {/* Data Tab */}
               {activeTab === 'data' && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-900 mb-6">{t('settings.data')}</h2>
@@ -393,7 +374,6 @@ const SettingsPage = () => {
                 </div>
               )}
 
-              {/* Security Tab */}
               {activeTab === 'security' && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-900 mb-6">{t('settings.security')}</h2>
@@ -408,7 +388,6 @@ const SettingsPage = () => {
                 </div>
               )}
 
-              {/* Save Button */}
               {(activeTab === 'profile' || activeTab === 'notifications') && (
                 <div className="mt-8 pt-6 border-t border-gray-200">
                   <button
@@ -424,7 +403,7 @@ const SettingsPage = () => {
                     ) : showSuccess ? (
                       <>
                         <Check className="h-4 w-4 mr-2" />
-                        {t('common.saved')}
+                        {t('common.success')}
                       </>
                     ) : (
                       <>

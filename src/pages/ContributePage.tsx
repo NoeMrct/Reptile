@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { t } from 'i18next';
 import {
   ArrowLeft,
   BadgeCheck,
@@ -140,7 +141,7 @@ const Thumbs: React.FC<{ images: string[]; onRemove?: (idx: number) => void }> =
               type="button"
               onClick={() => onRemove(idx)}
               className="absolute top-1 right-1 bg-white/90 border rounded-full p-1 shadow hidden group-hover:block"
-              aria-label="Supprimer la photo"
+              aria-label={t('contribute.photo.delete')}
             >
               <X className="h-4 w-4" />
             </button>
@@ -175,7 +176,7 @@ const RedeemCoinsModal: React.FC<{
           <div className="flex items-center justify-between px-5 py-3 border-b">
             <div className="flex items-center gap-2">
               <Coins className="h-5 w-5 text-green-600" />
-              <h4 className="font-semibold">Utiliser mes Écailles</h4>
+              <h4 className="font-semibold">{t('contribute.redeem.title')}</h4>
             </div>
             <button className="p-2 hover:bg-gray-50 rounded-lg" onClick={onClose} aria-label="Fermer">
               <X className="h-5 w-5" />
@@ -209,8 +210,8 @@ const RedeemCoinsModal: React.FC<{
               </div>
 
               <div className="border rounded-xl p-4">
-                <h5 className="font-semibold mb-2">Générer un bon de réduction</h5>
-                <p className="text-sm text-gray-600 mb-2">Déduis {COIN_RULES.coupons.min}–{COIN_RULES.coupons.max} ⟡ pour obtenir un bon ({COIN_RULES.coupons.discountRange}).</p>
+                <h5 className="font-semibold mb-2">{t('contribute.redeem.generateCoupon')}</h5>
+                <p className="text-sm text-gray-600 mb-2">Déduis {t('contribute.redeem.coinsRange', { min: COIN_RULES.coupons.min, max: COIN_RULES.coupons.max })} ⟡ pour obtenir un bon ({COIN_RULES.coupons.discountRange}).</p>
                 <div className="flex items-center gap-2 mb-2">
                   <input
                     type="number"
@@ -584,7 +585,7 @@ const ContributePage: React.FC = () => {
                 <Coins className="h-6 w-6 text-yellow-500" />
                 <h3 className="text-lg font-bold">Mon portefeuille</h3>
               </div>
-              <button onClick={handleRedeem} className="bg-green-600 hover:bg-green-700 text-white text-sm px-3 py-1.5 rounded-lg">Utiliser mes Écailles</button>
+              <button onClick={handleRedeem} className="bg-green-600 hover:bg-green-700 text-white text-sm px-3 py-1.5 rounded-lg">{t('contribute.redeem.title')}</button>
             </div>
             <div className="mt-4">
               <p className="text-4xl font-extrabold text-gray-900">{wallet}</p>
@@ -608,10 +609,10 @@ const ContributePage: React.FC = () => {
           <div className="border-b px-4 sm:px-6">
             <nav className="flex flex-wrap gap-4">
               {([
-                { id: 'propose', label: 'Proposer', icon: FilePlus2 },
-                { id: 'mine', label: 'Mes propositions', icon: ListChecks },
-                { id: 'leaderboard', label: 'Classement', icon: Medal },
-                { id: 'about', label: 'Règles', icon: HelpCircle },
+                { id: 'propose', label: t('contribute.tabs.propose'), icon: FilePlus2 },
+                { id: 'mine', label: t('contribute.tabs.mine'), icon: ListChecks },
+                { id: 'leaderboard', label: t('contribute.tabs.leaderboard'), icon: Medal },
+                { id: 'about', label: t('contribute.tabs.about'), icon: HelpCircle },
               ] as const).map((t) => (
                 <button
                   key={t.id}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
+import { t } from 'i18next';
 import { 
   Shield, 
   Plus, 
@@ -215,13 +216,12 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
       <nav className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/dashboard" className="flex items-center space-x-2">
               <Shield className="h-8 w-8 text-green-600" />
-              <span className="text-xl font-bold text-gray-900">Snake Manager</span>
+              <span className="text-xl font-bold text-gray-900">{t('brand.name')}</span>
             </Link>
             
             <div className="flex items-center space-x-6">
@@ -232,16 +232,15 @@ const Dashboard = () => {
                   className="flex items-center space-x-2 text-gray-700 hover:text-green-600 transition-colors"
                 >
                   <Heart className="h-5 w-5" />
-                  <span>Reproduction</span>
+                  <span>{t('breeding.title')}</span>
                 </Link>
               )}
-              {/* NEW: Contribute quick access */}
               <Link
                 to="/contribute"
                 className="flex items-center space-x-2 text-gray-700 hover:text-green-600 transition-colors"
               >
                 <Sparkles className="h-5 w-5" />
-                <span>Contribuer</span>
+                <span>{t('contribute.title')}</span>
               </Link>
               <div className="relative">
                 <button
@@ -288,7 +287,6 @@ const Dashboard = () => {
       </nav>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{t('dashboard.title')}</h1>
@@ -312,7 +310,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatsCard
             title={t('dashboard.stats.totalSnakes')}
@@ -341,7 +338,6 @@ const Dashboard = () => {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Snakes Section */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm p-6">
               <div className="flex justify-between items-center mb-6">
@@ -390,9 +386,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Right column */}
           <div>
-            {/* Recent Events */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold text-gray-900">{t('dashboard.recentEvents')}</h2>
@@ -420,31 +414,25 @@ const Dashboard = () => {
               )}
             </div>
 
-            {/* NEW: Contribute promo card */}
             <div className="bg-white rounded-xl shadow-sm p-6 mt-8">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2">
                   <Sparkles className="h-5 w-5 text-green-600" />
-                  <h2 className="text-lg font-bold text-gray-900">Contribuer au projet</h2>
+                  <h2 className="text-lg font-bold text-gray-900">{t('dashboard.contribute.title')}</h2>
                 </div>
-                <Link to="/contribute" className="text-green-600 hover:text-green-700 text-sm font-medium">
-                  Découvrir
-                </Link>
+                <Link to="/contribute" className="text-green-600 hover:text-green-700 text-sm font-medium">{t('dashboard.contribute.ctaDiscover')}</Link>
               </div>
-              <p className="text-gray-600 text-sm">Propose des morphs, localités, alias, gènes, etc. et gagne des Écailles utilisables pour les plans payants.</p>
+              <p className="text-gray-600 text-sm">{t('dashboard.contribute.subtitle')}</p>
               <Link
                 to="/contribute"
                 className="inline-flex items-center mt-4 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg"
               >
-                <Coins className="h-4 w-4 mr-2" />
-                Commencer à contribuer
-              </Link>
+                <Coins className="h-4 w-4 mr-2" />{t('dashboard.contribute.ctaStart')}</Link>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Modals */}
       {showAddSnake && (
         <AddSnakeModal
           onClose={() => setShowAddSnake(false)}
@@ -460,7 +448,6 @@ const Dashboard = () => {
         />
       )}
 
-      {/* Upgrade Modal */}
       {showUpgradeModal && (
         <UpgradeModal
           onClose={() => setShowUpgradeModal(false)}

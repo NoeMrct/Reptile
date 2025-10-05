@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 export type EditableEvent = {
   id: string;
   snakeId: string;
   type: 'feeding' | 'shed' | 'vet_visit' | 'handling' | string;
-  date: string; // ISO string
+  date: string;
   weight?: number | null;
   notes?: string | null;
 };
@@ -25,9 +26,7 @@ const EventEditModal: React.FC<EventEditModalProps> = ({ open, event, onClose, o
 
   if (!open || !form) return null;
 
-  // Helpers
   const toDateInput = (iso: string) => {
-    // yyyy-MM-dd pour <input type="date">
     const d = new Date(iso);
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, '0');
@@ -36,7 +35,6 @@ const EventEditModal: React.FC<EventEditModalProps> = ({ open, event, onClose, o
   };
 
   const fromDateInput = (value: string) => {
-    // garder l’heure existante si possible, sinon 00:00:00
     const d = new Date(form!.date);
     const [y, m, day] = value.split('-').map(Number);
     d.setFullYear(y);
@@ -64,7 +62,7 @@ const EventEditModal: React.FC<EventEditModalProps> = ({ open, event, onClose, o
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
       <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-5 shadow-xl">
         <h3 className="text-lg font-semibold mb-4">
-          {t('events.editTitle', { defaultValue: 'Modifier l’événement' })}
+          {t('events.editTitle', { defaultValue: t('events.editTitle') })}
         </h3>
 
         <form onSubmit={submit} className="space-y-4">
@@ -79,7 +77,7 @@ const EventEditModal: React.FC<EventEditModalProps> = ({ open, event, onClose, o
             >
               <option value="feeding">{t('events.types.feeding', { defaultValue: 'Nourrissage' })}</option>
               <option value="shed">{t('events.types.shed', { defaultValue: 'Mue' })}</option>
-              <option value="vet_visit">{t('events.types.vet_visit', { defaultValue: 'Visite véto' })}</option>
+              <option value="vet_visit">{t('events.types.vet_visit', { defaultValue: t('events.types.vet_visit') })}</option>
               <option value="handling">{t('events.types.handling', { defaultValue: 'Manipulation' })}</option>
             </select>
           </div>

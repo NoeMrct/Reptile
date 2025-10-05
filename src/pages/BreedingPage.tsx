@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { t } from 'i18next';
 import {
   ArrowLeft,
   GitBranch,
@@ -8,8 +9,7 @@ import {
   Heart,
   Egg,
   FileText,
-  Shield,
-  Plus
+  Shield
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import PedigreeTab from '../components/breeding/PedigreeTab';
@@ -37,7 +37,7 @@ const BreedingPage = () => {
               >
                 <ArrowLeft className="h-6 w-6" />
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Reproduction</h1>
+              <h1 className="text-2xl font-bold text-gray-900">{t('breeding.title')}</h1>
             </div>
           </div>
         </div>
@@ -48,47 +48,46 @@ const BreedingPage = () => {
               <Shield className="h-10 w-10 text-green-600" />
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Fonctionnalite Professionnelle
+              {t('breeding.proOnly.title')}
             </h2>
             <p className="text-xl text-gray-600 mb-8">
-              Les outils de reproduction sont reserves aux utilisateurs du plan Professionnel.
-              Passez a un plan superieur pour acceder a:
+              {t('breeding.proOnly.subtitle')}
             </p>
             <div className="bg-white rounded-xl shadow-sm p-8 mb-8">
               <ul className="space-y-4 text-left">
                 <li className="flex items-start">
                   <GitBranch className="h-6 w-6 text-green-600 mr-3 flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold text-gray-900">Arbre Genealogique Visuel</p>
-                    <p className="text-gray-600 text-sm">Visualisez les lignees et gerez la reproduction</p>
+                    <p className="font-semibold text-gray-900">{t('breeding.proOnly.features.pedigree')}</p>
+                    <p className="text-gray-600 text-sm">{t('breeding.header.subtitle')}</p>
                   </div>
                 </li>
                 <li className="flex items-start">
                   <Dna className="h-6 w-6 text-green-600 mr-3 flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold text-gray-900">Calculateur de Genetique</p>
-                    <p className="text-gray-600 text-sm">Predisez les morphes des bebes avant l'accouplement</p>
+                    <p className="font-semibold text-gray-900">{t('breeding.proOnly.features.genetics')}</p>
+                    <p className="text-gray-600 text-sm">{t('breeding.header.subtitle')}</p>
                   </div>
                 </li>
                 <li className="flex items-start">
                   <Heart className="h-6 w-6 text-green-600 mr-3 flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold text-gray-900">Gestion des Pairings</p>
-                    <p className="text-gray-600 text-sm">Suivez les accouplements et leur succes</p>
+                    <p className="font-semibold text-gray-900">{t('breeding.proOnly.features.pairings')}</p>
+                    <p className="text-gray-600 text-sm">{t('breeding.header.subtitle')}</p>
                   </div>
                 </li>
                 <li className="flex items-start">
                   <Egg className="h-6 w-6 text-green-600 mr-3 flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold text-gray-900">Tracking des Œufs</p>
-                    <p className="text-gray-600 text-sm">Surveillez l'incubation avec temperatures et dates</p>
+                    <p className="font-semibold text-gray-900">{t('breeding.proOnly.features.eggs')}</p>
+                    <p className="text-gray-600 text-sm">{t('breeding.header.subtitle')}</p>
                   </div>
                 </li>
                 <li className="flex items-start">
                   <FileText className="h-6 w-6 text-green-600 mr-3 flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-semibold text-gray-900">Certificats de Naissance</p>
-                    <p className="text-gray-600 text-sm">Generez des documents officiels professionnels</p>
+                    <p className="font-semibold text-gray-900">{t('breeding.proOnly.features.certificates')}</p>
+                    <p className="text-gray-600 text-sm">{t('breeding.header.subtitle')}</p>
                   </div>
                 </li>
               </ul>
@@ -116,11 +115,11 @@ const BreedingPage = () => {
   }
 
   const tabs = [
-    { id: 'pedigree', name: 'Arbre Genealogique', icon: GitBranch },
-    { id: 'genetics', name: 'Calculateur Genetique', icon: Dna },
-    { id: 'pairings', name: 'Gestion des Pairings', icon: Heart },
-    { id: 'eggs', name: 'Tracking des Œufs', icon: Egg },
-    { id: 'certificates', name: 'Certificats', icon: FileText }
+    { id: 'pedigree', name: t('breeding.tabs.pedigree'), icon: GitBranch },
+    { id: 'genetics', name: t('breeding.tabs.genetics'), icon: Dna },
+    { id: 'pairings', name: t('breeding.tabs.pairings'), icon: Heart },
+    { id: 'eggs', name: t('breeding.tabs.eggs'), icon: Egg },
+    { id: 'certificates', name: t('breeding.tabs.certificates'), icon: FileText }
   ];
 
   return (
@@ -136,7 +135,7 @@ const BreedingPage = () => {
             </Link>
             <div className="flex items-center space-x-2">
               <Heart className="h-6 w-6 text-green-600" />
-              <h1 className="text-2xl font-bold text-gray-900">Reproduction</h1>
+              <h1 className="text-2xl font-bold text-gray-900">{t('breeding.title')}</h1>
             </div>
           </div>
         </div>

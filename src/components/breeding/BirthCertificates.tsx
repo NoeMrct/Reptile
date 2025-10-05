@@ -16,6 +16,7 @@ import { Snake, Pairing, Egg, Clutch } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { format } from 'date-fns';
 import jsPDF from 'jspdf';
+import { t } from 'i18next';
 
 declare global {
   interface Window {
@@ -104,9 +105,6 @@ type FreeForm = {
 
 const defaultFreeForm: FreeForm = { method: 'popping' };
 
-/** ********************************************************************
- * Thème PDF + helpers de dessin
- ********************************************************************* */
 const THEME = {
   primary: [22, 163, 74] as [number, number, number],
   primaryLight: [209, 250, 229] as [number, number, number],
@@ -196,13 +194,12 @@ function drawFooterAllPages(doc: jsPDF, label = 'Généré par votre app') {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.text(`${label}`, 32, H - 24);
-    doc.text(`Page ${i} / ${pageCount}`, W - 32, H - 24, { align: 'right' });
+    doc.text(t('birthCert.footer.pageXofY', { page: i, total: pageCount }), W - 32, H - 24, { align: 'right' });
     doc.text(format(new Date(), 'dd/MM/yyyy HH:mm'), W - 32, H - 12, { align: 'right' });
   }
 }
 
 function sectionTitle(doc: jsPDF, y: number, text: string) {
-  // pastille + titre
   setFillRGB(doc, THEME.primary);
   doc.circle(24, y - 3, 3, 'F');
   setTextRGB(doc, THEME.grayText);
@@ -237,7 +234,6 @@ function drawSimpleTable(
   const colWidth = (W - 64) / headers.length;
   const rowH = 20;
 
-  // head
   setFillRGB(doc, THEME.primary);
   setTextRGB(doc, [255, 255, 255]);
   doc.setFont('helvetica', 'bold');
@@ -248,7 +244,6 @@ function drawSimpleTable(
     doc.text(String(h), x, startY + 13);
   });
 
-  // rows
   doc.setFont('helvetica', 'normal');
   rows.forEach((r, idx) => {
     const y = startY + rowH * (idx + 1);
@@ -373,7 +368,7 @@ const BirthCertificates: React.FC = () => {
 
   async function generate(kind: CertificateKind) {
     if (!selectedSnake) {
-      alert('Sélectionne d’abord un serpent.');
+      alert(t('birthCert.alerts.selectSnakeFirst'));
       return;
     }
     setBusy(true);
@@ -386,11 +381,11 @@ const BirthCertificates: React.FC = () => {
 
     (doc as any).setProperties?.({
       title: `${kind} - ${selectedSnake.name || selectedSnake.id}`,
-      subject: 'Certificat généré',
-      creator: 'Reptile Manager',
+      subject: t('birthCert.doc.subject'),
+      creator: t('birthCert.doc.creator'),
     });
 
-    drawWatermark(doc, 'REPTILES');
+    drawWatermark(doc);
 
     switch (kind) {
       case 'birth':
@@ -423,7 +418,7 @@ const BirthCertificates: React.FC = () => {
     }
 
     // Footer pagination + date
-    drawFooterAllPages(doc, 'Certificat généré par votre application');
+    drawFooterAllPages(doc, t('birthCert.footer.generatedByApp'));
 
     // Créer l’aperçu mais NE PAS télécharger
     const blob = doc.output('blob');
@@ -440,30 +435,30 @@ const BirthCertificates: React.FC = () => {
     certNo: string,
     qr: string | null
   ) {
-    drawBannerHeader(doc, 'Certificat de Naissance', { certNo, qrDataUrl: qr });
+    drawBannerHeader(doc, t('birthCert.titles.birth'), { certNo, qrDataUrl: qr });
 
     let y = 96;
 
-    sectionTitle(doc, y, 'Juvénile'); y += 20;
-    keyValue(doc, 40, y, 'Nom', snake.name || '—'); y += 16;
-    keyValue(doc, 40, y, 'Espèce', snake.species || '—'); y += 16;
-    keyValue(doc, 40, y, 'Morph', snake.morph || '—'); y += 16;
-    keyValue(doc, 40, y, 'Sexe', snake.sex || '—'); y += 16;
-    keyValue(doc, 40, y, 'Date de naissance', format(new Date(snake.birthDate), 'dd MMM yyyy')); y += 16;
-    keyValue(doc, 40, y, 'Poids actuel', `${snake.weight ?? '—'} g`); y += 16;
-    keyValue(doc, 40, y, 'Longueur actuelle', `${snake.length ?? '—'} cm`); y += 24;
+    sectionTitle(doc, y, t('birthCert.section.juvenile')); y += 20;
+    keyValue(doc, 40, y, t('birthCert.fields.name'), snake.name || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.species'), snake.species || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.morph'), snake.morph || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.sex'), snake.sex || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.birthDate'), format(new Date(snake.birthDate), 'dd MMM yyyy')); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.currentWeight'), `${snake.weight ?? '—'} g`); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.currentLength'), `${snake.length ?? '—'} cm`); y += 24;
 
-    sectionTitle(doc, y, 'Parents'); y += 20;
-    keyValue(doc, 40, y, 'Mâle', p ? getSnakeName(p.maleSnakeId) : '—'); y += 16;
-    keyValue(doc, 40, y, 'Femelle', p ? getSnakeName(p.femaleSnakeId) : '—'); y += 24;
+    sectionTitle(doc, y, t('birthCert.section.parents')); y += 20;
+    keyValue(doc, 40, y, t('birthCert.fields.male'), p ? getSnakeName(p.maleSnakeId) : '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.female'), p ? getSnakeName(p.femaleSnakeId) : '—'); y += 24;
 
     lightPanel(doc, 32, y, doc.internal.pageSize.getWidth() - 64, 70);
     setTextRGB(doc, THEME.grayText);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
-    doc.text('Certifie que l’animal décrit ci-dessus est né en captivité (CB).', 44, y + 22);
-    doc.text('Signature de l’éleveur : ______________________', 44, y + 46);
-    doc.text('Date : ____ / ____ / ______', 360, y + 46);
+    doc.text(t('birthCert.text.captiveBornCertified'), 44, y + 22);
+    doc.text(t('birthCert.text.breederSignature'), 44, y + 46);
+    doc.text(t('birthCert.text.dateLine'), 360, y + 46);
   }
 
   async function renderPedigree(
@@ -474,19 +469,19 @@ const BirthCertificates: React.FC = () => {
     certNo: string,
     qr: string | null
   ) {
-    drawBannerHeader(doc, 'Pédigrée (3 générations)', { certNo, qrDataUrl: qr });
+    drawBannerHeader(doc, t('birthCert.titles.pedigree'), { certNo, qrDataUrl: qr });
 
     let y = 96;
-    sectionTitle(doc, y, 'Sujet'); y += 20;
-    keyValue(doc, 40, y, 'Nom', snake.name || '—'); y += 16;
-    keyValue(doc, 40, y, 'Espèce', snake.species || '—'); y += 16;
-    keyValue(doc, 40, y, 'Morph', snake.morph || '—'); y += 24;
+    sectionTitle(doc, y, t('birthCert.section.subject')); y += 20;
+    keyValue(doc, 40, y, t('birthCert.fields.name'), snake.name || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.species'), snake.species || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.morph'), snake.morph || '—'); y += 24;
 
     const p = pairings.find((pp) => pp.femaleSnakeId === snake.id || pp.maleSnakeId === snake.id) || null;
     const father = p ? snakes.find((s) => s.id === p.maleSnakeId) : null;
     const mother = p ? snakes.find((s) => s.id === p.femaleSnakeId) : null;
 
-    sectionTitle(doc, y, 'Parents (G1)'); y += 20;
+    sectionTitle(doc, y, t('birthCert.section.parentsG1')); y += 20;
     keyValue(doc, 40, y, 'Père', father ? `${father.name} (${father.morph})` : '—'); y += 16;
     keyValue(doc, 40, y, 'Mère', mother ? `${mother.name} (${mother.morph})` : '—'); y += 24;
 
@@ -498,16 +493,16 @@ const BirthCertificates: React.FC = () => {
     const gmother_f = pf ? snakes.find((s) => s.id === pf.femaleSnakeId) : null;
     const gmother_m = pm ? snakes.find((s) => s.id === pm.femaleSnakeId) : null;
 
-    sectionTitle(doc, y, 'Grands-parents (G2)'); y += 20;
+    sectionTitle(doc, y, t('birthCert.section.grandparentsG2')); y += 20;
     keyValue(doc, 40, y, 'Grand-père paternel', gfather_f ? `${gfather_f.name} (${gfather_f.morph})` : '—'); y += 16;
     keyValue(doc, 40, y, 'Grand-mère paternelle', gmother_f ? `${gmother_f.name} (${gmother_f.morph})` : '—'); y += 16;
     keyValue(doc, 40, y, 'Grand-père maternel', gfather_m ? `${gfather_m.name} (${gfather_m.morph})` : '—'); y += 16;
     keyValue(doc, 40, y, 'Grand-mère maternelle', gmother_m ? `${gmother_m.name} (${gmother_m.morph})` : '—'); y += 24;
 
-    sectionTitle(doc, y, 'Arrière-grands-parents (G3)'); y += 20;
+    sectionTitle(doc, y, t('birthCert.section.greatGrandparentsG3')); y += 20;
     doc.setFont('helvetica', 'italic'); doc.setFontSize(10);
     setTextRGB(doc, THEME.grayText);
-    doc.text('Renseigner via données étendues si disponibles (non fournies par défaut).', 40, y);
+    doc.text(t('birthCert.text.fillExtendedDataNote'), 40, y);
   }
 
   async function renderClutchReport(
@@ -519,17 +514,17 @@ const BirthCertificates: React.FC = () => {
     certNo: string,
     qr: string | null
   ) {
-    drawBannerHeader(doc, 'Rapport de ponte', { certNo, qrDataUrl: qr });
+    drawBannerHeader(doc, t('birthCert.titles.clutchReport'), { certNo, qrDataUrl: qr });
 
     let y = 96;
-    sectionTitle(doc, y, 'Informations générales'); y += 20;
-    keyValue(doc, 40, y, 'Sujet', snake.name || '—'); y += 16;
-    keyValue(doc, 40, y, 'Couple', p ? `${getSnakeName(p.maleSnakeId)} × ${getSnakeName(p.femaleSnakeId)}` : '—'); y += 16;
-    keyValue(doc, 40, y, 'Date de ponte', clutch ? format(new Date(clutch.laidDate), 'dd MMM yyyy') : '—'); y += 16;
-    keyValue(doc, 40, y, 'Œufs (total/fertiles)', clutch ? `${clutch.eggCount} / ${clutch.fertileCount ?? 0}` : '—'); y += 16;
-    keyValue(doc, 40, y, 'Incubation (T°/HR)', clutch ? `${clutch.incubationTemp ?? '—'} °C / ${clutch.incubationHumidity ?? '—'} %` : '—'); y += 24;
+    sectionTitle(doc, y, t('birthCert.section.generalInfo')); y += 20;
+    keyValue(doc, 40, y, t('birthCert.section.subject'), snake.name || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.pair'), p ? `${getSnakeName(p.maleSnakeId)} × ${getSnakeName(p.femaleSnakeId)}` : '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.laidDate'), clutch ? format(new Date(clutch.laidDate), 'dd MMM yyyy') : '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.eggsTotalFertile'), clutch ? `${clutch.eggCount} / ${clutch.fertileCount ?? 0}` : '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.incubationTH'), clutch ? `${clutch.incubationTemp ?? '—'} °C / ${clutch.incubationHumidity ?? '—'} %` : '—'); y += 24;
 
-    sectionTitle(doc, y, 'Détail des œufs'); y += 14;
+    sectionTitle(doc, y, t('birthCert.section.eggDetails')); y += 14;
 
     const hasAutoTable = await ensureAutoTable();
     const rows = clutchEggs.map((e) => [
@@ -540,7 +535,7 @@ const BirthCertificates: React.FC = () => {
 
     if (hasAutoTable && (doc as any).autoTable) {
       (doc as any).autoTable({
-        head: [['#', 'Statut', 'Poids']],
+        head: [[t('birthCert.table.num'), t('birthCert.table.status'), t('birthCert.table.weight')]],
         body: rows,
         startY: y,
         styles: { font: 'helvetica', fontSize: 10, textColor: THEME.grayText },
@@ -550,7 +545,7 @@ const BirthCertificates: React.FC = () => {
         margin: { left: 32, right: 32 },
       });
     } else {
-      y = drawSimpleTable(doc, y, ['#', 'Statut', 'Poids'], rows);
+      y = drawSimpleTable(doc, y, [t('birthCert.table.num'), t('birthCert.table.status'), t('birthCert.table.weight')], rows);
     }
   }
 
@@ -561,15 +556,15 @@ const BirthCertificates: React.FC = () => {
     certNo: string,
     qr: string | null
   ) {
-    drawBannerHeader(doc, 'Rapport d’incubation', { certNo, qrDataUrl: qr });
+    drawBannerHeader(doc, t('birthCert.titles.incubationReport'), { certNo, qrDataUrl: qr });
 
     let y = 96;
-    sectionTitle(doc, y, 'Paramètres'); y += 20;
-    keyValue(doc, 40, y, 'Date de ponte', clutch ? format(new Date(clutch.laidDate), 'dd MMM yyyy') : '—'); y += 16;
-    keyValue(doc, 40, y, 'T° cible', clutch?.incubationTemp != null ? `${clutch.incubationTemp} °C` : '—'); y += 16;
-    keyValue(doc, 40, y, 'Humidité cible', clutch?.incubationHumidity != null ? `${clutch.incubationHumidity} %` : '—'); y += 24;
+    sectionTitle(doc, y, t('birthCert.section.parameters')); y += 20;
+    keyValue(doc, 40, y, t('birthCert.fields.laidDate'), clutch ? format(new Date(clutch.laidDate), 'dd MMM yyyy') : '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.targetTemp'), clutch?.incubationTemp != null ? `${clutch.incubationTemp} °C` : '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.targetHumidity'), clutch?.incubationHumidity != null ? `${clutch.incubationHumidity} %` : '—'); y += 24;
 
-    sectionTitle(doc, y, 'Suivi (statuts & poids)'); y += 14;
+    sectionTitle(doc, y, t('birthCert.section.tracking')); y += 14;
 
     const hasAutoTable = await ensureAutoTable();
     const rows = clutchEggs.map((e) => [
@@ -581,7 +576,7 @@ const BirthCertificates: React.FC = () => {
 
     if (hasAutoTable && (doc as any).autoTable) {
       (doc as any).autoTable({
-        head: [['#', 'Statut', 'Poids', 'Dernière mise à jour']],
+        head: [[t('birthCert.table.num'), t('birthCert.table.status'), t('birthCert.table.weight'), t('birthCert.table.lastUpdate')]],
         body: rows,
         startY: y,
         styles: { font: 'helvetica', fontSize: 10, textColor: THEME.grayText },
@@ -591,7 +586,7 @@ const BirthCertificates: React.FC = () => {
         margin: { left: 32, right: 32 },
       });
     } else {
-      y = drawSimpleTable(doc, y, ['#', 'Statut', 'Poids', 'MAJ'], rows);
+      y = drawSimpleTable(doc, y, [t('birthCert.table.num'), t('birthCert.table.status'), t('birthCert.table.weight'), t('birthCert.table.lastUpdateShort')], rows);
     }
 
     const finalY = (doc as any).lastAutoTable?.finalY;
@@ -600,7 +595,7 @@ const BirthCertificates: React.FC = () => {
       doc.setFont('helvetica', 'italic');
       doc.setFontSize(10);
       setTextRGB(doc, THEME.grayText);
-      doc.text('Conseil : pour les courbes T°/HR, enregistre des logs et exporte-les ici.', 44, finalY + 45);
+      doc.text(t('birthCert.text.adviceLogs'), 44, finalY + 45);
     }
   }
 
@@ -611,23 +606,23 @@ const BirthCertificates: React.FC = () => {
     certNo: string,
     qr: string | null
   ) {
-    drawBannerHeader(doc, 'Certificat d’éclosion', { certNo, qrDataUrl: qr });
+    drawBannerHeader(doc, t('birthCert.titles.hatch'), { certNo, qrDataUrl: qr });
 
     let y = 96;
-    sectionTitle(doc, y, 'Informations'); y += 20;
-    keyValue(doc, 40, y, 'Nom', snake.name || '—'); y += 16;
-    keyValue(doc, 40, y, 'Espèce', snake.species || '—'); y += 16;
-    keyValue(doc, 40, y, 'Morph', snake.morph || '—'); y += 16;
-    keyValue(doc, 40, y, 'Date d’éclosion', format(new Date(snake.birthDate), 'dd MMM yyyy')); y += 16;
-    keyValue(doc, 40, y, 'Ponte', clutch ? `${format(new Date(clutch.laidDate), 'dd MMM yyyy')} (${clutch.eggCount} œufs)` : '—'); y += 24;
+    sectionTitle(doc, y, t('birthCert.section.info')); y += 20;
+    keyValue(doc, 40, y, t('birthCert.fields.name'), snake.name || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.species'), snake.species || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.morph'), snake.morph || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.hatchDate'), format(new Date(snake.birthDate), 'dd MMM yyyy')); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.clutch'), clutch ? t('birthCert.hatch.clutchLine', { date: format(new Date(clutch.laidDate), 'dd MMM yyyy'), eggs: clutch.eggCount }) : '—'); y += 24;
 
     lightPanel(doc, 32, y, doc.internal.pageSize.getWidth() - 64, 70);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
     setTextRGB(doc, THEME.grayText);
-    doc.text('Je soussigné(e), atteste de l’éclosion en captivité de l’animal décrit ci-dessus.', 44, y + 22);
-    doc.text('Signature de l’éleveur : ______________________', 44, y + 46);
-    doc.text('Date : ____ / ____ / ______', 360, y + 46);
+    doc.text(t('birthCert.text.hatchAttestationLine'), 44, y + 22);
+    doc.text(t('birthCert.text.breederSignature'), 44, y + 46);
+    doc.text(t('birthCert.text.dateLine'), 360, y + 46);
   }
 
   async function renderIdentificationCertificate(
@@ -636,22 +631,22 @@ const BirthCertificates: React.FC = () => {
     certNo: string,
     qr: string | null
   ) {
-    drawBannerHeader(doc, 'Certificat d’identification', { certNo, qrDataUrl: qr });
+    drawBannerHeader(doc, t('birthCert.titles.id'), { certNo, qrDataUrl: qr });
 
     let y = 96;
-    sectionTitle(doc, y, 'Animal'); y += 20;
-    keyValue(doc, 40, y, 'Nom', snake.name || '—'); y += 16;
-    keyValue(doc, 40, y, 'Espèce', snake.species || '—'); y += 16;
-    keyValue(doc, 40, y, 'Morph', snake.morph || '—'); y += 16;
-    keyValue(doc, 40, y, 'Sexe', snake.sex || '—'); y += 16;
-    keyValue(doc, 40, y, 'Identifiant interne', snake.id); y += 24;
+    sectionTitle(doc, y, t('birthCert.section.animal')); y += 20;
+    keyValue(doc, 40, y, t('birthCert.fields.name'), snake.name || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.species'), snake.species || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.morph'), snake.morph || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.sex'), snake.sex || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.internalId'), snake.id); y += 24;
 
     lightPanel(doc, 32, y, doc.internal.pageSize.getWidth() - 64, 70);
     doc.setFont('helvetica', 'italic'); doc.setFontSize(10); setTextRGB(doc, THEME.grayText);
-    doc.text('Ajoute ici le n° de microchip si applicable.', 44, y + 22);
+    doc.text(t('birthCert.text.addMicrochipNote'), 44, y + 22);
     doc.setFont('helvetica', 'normal');
-    doc.text('Éleveur : ______________________', 44, y + 46);
-    doc.text('Propriétaire : ______________________', 320, y + 46);
+    doc.text(t('birthCert.text.breeder'), 44, y + 46);
+    doc.text(t('birthCert.text.owner'), 320, y + 46);
   }
 
   async function renderSexingCertificate(
@@ -661,23 +656,23 @@ const BirthCertificates: React.FC = () => {
     certNo: string,
     qr: string | null
   ) {
-    drawBannerHeader(doc, 'Certificat de sexage', { certNo, qrDataUrl: qr });
+    drawBannerHeader(doc, t('birthCert.titles.sexing'), { certNo, qrDataUrl: qr });
 
     let y = 96;
-    sectionTitle(doc, y, 'Animal'); y += 20;
-    keyValue(doc, 40, y, 'Nom', snake.name || '—'); y += 16;
-    keyValue(doc, 40, y, 'Espèce', snake.species || '—'); y += 16;
-    keyValue(doc, 40, y, 'Morph', snake.morph || '—'); y += 24;
+    sectionTitle(doc, y, t('birthCert.section.animal')); y += 20;
+    keyValue(doc, 40, y, t('birthCert.fields.name'), snake.name || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.species'), snake.species || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.morph'), snake.morph || '—'); y += 24;
 
-    sectionTitle(doc, y, 'Résultat'); y += 20;
-    keyValue(doc, 40, y, 'Sexe déterminé', snake.sex || '—'); y += 16;
-    keyValue(doc, 40, y, 'Méthode', ff.method || '—'); y += 16;
-    keyValue(doc, 40, y, 'Opérateur', ff.operatorName || '—'); y += 24;
+    sectionTitle(doc, y, t('birthCert.section.result')); y += 20;
+    keyValue(doc, 40, y, t('birthCert.fields.sexDetermined'), snake.sex || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.method'), ff.method || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.operator'), ff.operatorName || '—'); y += 24;
 
     lightPanel(doc, 32, y, doc.internal.pageSize.getWidth() - 64, 58);
     doc.setFont('helvetica', 'normal'); doc.setFontSize(10); setTextRGB(doc, THEME.grayText);
-    doc.text('Signature : ______________________', 44, y + 24);
-    doc.text('Date : ____ / ____ / ______', 360, y + 24);
+    doc.text(t('birthCert.text.signature'), 44, y + 24);
+    doc.text(t('birthCert.text.dateLine'), 360, y + 24);
   }
 
   async function renderTransferCertificate(
@@ -687,25 +682,25 @@ const BirthCertificates: React.FC = () => {
     certNo: string,
     qr: string | null
   ) {
-    drawBannerHeader(doc, 'Certificat de cession / facture', { certNo, qrDataUrl: qr });
+    drawBannerHeader(doc, t('birthCert.titles.transfer'), { certNo, qrDataUrl: qr });
 
     let y = 96;
-    sectionTitle(doc, y, 'Animal'); y += 20;
-    keyValue(doc, 40, y, 'Nom', snake.name || '—'); y += 16;
-    keyValue(doc, 40, y, 'Espèce', snake.species || '—'); y += 16;
-    keyValue(doc, 40, y, 'Morph', snake.morph || '—'); y += 24;
+    sectionTitle(doc, y, t('birthCert.section.animal')); y += 20;
+    keyValue(doc, 40, y, t('birthCert.fields.name'), snake.name || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.species'), snake.species || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.morph'), snake.morph || '—'); y += 24;
 
-    sectionTitle(doc, y, 'Parties'); y += 20;
-    keyValue(doc, 40, y, 'Vendeur', ff.sellerName || '—'); y += 16;
-    keyValue(doc, 40, y, 'Acheteur', ff.buyerName || '—'); y += 16;
-    keyValue(doc, 40, y, 'Prix', ff.price || '—'); y += 24;
+    sectionTitle(doc, y, t('birthCert.section.parties')); y += 20;
+    keyValue(doc, 40, y, t('birthCert.fields.seller'), ff.sellerName || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.buyer'), ff.buyerName || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.price'), ff.price || '—'); y += 24;
 
     lightPanel(doc, 32, y, doc.internal.pageSize.getWidth() - 64, 70);
     doc.setFont('helvetica', 'italic'); doc.setFontSize(10); setTextRGB(doc, THEME.grayText);
-    doc.text('Conditions de garantie, retour, transport : à préciser ici.', 44, y + 22);
+    doc.text(t('birthCert.text.conditionsNote'), 44, y + 22);
     doc.setFont('helvetica', 'normal');
-    doc.text('Vendeur : ______________________', 44, y + 46);
-    doc.text('Acheteur : ______________________', 320, y + 46);
+    doc.text(t('birthCert.text.seller'), 44, y + 46);
+    doc.text(t('birthCert.text.buyer'), 320, y + 46);
   }
 
   async function renderQuarantineAttestation(
@@ -715,43 +710,43 @@ const BirthCertificates: React.FC = () => {
     certNo: string,
     qr: string | null
   ) {
-    drawBannerHeader(doc, 'Attestation de quarantaine', { certNo, qrDataUrl: qr });
+    drawBannerHeader(doc, t('birthCert.titles.quarantine'), { certNo, qrDataUrl: qr });
 
     let y = 96;
-    sectionTitle(doc, y, 'Animal'); y += 20;
-    keyValue(doc, 40, y, 'Nom', snake.name || '—'); y += 16;
-    keyValue(doc, 40, y, 'Espèce', snake.species || '—'); y += 16;
-    keyValue(doc, 40, y, 'Morph', snake.morph || '—'); y += 24;
+    sectionTitle(doc, y, t('birthCert.section.animal')); y += 20;
+    keyValue(doc, 40, y, t('birthCert.fields.name'), snake.name || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.species'), snake.species || '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.morph'), snake.morph || '—'); y += 24;
 
-    sectionTitle(doc, y, 'Période de quarantaine'); y += 20;
-    keyValue(doc, 40, y, 'Début', ff.quarantineStart ? format(new Date(ff.quarantineStart), 'dd/MM/yy') : '—'); y += 16;
-    keyValue(doc, 40, y, 'Fin', ff.quarantineEnd ? format(new Date(ff.quarantineEnd), 'dd/MM/yy') : '—'); y += 16;
-    keyValue(doc, 40, y, 'Lieu', ff.location || '—'); y += 24;
+    sectionTitle(doc, y, t('birthCert.section.quarantinePeriod')); y += 20;
+    keyValue(doc, 40, y, t('birthCert.fields.start'), ff.quarantineStart ? format(new Date(ff.quarantineStart), 'dd/MM/yy') : '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.end'), ff.quarantineEnd ? format(new Date(ff.quarantineEnd), 'dd/MM/yy') : '—'); y += 16;
+    keyValue(doc, 40, y, t('birthCert.fields.location'), ff.location || '—'); y += 24;
 
     lightPanel(doc, 32, y, doc.internal.pageSize.getWidth() - 64, 58);
     doc.setFont('helvetica', 'normal'); doc.setFontSize(10); setTextRGB(doc, THEME.grayText);
-    doc.text('Attesté par : ______________________', 44, y + 24);
-    doc.text('Date : ____ / ____ / ______', 320, y + 24);
+    doc.text(t('birthCert.text.attestedBy'), 44, y + 24);
+    doc.text(t('birthCert.text.dateLine'), 320, y + 24);
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-xl font-bold text-gray-900">Certificats & Export PDF</h3>
-          <p className="text-gray-600 mt-1">Génère les certificats puis télécharge-les depuis l’aperçu.</p>
+          <h3 className="text-xl font-bold text-gray-900">{t('birthCert.ui.title')}</h3>
+          <p className="text-gray-600 mt-1">{t('birthCert.ui.subtitle')}</p>
         </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
         <div className="bg-white border rounded-xl p-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Serpent</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{t('birthCert.ui.labels.snake')}</label>
           <select
             value={selectedSnakeId}
             onChange={(e) => setSelectedSnakeId(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
           >
-            <option value="">Sélectionner un serpent…</option>
+            <option value="">{t('birthCert.ui.select.snakePlaceholder')}</option>
             {snakes.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name} — {s.morph} ({s.sex})
@@ -759,12 +754,12 @@ const BirthCertificates: React.FC = () => {
             ))}
           </select>
           <p className="text-xs text-gray-500 mt-2">
-            Astuce : ajoute des champs (microchip, photos) côté modèle pour enrichir les PDF.
+            {t('birthCert.ui.hints.enrichPdf')}
           </p>
         </div>
 
         <div className="bg-white border rounded-xl p-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Ponte (optionnelle)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{t('birthCert.ui.labels.clutchOptional')}</label>
           <select
             value={selectedClutchId}
             onChange={(e) => setSelectedClutchId(e.target.value)}
@@ -773,75 +768,75 @@ const BirthCertificates: React.FC = () => {
             <option value="">—</option>
             {clutches.map((c) => (
               <option key={c.id} value={c.id}>
-                {format(new Date(c.laidDate), 'dd MMM yyyy')} — {c.eggCount} œufs
+                {t('birthCert.ui.clutchOptionLabel', { date: format(new Date(c.laidDate), 'dd MMM yyyy'), eggs: c.eggCount })}
               </option>
             ))}
           </select>
 
           <div className="grid grid-cols-2 gap-3 mt-4">
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Opérateur (sexage)</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('birthCert.ui.freeForm.operatorLabel')}</label>
               <input
                 value={freeForm.operatorName || ''}
                 onChange={(e) => setFreeForm((f) => ({ ...f, operatorName: e.target.value }))}
                 className="w-full px-3 py-2 border rounded-lg text-sm"
-                placeholder="Ex: Dr Dupont"
+                placeholder={t('birthCert.ui.freeForm.operatorPlaceholder')}
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Méthode</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('birthCert.ui.freeForm.methodLabel')}</label>
               <select
                 value={freeForm.method || 'popping'}
                 onChange={(e) => setFreeForm((f) => ({ ...f, method: e.target.value as any }))}
                 className="w-full px-3 py-2 border rounded-lg text-sm"
               >
-                <option value="popping">Popping</option>
-                <option value="probing">Probing</option>
-                <option value="echography">Échographie</option>
-                <option value="autre">Autre</option>
+                <option value="popping">{t('birthCert.methods.popping')}</option>
+                <option value="probing">{t('birthCert.methods.probing')}</option>
+                <option value="echography">{t('birthCert.methods.echography')}</option>
+                <option value="autre">{t('birthCert.methods.other')}</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Vendeur</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('birthCert.ui.freeForm.sellerLabel')}</label>
               <input
                 value={freeForm.sellerName || ''}
                 onChange={(e) => setFreeForm((f) => ({ ...f, sellerName: e.target.value }))}
                 className="w-full px-3 py-2 border rounded-lg text-sm"
-                placeholder="Éleveur / Société"
+                placeholder={t('birthCert.ui.freeForm.sellerPlaceholder')}
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Acheteur</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('birthCert.ui.freeForm.buyerLabel')}</label>
               <input
                 value={freeForm.buyerName || ''}
                 onChange={(e) => setFreeForm((f) => ({ ...f, buyerName: e.target.value }))}
                 className="w-full px-3 py-2 border rounded-lg text-sm"
-                placeholder="Nom de l’acheteur"
+                placeholder={t('birthCert.ui.freeForm.buyerPlaceholder')}
               />
             </div>
 
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Prix</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('birthCert.ui.freeForm.priceLabel')}</label>
               <input
                 value={freeForm.price || ''}
                 onChange={(e) => setFreeForm((f) => ({ ...f, price: e.target.value }))}
                 className="w-full px-3 py-2 border rounded-lg text-sm"
-                placeholder="€"
+                placeholder={t('birthCert.ui.freeForm.pricePlaceholder')}
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Lieu (quarantaine)</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('birthCert.ui.freeForm.locationLabel')}</label>
               <input
                 value={freeForm.location || ''}
                 onChange={(e) => setFreeForm((f) => ({ ...f, location: e.target.value }))}
                 className="w-full px-3 py-2 border rounded-lg text-sm"
-                placeholder="Ex: Local dédié, rack 2"
+                placeholder={t('birthCert.ui.freeForm.locationPlaceholder')}
               />
             </div>
 
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Début (quarantaine)</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('birthCert.ui.freeForm.qStartLabel')}</label>
               <input
                 type="date"
                 value={freeForm.quarantineStart || ''}
@@ -850,7 +845,7 @@ const BirthCertificates: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Fin (quarantaine)</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('birthCert.ui.freeForm.qEndLabel')}</label>
               <input
                 type="date"
                 value={freeForm.quarantineEnd || ''}
@@ -863,39 +858,39 @@ const BirthCertificates: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
-        <button onClick={() => generate('birth')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title="Certificat de naissance">
+        <button onClick={() => generate('birth')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title={t('birthCert.actions.generate.birth.title')}>
           <Baby className="w-4 h-4" /> Naissance
         </button>
 
-        <button onClick={() => generate('pedigree')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title="Pédigrée 3 générations">
+        <button onClick={() => generate('pedigree')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title={t('birthCert.actions.generate.pedigree.title')}>
           <ClipboardList className="w-4 h-4" /> Pédigrée
         </button>
 
-        <button onClick={() => generate('clutch')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title="Rapport de ponte">
+        <button onClick={() => generate('clutch')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title={t('birthCert.actions.generate.clutch.title')}>
           <FileText className="w-4 h-4" /> Rapport ponte
         </button>
 
-        <button onClick={() => generate('incubation')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title="Rapport d’incubation">
+        <button onClick={() => generate('incubation')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title={t('birthCert.actions.generate.incubation.title')}>
           <Beaker className="w-4 h-4" /> Incubation
         </button>
 
-        <button onClick={() => generate('hatch')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title="Certificat d’éclosion">
+        <button onClick={() => generate('hatch')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title={t('birthCert.actions.generate.hatch.title')}>
           <BadgeCheck className="w-4 h-4" /> Éclosion
         </button>
 
-        <button onClick={() => generate('id')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title="Certificat d’identification">
+        <button onClick={() => generate('id')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title={t('birthCert.actions.generate.id.title')}>
           <Fingerprint className="w-4 h-4" /> Identification
         </button>
 
-        <button onClick={() => generate('sexing')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title="Certificat de sexage">
+        <button onClick={() => generate('sexing')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title={t('birthCert.actions.generate.sexing.title')}>
           <Scale className="w-4 h-4" /> Sexage
         </button>
 
-        <button onClick={() => generate('transfer')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title="Certificat de cession / vente">
+        <button onClick={() => generate('transfer')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title={t('birthCert.actions.generate.transfer.title')}>
           <Download className="w-4 h-4" /> Cession / Vente
         </button>
 
-        <button onClick={() => generate('quarantine')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title="Attestation de quarantaine">
+        <button onClick={() => generate('quarantine')} className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border hover:shadow" disabled={busy} title={t('birthCert.actions.generate.quarantine.title')}>
           <Shield className="w-4 h-4" /> Quarantaine
         </button>
       </div>
@@ -905,7 +900,7 @@ const BirthCertificates: React.FC = () => {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <Eye className="w-4 h-4" />
-              <span className="font-medium">Aperçu PDF</span>
+              <span className="font-medium">{t('birthCert.preview.title')}</span>
             </div>
             <a
               href={previewUrl}
@@ -914,13 +909,13 @@ const BirthCertificates: React.FC = () => {
               aria-disabled={!previewUrl}
             >
               <Download className="w-4 h-4" />
-              Télécharger
+              {t('birthCert.preview.download')}
             </a>
           </div>
           <iframe title="pdf-preview" src={previewUrl} className="w-full h-[70vh] rounded-lg border" />
           <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
             <QrCode className="w-3 h-3" />
-            Les QR codes et tableaux avancés se chargent via CDN. Sans réseau, le PDF reste lisible (fallback).
+            {t('birthCert.preview.cdnNote')}
           </p>
         </div>
       )}

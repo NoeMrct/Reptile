@@ -1,15 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Egg as EggIcon, Plus, Thermometer, Droplet, Calendar, TrendingUp, Pencil, Trash2, X, Weigh } from 'lucide-react';
+import { Egg as EggIcon, Plus, Thermometer, Droplet, Calendar, TrendingUp, Pencil, Trash2, X } from 'lucide-react';
 import { Clutch, Egg, Pairing, Snake } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { format, differenceInDays, addDays } from 'date-fns';
+import { t } from 'i18next';
 
 const K_CLUTCHES = (uid: string) => `clutches_by_user_${uid || 'anonymous'}`;
 const K_EGGS     = (uid: string) => `eggs_by_user_${uid || 'anonymous'}`;
 const K_SNAKES   = (uid: string) => `snakes_by_user_${uid || 'anonymous'}`;
 const K_PAIRINGS = (uid: string) => `pairings_by_user_${uid || 'anonymous'}`;
 
-type EggStatus = Egg['status']; // 'incubating' | 'hatched' | 'infertile' | 'damaged'
+type EggStatus = Egg['status'];
 
 type ClutchForm = {
   pairingId: string;
@@ -35,10 +36,10 @@ const statusColor = (s: EggStatus) =>
   :                    'border-red-300 bg-red-50 text-red-900';
 
 const statusLabel = (s: EggStatus) =>
-  s === 'incubating' ? 'En incubation'
-  : s === 'hatched'  ? 'Éclos'
-  : s === 'infertile'? 'Infertile'
-  : 'Endommagé';
+  s === 'incubating' ? t('eggTracking.status.incubating')
+  : s === 'hatched'  ? t('eggTracking.status.hatched')
+  : s === 'infertile'? t('eggTracking.status.infertile')
+  : t('eggTracking.status.damaged');
 
 const fmt = (d: string) => format(new Date(d), 'dd MMM yyyy');
 
@@ -232,7 +233,7 @@ const EggTracking = () => {
     e.preventDefault();
     if (!form.pairingId) return;
     if (form.fertileCount > form.eggCount) {
-      alert("Le nombre d'œufs fertiles ne peut pas dépasser le total d'œufs.");
+      alert("{t('eggTracking.form.error.fertileExceedsTotal')}");
       return;
     }
 
@@ -322,37 +323,37 @@ const EggTracking = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="text-xl font-bold text-gray-900">Tracking des Œufs</h3>
-          <p className="text-gray-600 mt-1">Surveillez l'incubation de vos pontes</p>
+          <h3 className="text-xl font-bold text-gray-900">{t('eggTracking.title')}</h3>
+          <p className="text-gray-600 mt-1">{t('eggTracking.subtitle')}</p>
         </div>
         <button
           onClick={openAdd}
           className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Nouvelle Ponte
+          {t('eggTracking.actions.newClutch')}
         </button>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <div className="bg-white border rounded-lg p-3 text-center">
-          <div className="text-xs text-gray-500">Œufs</div>
+          <div className="text-xs text-gray-500">{t('eggTracking.stats.eggs')}</div>
           <div className="text-xl font-semibold">{totals.totalEggs}</div>
         </div>
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
-          <div className="text-xs text-blue-700">Incubation</div>
+          <div className="text-xs text-blue-700">{t('eggTracking.stats.incubating')}</div>
           <div className="text-xl font-semibold text-blue-900">{totals.inc}</div>
         </div>
         <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
-          <div className="text-xs text-green-700">Éclos</div>
+          <div className="text-xs text-green-700">{t('eggTracking.status.hatched')}</div>
           <div className="text-xl font-semibold text-green-900">{totals.hat}</div>
         </div>
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
-          <div className="text-xs text-gray-700">Infertiles</div>
+          <div className="text-xs text-gray-700">{t('eggTracking.stats.infertilePlural')}</div>
           <div className="text-xl font-semibold text-gray-900">{totals.inf}</div>
         </div>
         <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-center">
-          <div className="text-xs text-red-700">Endommagés</div>
+          <div className="text-xs text-red-700">{t('eggTracking.stats.damagedPlural')}</div>
           <div className="text-xl font-semibold text-red-900">{totals.dam}</div>
         </div>
       </div>
@@ -368,16 +369,16 @@ const EggTracking = () => {
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                    Ponte: {pairing ? `${maleLabel(pairing)} × ${femaleLabel(pairing)}` : '—'}
+                    {t('eggTracking.clutchLabel')}: {pairing ? `${maleLabel(pairing)} × ${femaleLabel(pairing)}` : '—'}
                   </h4>
                   <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
                     <div className="flex items-center">
                       <Calendar className="h-4 w-4 mr-1" />
-                      Pondue le {fmt(clutch.laidDate)}
+                      {t('eggTracking.laidOn', { date: fmt(clutch.laidDate) })}
                     </div>
                     {clutch.expectedHatchDate && daysRemaining !== null && (
                       <div className={`px-2 py-1 rounded-full text-xs font-medium ${daysRemaining > 0 ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
-                        {daysRemaining > 0 ? `${daysRemaining} jours restants` : "Éclosion imminente !"}
+                        {daysRemaining > 0 ? t('eggTracking.daysRemaining', { count: daysRemaining }) : t('eggTracking.hatchingSoon')}
                       </div>
                     )}
                   </div>
@@ -387,16 +388,16 @@ const EggTracking = () => {
                   <button
                     className="p-2 text-gray-600 hover:text-blue-600 transition-colors"
                     onClick={() => openEdit(clutch)}
-                    aria-label="Modifier la ponte"
-                    title="Modifier"
+                    aria-label={t('eggTracking.a11y.editClutch')}
+                    title={t('common.edit')}
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
                   <button
                     className="p-2 text-gray-600 hover:text-red-600 transition-colors"
                     onClick={() => requestDelete(clutch.id)}
-                    aria-label="Supprimer la ponte"
-                    title="Supprimer"
+                    aria-label={t('eggTracking.a11y.deleteClutch')}
+                    title={t('common.delete')}
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -409,7 +410,7 @@ const EggTracking = () => {
                     <EggIcon className="h-5 w-5 text-gray-600" />
                     <span className="text-2xl font-bold text-gray-900">{clutch.eggCount}</span>
                   </div>
-                  <p className="text-sm text-gray-600">Total œufs</p>
+                  <p className="text-sm text-gray-600">{t('eggTracking.stat.totalEggs')}</p>
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-4">
@@ -417,7 +418,7 @@ const EggTracking = () => {
                     <TrendingUp className="h-5 w-5 text-green-600" />
                     <span className="text-2xl font-bold text-green-900">{clutch.fertileCount || 0}</span>
                   </div>
-                  <p className="text-sm text-green-700">Fertiles</p>
+                  <p className="text-sm text-green-700">{t('eggTracking.form.fertileCount')}</p>
                 </div>
 
                 <div className="bg-blue-50 rounded-lg p-4">
@@ -425,7 +426,7 @@ const EggTracking = () => {
                     <Thermometer className="h-5 w-5 text-blue-600" />
                     <span className="text-2xl font-bold text-blue-900">{clutch.incubationTemp}°C</span>
                   </div>
-                  <p className="text-sm text-blue-700">Température</p>
+                  <p className="text-sm text-blue-700">{t('eggTracking.temperature')}</p>
                 </div>
 
                 <div className="bg-cyan-50 rounded-lg p-4">
@@ -433,7 +434,7 @@ const EggTracking = () => {
                     <Droplet className="h-5 w-5 text-cyan-600" />
                     <span className="text-2xl font-bold text-cyan-900">{clutch.incubationHumidity}%</span>
                   </div>
-                  <p className="text-sm text-cyan-700">Humidité</p>
+                  <p className="text-sm text-cyan-700">{t('eggTracking.humidity')}</p>
                 </div>
               </div>
 
@@ -445,7 +446,7 @@ const EggTracking = () => {
 
               {/* Grille d’œufs */}
               <div>
-                <h5 className="font-medium text-gray-900 mb-3">Œufs individuels</h5>
+                <h5 className="font-medium text-gray-900 mb-3">{t('eggTracking.individualEggs')}</h5>
                 <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
                   {eggsOfClutch.map(egg => (
                     <button
@@ -453,8 +454,8 @@ const EggTracking = () => {
                       type="button"
                       onClick={() => openEggEdit(egg)}
                       className={`relative aspect-square rounded-lg border-2 flex flex-col items-center justify-center cursor-pointer transition-all hover:scale-105 ${statusColor(egg.status)}`}
-                      aria-label={`Œuf ${egg.eggNumber}: ${statusLabel(egg.status)}${egg.weight ? `, ${egg.weight} g` : ''}`}
-                      title={`Œuf ${egg.eggNumber}`}
+                      aria-label={t('eggTracking.egg.aria', { n: egg.eggNumber, status: statusLabel(egg.status), weight: egg.weight == null ? '' : t('eggTracking.egg.weightSuffix', { w: egg.weight }) })}
+                      title={t('eggTracking.egg.title', { n: egg.eggNumber })}
                     >
                       <span className="text-lg font-bold">{egg.eggNumber}</span>
                       <span className="text-[10px] leading-none mt-0.5">{statusLabel(egg.status)}</span>
@@ -470,19 +471,19 @@ const EggTracking = () => {
                 <div className="flex flex-wrap items-center gap-4 text-xs">
                   <div className="flex items-center">
                     <div className="w-3 h-3 bg-blue-200 border border-blue-300 rounded mr-2"></div>
-                    <span className="text-gray-600">En incubation</span>
+                    <span className="text-gray-600">{t('eggTracking.status.incubating')}</span>
                   </div>
                   <div className="flex items-center">
                     <div className="w-3 h-3 bg-green-200 border border-green-300 rounded mr-2"></div>
-                    <span className="text-gray-600">Éclos</span>
+                    <span className="text-gray-600">{t('eggTracking.status.hatched')}</span>
                   </div>
                   <div className="flex items-center">
                     <div className="w-3 h-3 bg-gray-200 border border-gray-300 rounded mr-2"></div>
-                    <span className="text-gray-600">Infertile</span>
+                    <span className="text-gray-600">{t('eggTracking.status.infertile')}</span>
                   </div>
                   <div className="flex items-center">
                     <div className="w-3 h-3 bg-red-200 border border-red-300 rounded mr-2"></div>
-                    <span className="text-gray-600">Endommagé</span>
+                    <span className="text-gray-600">{t('eggTracking.status.damaged')}</span>
                   </div>
                 </div>
               </div>
@@ -494,12 +495,12 @@ const EggTracking = () => {
       {clutches.length === 0 && (
         <div className="text-center py-12 bg-gray-50 rounded-xl">
           <EggIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600">Aucune ponte enregistrée</p>
+          <p className="text-gray-600">{t('eggTracking.empty')}</p>
           <button
             onClick={openAdd}
             className="mt-4 text-green-600 hover:text-green-700 font-medium"
           >
-            Enregistrer votre première ponte
+            {t('eggTracking.createFirst')}
           </button>
         </div>
       )}
@@ -510,25 +511,25 @@ const EggTracking = () => {
             <button
               onClick={closeModal}
               className="absolute right-3 top-3 p-2 rounded-lg hover:bg-gray-100"
-              aria-label="Fermer"
+              aria-label={t('common.close')}
             >
               <X className="h-5 w-5 text-gray-500" />
             </button>
 
             <h3 className="text-2xl font-bold text-gray-900 mb-6">
-              {isEditing ? 'Modifier la ponte' : 'Nouvelle ponte'}
+              {isEditing ? t('eggTracking.modal.editTitle') : t('eggTracking.modal.createTitle')}
             </h3>
 
             <form onSubmit={onSubmitClutch} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Couple (pairing)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('eggTracking.form.pairing')}</label>
                 <select
                   value={form.pairingId}
                   onChange={e => setForm({ ...form, pairingId: e.target.value })}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 >
-                  <option value="">Sélectionner un pairing…</option>
+                  <option value="">{t('eggTracking.form.selectPairing')}</option>
                   {pairings.map(p => (
                     <option key={p.id} value={p.id}>
                       {getSnakeName(p.maleSnakeId)} × {getSnakeName(p.femaleSnakeId)}
@@ -537,14 +538,14 @@ const EggTracking = () => {
                 </select>
                 {pairings.length === 0 && (
                   <p className="text-xs text-orange-600 mt-1">
-                    Aucun pairing trouvé. Crée d’abord un accouplement dans la section Pairings.
+                    {t('eggTracking.form.noPairingsHint')}
                   </p>
                 )}
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Date de ponte</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('eggTracking.form.laidDate')}</label>
                   <input
                     type="date"
                     value={form.laidDate}
@@ -559,7 +560,7 @@ const EggTracking = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Date d’éclosion estimée</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('eggTracking.form.expectedHatchDate')}</label>
                   <input
                     type="date"
                     value={form.expectedHatchDate}
@@ -571,7 +572,7 @@ const EggTracking = () => {
 
               <div className="grid md:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Nombre d’œufs</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('eggTracking.form.eggCount')}</label>
                   <input
                     type="number"
                     min={0}
@@ -586,7 +587,7 @@ const EggTracking = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Fertiles</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('eggTracking.form.fertileCount')}</label>
                   <input
                     type="number"
                     min={0}
@@ -598,7 +599,7 @@ const EggTracking = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Température (°C)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('eggTracking.form.tempC')}</label>
                   <input
                     type="number"
                     step="0.1"
@@ -611,7 +612,7 @@ const EggTracking = () => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Humidité (%)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('eggTracking.form.humidityPct')}</label>
                   <input
                     type="number"
                     step="1"
@@ -621,21 +622,21 @@ const EggTracking = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('eggTracking.form.notes')}</label>
                   <textarea
                     rows={3}
                     value={form.notes}
                     onChange={(e) => setForm({ ...form, notes: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    placeholder="Observations (poids moyen, bougies, pertes, etc.)"
+                    placeholder={t('eggTracking.form.notesPlaceholder')}
                   />
                 </div>
               </div>
 
               <div className="flex justify-end gap-3">
-                <button type="button" onClick={closeModal} className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Annuler</button>
+                <button type="button" onClick={closeModal} className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">{t('common.cancel')}</button>
                 <button type="submit" className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                  {isEditing ? 'Mettre à jour' : 'Enregistrer'}
+                  {isEditing ? t('common.update') : t('common.save')}
                 </button>
               </div>
             </form>
@@ -646,13 +647,13 @@ const EggTracking = () => {
       {confirmDeleteId && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl max-w-md w-full p-6">
-            <h4 className="text-lg font-semibold mb-2">Supprimer cette ponte ?</h4>
+            <h4 className="text-lg font-semibold mb-2">{t('eggTracking.delete.title')}</h4>
             <p className="text-sm text-gray-600 mb-6">
-              Cette action supprimera également tous les œufs associés.
+              {t('eggTracking.delete.subtitle')}
             </p>
             <div className="flex justify-end gap-3">
-              <button onClick={cancelDelete} className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">Annuler</button>
-              <button onClick={confirmDelete} className="px-5 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">Supprimer</button>
+              <button onClick={cancelDelete} className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">{t('common.cancel')}</button>
+              <button onClick={confirmDelete} className="px-5 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">{t('common.delete')}</button>
             </div>
           </div>
         </div>
@@ -664,43 +665,43 @@ const EggTracking = () => {
             <button
               onClick={cancelEggEdit}
               className="absolute right-3 top-3 p-2 rounded-lg hover:bg-gray-100"
-              aria-label="Fermer"
+              aria-label={t('common.close')}
             >
               <X className="h-5 w-5 text-gray-500" />
             </button>
 
-            <h4 className="text-lg font-semibold text-gray-900 mb-4">Modifier l’œuf</h4>
+            <h4 className="text-lg font-semibold text-gray-900 mb-4">{t('eggTracking.eggModal.title')}</h4>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('eggTracking.eggModal.status')}</label>
                 <select
                   value={editingEgg.status}
                   onChange={(e) => setEditingEgg({ ...editingEgg, status: e.target.value as EggStatus })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="incubating">En incubation</option>
-                  <option value="hatched">Éclos</option>
-                  <option value="infertile">Infertile</option>
-                  <option value="damaged">Endommagé</option>
+                  <option value="incubating">{t('eggTracking.status.incubating')}</option>
+                  <option value="hatched">{t('eggTracking.status.hatched')}</option>
+                  <option value="infertile">{t('eggTracking.status.infertile')}</option>
+                  <option value="damaged">{t('eggTracking.status.damaged')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Poids (g)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('eggTracking.eggModal.weight')}</label>
                 <input
                   type="number"
                   step="0.1"
                   value={editingEgg.weight ?? ''}
                   onChange={(e) => setEditingEgg({ ...editingEgg, weight: e.target.value === '' ? null : Number(e.target.value) })}
-                  placeholder="ex: 62.5"
+                  placeholder={t('eggTracking.eggModal.weightPlaceholder')}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div className="flex justify-end gap-3">
-                <button onClick={cancelEggEdit} className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">Annuler</button>
-                <button onClick={saveEggEdit} className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">Enregistrer</button>
+                <button onClick={cancelEggEdit} className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">{t('common.cancel')}</button>
+                <button onClick={saveEggEdit} className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">{t('common.save')}</button>
               </div>
             </div>
           </div>

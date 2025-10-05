@@ -45,7 +45,7 @@ const ContactPage = () => {
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center space-x-2">
               <Shield className="h-8 w-8 text-green-600" />
-              <span className="text-xl font-bold text-gray-900">Snake Manager</span>
+              <span className="text-xl font-bold text-gray-900">{t('brand.name')}</span>
             </Link>
             <Link 
               to="/" 
@@ -63,9 +63,9 @@ const ContactPage = () => {
           <div className="max-w-4xl mx-auto">
             {/* Header */}
             <div className="text-center mb-16">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">Get in Touch</h1>
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('contact.getInTouch')}</h1>
               <p className="text-xl text-gray-600">
-                Have questions about Snake Manager? We'd love to hear from you.
+                {t('contact.subtitle')}
               </p>
             </div>
 
@@ -73,13 +73,13 @@ const ContactPage = () => {
               {/* Contact Info */}
               <div className="lg:col-span-1">
                 <div className="bg-white p-8 rounded-xl shadow-sm h-fit">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">{t('contact.infoTitle')}</h3>
                   
                   <div className="space-y-6">
                     <div className="flex items-start">
                       <Mail className="h-6 w-6 text-green-600 mt-1 mr-4 flex-shrink-0" />
                       <div>
-                        <h4 className="font-semibold text-gray-900">Email</h4>
+                        <h4 className="font-semibold text-gray-900">{t('contact.email')}</h4>
                         <p className="text-gray-600">support@snakemanager.com</p>
                       </div>
                     </div>
@@ -87,7 +87,7 @@ const ContactPage = () => {
                     <div className="flex items-start">
                       <Phone className="h-6 w-6 text-green-600 mt-1 mr-4 flex-shrink-0" />
                       <div>
-                        <h4 className="font-semibold text-gray-900">Phone</h4>
+                        <h4 className="font-semibold text-gray-900">{t('contact.phone')}</h4>
                         <p className="text-gray-600">+1 (555) 123-4567</p>
                       </div>
                     </div>
@@ -95,7 +95,7 @@ const ContactPage = () => {
                     <div className="flex items-start">
                       <MapPin className="h-6 w-6 text-green-600 mt-1 mr-4 flex-shrink-0" />
                       <div>
-                        <h4 className="font-semibold text-gray-900">Address</h4>
+                        <h4 className="font-semibold text-gray-900">{t('contact.address')}</h4>
                         <p className="text-gray-600">
                           123 Reptile Way<br />
                           San Francisco, CA 94102
@@ -105,11 +105,11 @@ const ContactPage = () => {
                   </div>
 
                   <div className="mt-8 pt-8 border-t border-gray-200">
-                    <h4 className="font-semibold text-gray-900 mb-3">Support Hours</h4>
+                    <h4 className="font-semibold text-gray-900 mb-3">{t('contact.supportHours')}</h4>
                     <p className="text-gray-600 text-sm">
-                      Monday - Friday: 9:00 AM - 6:00 PM PST<br />
-                      Saturday: 10:00 AM - 4:00 PM PST<br />
-                      Sunday: Closed
+                      {t('contact.hours.weekdays')}<br />
+                      {t('contact.hours.saturday')}<br />
+                      {t('contact.hours.sundayClosed')}
                     </p>
                   </div>
                 </div>
@@ -118,14 +118,14 @@ const ContactPage = () => {
               {/* Contact Form */}
               <div className="lg:col-span-2">
                 <div className="bg-white p-8 rounded-xl shadow-sm">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">{t('contact.form.title')}</h3>
                   
                   {isSubmitted ? (
                     <div className="text-center py-8">
                       <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Mail className="h-8 w-8 text-green-600" />
                       </div>
-                      <h4 className="text-xl font-semibold text-gray-900 mb-2">Message Sent!</h4>
+                      <h4 className="text-xl font-semibold text-gray-900 mb-2">{t('contact.form.sentTitle')}</h4>
                       <p className="text-gray-600">
                         {t('contact.form.successText')}
                       </p>
@@ -133,9 +133,7 @@ const ContactPage = () => {
                   ) : (
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                          Your Name
-                        </label>
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">{t('contact.form.nameLabel')}</label>
                         <input
                           type="text"
                           id="name"
@@ -144,14 +142,12 @@ const ContactPage = () => {
                           onChange={handleChange}
                           required
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
-                          placeholder="Enter your full name"
+                          placeholder={t("contact.form.namePlaceholder")}
                         />
                       </div>
 
                       <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                          Email Address
-                        </label>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">{t('contact.form.emailLabel')}</label>
                         <input
                           type="email"
                           id="email"
@@ -160,14 +156,12 @@ const ContactPage = () => {
                           onChange={handleChange}
                           required
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
-                          placeholder="Enter your email"
+                          placeholder={t("contact.form.emailPlaceholder")}
                         />
                       </div>
 
                       <div>
-                        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                          Message
-                        </label>
+                        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">{t('contact.form.messageLabel')}</label>
                         <textarea
                           id="message"
                           name="message"
@@ -176,7 +170,7 @@ const ContactPage = () => {
                           required
                           rows={6}
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
-                          placeholder="Tell us how we can help..."
+                          placeholder={t("contact.form.messagePlaceholder")}
                         />
                       </div>
 
@@ -188,15 +182,15 @@ const ContactPage = () => {
                       {isSubmitting ? (
                         <div className="flex items-center justify-center">
                           <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                          Envoi en cours...
+                          {t('contact.form.sending')}
                         </div>
                       ) : showSuccess ? (
                         <div className="flex items-center justify-center">
                           <Check className="h-5 w-5 mr-2" />
-                          Message envoyé !
+                          {t('contact.form.sentShort')}
                         </div>
                       ) : (
-                        'Envoyer le message'
+                        t('contact.form.send')
                       )}
                       </button>
                     </form>

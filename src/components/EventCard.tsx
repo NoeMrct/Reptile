@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { Event } from '../types';
 import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 interface EventCardProps {
   event: Event;
@@ -19,7 +20,6 @@ const EventCard: React.FC<EventCardProps> = ({ event, snakeName, onDelete, onEdi
   const menuRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
 
-  // Fermer le menu au clic hors composant
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
       if (!menuOpen) return;
@@ -66,7 +66,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, snakeName, onDelete, onEdi
     if (!onDelete) return;
     const confirmed = window.confirm(
       t('events.confirmDelete', {
-        defaultValue: 'Supprimer cet événement ? Cette action est définitive.',
+        defaultValue: t('events.confirmDelete'),
       })
     );
     if (confirmed) onDelete(event.id);
@@ -78,20 +78,16 @@ const EventCard: React.FC<EventCardProps> = ({ event, snakeName, onDelete, onEdi
     setMenuOpen(false);
   };
 
-  // ---------- FORMAT DATE SANS date-fns (via Intl) ----------
-  // Option par i18n (ex: "short" | "medium" | "long" | "full"), fallback "medium"
   const style = (t('date.cardStyle', { defaultValue: 'medium' }) as
     | 'short'
     | 'medium'
     | 'long'
     | 'full');
 
-  // On formate selon la locale actuelle; si tu veux forcer FR: 'fr-FR'
   const formatter = new Intl.DateTimeFormat(i18n.language || 'fr-FR', {
     dateStyle: style,
   });
   const dateText = formatter.format(new Date(event.date));
-  // ----------------------------------------------------------
 
   return (
     <div className={`group border rounded-lg p-4 ${getEventColor(event.type)}`}>
@@ -99,15 +95,12 @@ const EventCard: React.FC<EventCardProps> = ({ event, snakeName, onDelete, onEdi
         <div className="flex-shrink-0 mt-1">{getEventIcon(event.type)}</div>
 
         <div className="flex-1">
-          {/* En-tête : titre à gauche, date à droite. Au survol, la date se décale vers la gauche. */}
           <div className="flex items-center justify-between">
             <h4 className="font-medium text-gray-900">
               {getEventLabel(event.type)} - {snakeName}
             </h4>
 
-            {/* Conteneur droit : relative pour ancrer le bouton + menu */}
             <div className="relative flex items-center shrink-0">
-              {/* La marge est entre la date et le menu (pr-10 au hover) */}
               <span className="text-sm text-gray-500 flex items-center pr-0 transition-all duration-150 ease-out group-hover:pr-10">
                 <Calendar className="h-4 w-4 mr-1" />
                 {dateText}
@@ -115,7 +108,6 @@ const EventCard: React.FC<EventCardProps> = ({ event, snakeName, onDelete, onEdi
 
               {(onDelete || onEdit) && (
                 <>
-                  {/* Bouton kebab collé au bord droit ; la marge vient de la date */}
                   <button
                     ref={btnRef}
                     type="button"
@@ -136,7 +128,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, snakeName, onDelete, onEdi
                       ref={menuRef}
                       role="menu"
                       aria-label={t('events.actions.menuLabel', {
-                        defaultValue: 'Menu actions événement',
+                        defaultValue: t('events.actions.menuLabel'),
                       })}
                       className="absolute right-0 top-8 z-10 w-44 rounded-lg border bg-white shadow-lg py-1"
                     >

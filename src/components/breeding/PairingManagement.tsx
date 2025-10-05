@@ -3,6 +3,7 @@ import { Heart, Plus, Pencil, Trash2, Calendar, X } from 'lucide-react';
 import { Pairing, Snake } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { format } from 'date-fns';
+import { t } from 'i18next';
 
 type FormState = {
   maleSnakeId: string;
@@ -34,6 +35,7 @@ const PairingManagement = () => {
   });
 
   useEffect(() => {
+    // Mock serpents pour la démo
     const mockSnakes: Snake[] = [
       {
         id: '1',
@@ -71,6 +73,7 @@ const PairingManagement = () => {
       }
     } catch {}
 
+    // Mock pairings si aucun en storage
     const mockPairings: Pairing[] = [
       {
         id: '1',
@@ -78,7 +81,7 @@ const PairingManagement = () => {
         femaleSnakeId: '1',
         pairingDate: '2025-01-15',
         status: 'active',
-        notes: "Première tentative d'accouplement",
+        notes: t('pairing.sampleNote', { defaultValue: "Première tentative d'accouplement" }),
         userId: user?.id || '',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
@@ -130,7 +133,7 @@ const PairingManagement = () => {
     resetForm();
   };
 
-  const getSnakeName = (id: string) => snakes.find(s => s.id === id)?.name || 'Unknown';
+  const getSnakeName = (id: string) => snakes.find(s => s.id === id)?.name || t('common.unknown');
   const getSnakeMorph = (id: string) => snakes.find(s => s.id === id)?.morph || '';
 
   const getStatusColor = (status: Pairing['status']) => {
@@ -146,12 +149,12 @@ const PairingManagement = () => {
 
   const getStatusLabel = (status: Pairing['status']) => {
     switch (status) {
-      case 'planned': return 'Planifié';
-      case 'active': return 'En cours';
-      case 'separated': return 'Séparés';
-      case 'successful': return 'Réussi';
-      case 'failed': return 'Échec';
-      default: return status;
+      case 'planned': return t('pairing.status.planned');
+      case 'active': return t('pairing.status.active');
+      case 'separated': return t('pairing.status.separated');
+      case 'successful': return t('pairing.status.successful');
+      case 'failed': return t('pairing.status.failed');
+      default: return t('common.unknown');
     }
   };
 
@@ -163,7 +166,7 @@ const PairingManagement = () => {
 
     if (!formData.maleSnakeId || !formData.femaleSnakeId) return;
     if (formData.maleSnakeId === formData.femaleSnakeId) {
-      alert('Le mâle et la femelle ne peuvent pas être le même serpent.');
+      alert(t('pairing.alert.sameSnake'));
       return;
     }
 
@@ -205,15 +208,15 @@ const PairingManagement = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="text-xl font-bold text-gray-900">Gestion des Pairings</h3>
-          <p className="text-gray-600 mt-1">Suivez vos accouplements et leur progrès</p>
+          <h3 className="text-xl font-bold text-gray-900">{t('pairing.title')}</h3>
+          <p className="text-gray-600 mt-1">{t('pairing.subtitle')}</p>
         </div>
         <button
           onClick={openAddModal}
           className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Nouveau Pairing
+          {t('pairing.actions.new')}
         </button>
       </div>
 
@@ -248,16 +251,16 @@ const PairingManagement = () => {
                 <button
                   className="p-2 text-gray-600 hover:text-blue-600 transition-colors"
                   onClick={() => openEditModal(pairing)}
-                  aria-label="Modifier"
-                  title="Modifier"
+                  aria-label={t('common.edit')}
+                  title={t('common.edit')}
                 >
                   <Pencil className="h-4 w-4" />
                 </button>
                 <button
                   className="p-2 text-gray-600 hover:text-red-600 transition-colors"
                   onClick={() => requestDelete(pairing.id)}
-                  aria-label="Supprimer"
-                  title="Supprimer"
+                  aria-label={t('common.delete')}
+                  title={t('common.delete')}
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -273,12 +276,12 @@ const PairingManagement = () => {
       {pairings.length === 0 && (
         <div className="text-center py-12 bg-gray-50 rounded-xl">
           <Heart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600">Aucun pairing enregistré</p>
+          <p className="text-gray-600">{t('pairing.empty')}</p>
           <button
             onClick={openAddModal}
             className="mt-4 text-green-600 hover:text-green-700 font-medium"
           >
-            Créer votre premier pairing
+            {t('pairing.actions.createFirst')}
           </button>
         </div>
       )}
@@ -289,20 +292,21 @@ const PairingManagement = () => {
             <button
               onClick={closeModal}
               className="absolute right-3 top-3 p-2 rounded-lg hover:bg-gray-100"
-              aria-label="Fermer"
+              aria-label={t('common.close')}
+              title={t('common.close')}
             >
               <X className="h-5 w-5 text-gray-500" />
             </button>
 
             <h3 className="text-2xl font-bold text-gray-900 mb-6">
-              {isEditing ? 'Modifier le Pairing' : 'Nouveau Pairing'}
+              {isEditing ? t('pairing.modal.editTitle') : t('pairing.modal.newTitle')}
             </h3>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Mâle
+                    {t('pairing.fields.male')}
                   </label>
                   <select
                     value={formData.maleSnakeId}
@@ -310,7 +314,7 @@ const PairingManagement = () => {
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   >
-                    <option value="">Sélectionner un mâle…</option>
+                    <option value="">{t('pairing.placeholders.selectMale')}</option>
                     {maleSnakes.map(snake => (
                       <option key={snake.id} value={snake.id}>
                         {snake.name} - {snake.morph}
@@ -321,7 +325,7 @@ const PairingManagement = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Femelle
+                    {t('pairing.fields.female')}
                   </label>
                   <select
                     value={formData.femaleSnakeId}
@@ -329,7 +333,7 @@ const PairingManagement = () => {
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   >
-                    <option value="">Sélectionner une femelle…</option>
+                    <option value="">{t('pairing.placeholders.selectFemale')}</option>
                     {femaleSnakes.map(snake => (
                       <option key={snake.id} value={snake.id}>
                         {snake.name} - {snake.morph}
@@ -342,7 +346,7 @@ const PairingManagement = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Date d’accouplement
+                    {t('pairing.fields.date')}
                   </label>
                   <input
                     type="date"
@@ -355,32 +359,32 @@ const PairingManagement = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Statut
+                    {t('pairing.fields.status')}
                   </label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as Pairing['status'] })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   >
-                    <option value="planned">Planifié</option>
-                    <option value="active">En cours</option>
-                    <option value="separated">Séparés</option>
-                    <option value="successful">Réussi</option>
-                    <option value="failed">Échec</option>
+                    <option value="planned">{t('pairing.status.planned')}</option>
+                    <option value="active">{t('pairing.status.active')}</option>
+                    <option value="separated">{t('pairing.status.separated')}</option>
+                    <option value="successful">{t('pairing.status.successful')}</option>
+                    <option value="failed">{t('pairing.status.failed')}</option>
                   </select>
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Notes
+                  {t('pairing.fields.notes')}
                 </label>
                 <textarea
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="Observations, comportements, etc…"
+                  placeholder={t('pairing.placeholders.notes')}
                 />
               </div>
 
@@ -390,13 +394,13 @@ const PairingManagement = () => {
                   onClick={closeModal}
                   className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  Annuler
+                  {t('common.cancel')}
                 </button>
                 <button
                   type="submit"
                   className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                 >
-                  {isEditing ? 'Mettre à jour' : 'Enregistrer'}
+                  {isEditing ? t('pairing.actions.update') : t('common.save')}
                 </button>
               </div>
             </form>
@@ -407,22 +411,22 @@ const PairingManagement = () => {
       {confirmDeleteId && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl max-w-md w-full p-6">
-            <h4 className="text-lg font-semibold mb-2">Supprimer ce pairing ?</h4>
+            <h4 className="text-lg font-semibold mb-2">{t('pairing.delete.title')}</h4>
             <p className="text-sm text-gray-600 mb-6">
-              Cette action est définitive. Voulez-vous vraiment supprimer ce pairing ?
+              {t('pairing.delete.confirm')}
             </p>
             <div className="flex justify-end gap-3">
               <button
                 onClick={cancelDelete}
                 className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50"
               >
-                Annuler
+                {t('common.cancel')}
               </button>
               <button
                 onClick={confirmDelete}
                 className="px-5 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
               >
-                Supprimer
+                {t('common.delete')}
               </button>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Shield, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -22,11 +22,11 @@ const AuthPage = () => {
 
   const { signIn, signUp, resetPassword, user } = useAuth();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       navigate(from, { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, navigate, from]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +39,7 @@ const AuthPage = () => {
         if (error) {
           setError(error.message);
         } else {
-          setMessage('Password reset email sent! Check your inbox.');
+          setMessage(t('auth.resetSent'));
         }
       } else if (isLogin) {
         const { error } = await signIn(formData.email, formData.password);
@@ -48,18 +48,18 @@ const AuthPage = () => {
         }
       } else {
         if (formData.password !== formData.confirmPassword) {
-          setError('Passwords do not match');
+          setError(t('auth.passwordsDontMatch'));
           return;
         }
         const { error } = await signUp(formData.email, formData.password);
         if (error) {
           setError(error.message);
         } else {
-          setMessage('Account created successfully! Please check your email to verify your account.');
+          setMessage(t('auth.signUpSuccess', { defaultValue: 'Account created successfully! Please check your email to verify your account.' }));
         }
       }
-    } catch (error) {
-      setError('An unexpected error occurred');
+    } catch (_err) {
+      setError(t('common.unexpectedError'));
     } finally {
       setLoading(false);
     }
@@ -75,28 +75,26 @@ const AuthPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
-        {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2">
             <Shield className="h-10 w-10 text-green-600" />
-            <span className="text-2xl font-bold text-gray-900">Snake Manager</span>
+            <span className="text-2xl font-bold text-gray-900">{t('brand.name')}</span>
           </Link>
         </div>
 
-        {/* Auth Form */}
         <div className="bg-white rounded-xl shadow-lg p-8">
           {showForgotPassword ? (
             <>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Reset Password</h2>
-              <p className="text-gray-600 mb-6">Enter your email to receive a password reset link.</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.resetPassword')}</h2>
+              <p className="text-gray-600 mb-6">{t('auth.resetSubtitle')}</p>
             </>
           ) : (
             <>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                {isLogin ? 'Welcome Back' : 'Create Account'}
+                {isLogin ? t('auth.welcomeBack') : t('auth.createAccount')}
               </h2>
               <p className="text-gray-600 mb-6">
-                {isLogin ? 'Sign in to your account' : 'Start managing your snake collection today'}
+                {isLogin ? t('auth.signInSubtitle') : t('auth.signUpSubtitle')}
               </p>
             </>
           )}
@@ -116,7 +114,7 @@ const AuthPage = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address
+                {t('auth.email')}
               </label>
               <input
                 type="email"
@@ -126,7 +124,7 @@ const AuthPage = () => {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
-                placeholder="Enter your email"
+                placeholder={t('auth.emailPlaceholder')}
               />
             </div>
 
@@ -134,7 +132,7 @@ const AuthPage = () => {
               <>
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                    Password
+                    {t('auth.password')}
                   </label>
                   <div className="relative">
                     <input
@@ -145,12 +143,13 @@ const AuthPage = () => {
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors pr-12"
-                      placeholder="Enter your password"
+                      placeholder={t('auth.passwordPlaceholder')}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      aria-label={showPassword ? t('auth.hidePassword', { defaultValue: 'Hide password' }) : t('auth.showPassword', { defaultValue: 'Show password' })}
                     >
                       {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
@@ -160,7 +159,7 @@ const AuthPage = () => {
                 {!isLogin && (
                   <div>
                     <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                      Confirm Password
+                      {t('auth.confirmPassword')}
                     </label>
                     <input
                       type="password"
@@ -185,9 +184,9 @@ const AuthPage = () => {
               {loading ? (
                 <div className="flex items-center justify-center">
                   <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                  Traitement...
+                  {t('auth.processing')}
                 </div>
-              ) : showForgotPassword ? 'Envoyer l\'email de réinitialisation' : isLogin ? 'Se connecter' : 'Créer un compte'}
+              ) : showForgotPassword ? t('auth.sendReset') : isLogin ? t('auth.signInBtn') : t('auth.createAccountBtn')}
             </button>
           </form>
 
@@ -197,7 +196,7 @@ const AuthPage = () => {
                 onClick={() => setShowForgotPassword(false)}
                 className="text-green-600 hover:text-green-500 text-sm"
               >
-                Back to Sign In
+                {t('auth.backToSignIn')}
               </button>
             ) : (
               <>
@@ -206,19 +205,19 @@ const AuthPage = () => {
                     onClick={() => setShowForgotPassword(true)}
                     className="text-green-600 hover:text-green-500 text-sm"
                   >
-                    Forgot your password?
+                    {t('auth.forgotPassword')}
                   </button>
                 )}
 
                 <div className="text-center">
                   <span className="text-gray-600">
-                    {isLogin ? "Don't have an account? " : "Already have an account? "}
+                    {isLogin ? t('auth.noAccount') : t('auth.hasAccount')}{' '}
                   </span>
                   <button
                     onClick={() => setIsLogin(!isLogin)}
                     className="text-green-600 hover:text-green-500 font-medium"
                   >
-                    {isLogin ? 'Sign up' : 'Sign in'}
+                    {isLogin ? t('auth.createAccountBtn') : t('auth.signInBtn')}
                   </button>
                 </div>
               </>
@@ -228,7 +227,7 @@ const AuthPage = () => {
 
         <div className="text-center mt-8">
           <Link to="/" className="text-gray-600 hover:text-green-600 transition-colors">
-            ← Back to Home
+            <span aria-hidden="true">←</span> {t('common.backToHome')}
           </Link>
         </div>
       </div>

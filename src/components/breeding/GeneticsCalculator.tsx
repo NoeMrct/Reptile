@@ -2,12 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Dna, Calculator, AlertTriangle, ShieldAlert } from "lucide-react";
 import { Snake } from "../../types";
 import { useAuth } from "../../context/AuthContext";
+import { t } from 'i18next';
 
-/**
- * ──────────────────────────────────────────────────────────────────────────────
- * Types
- * ──────────────────────────────────────────────────────────────────────────────
- */
 type LocusType = "dominant" | "recessive" | "incomplete";
 type Zygosity = "normal" | "het" | "super" | "visual" | "unknown";
 type GenoToken = "RR" | "Rr" | "rr" | "DD" | "Dd" | "dd" | "??";
@@ -54,11 +50,6 @@ interface GeneticPrediction {
   genes: string[];
 }
 
-/**
- * ──────────────────────────────────────────────────────────────────────────────
- * Utils
- * ──────────────────────────────────────────────────────────────────────────────
- */
 const cap = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 const normalize = (s?: string) =>
   (s || "")
@@ -90,21 +81,14 @@ async function fetchJsonCandidates<T = any>(candidates: string[]): Promise<T> {
   throw lastErr || new Error("Aucune URL valide");
 }
 
-/**
- * ──────────────────────────────────────────────────────────────────────────────
- * Chargement des JSON (depuis /public)
- * ──────────────────────────────────────────────────────────────────────────────
- */
 const BASE = (import.meta as any)?.env?.BASE_URL || "/";
 
 async function loadSpeciesIndex(): Promise<SpeciesIndex> {
-  // Essaie BASE_URL puis racine
   return fetchJsonCandidates<SpeciesIndex>([`${BASE}genetics/species.json`, `/genetics/species.json`]);
 }
 
 function guessRegistryPath(speciesName: string): string[] {
   const n = normalize(speciesName);
-  // Mappage de secours pour les espèces supportées
   const toId =
     n.includes("ball python") ||
     n.includes("python regius") ||
@@ -129,27 +113,17 @@ async function resolveRegistryForSpeciesName(name: string): Promise<SpeciesRegis
     if (hit) {
       return await fetchJsonCandidates<SpeciesRegistry>([hit.registry_file, `${BASE}${hit.registry_file}`]);
     }
-  } catch {
-    // ignore, on passera sur la stratégie de secours
-  }
+  } catch {}
 
-  // Stratégie de secours (chemins “devinés”)
   const guesses = guessRegistryPath(name);
   if (guesses.length) {
     try {
       return await fetchJsonCandidates<SpeciesRegistry>(guesses);
-    } catch {
-      /* continue below */
-    }
+    } catch {}
   }
   return null;
 }
 
-/**
- * ──────────────────────────────────────────────────────────────────────────────
- * Mendélien: mapping, gamètes, Punnett
- * ──────────────────────────────────────────────────────────────────────────────
- */
 const mapZygosityToGeno = (t: LocusType, z: Zygosity): GenoToken => {
   if (z === "unknown") return "??";
   if (t === "recessive") return z === "visual" || z === "super" ? "rr" : z === "het" ? "Rr" : "RR";
@@ -197,11 +171,6 @@ function punnettLocus(t: LocusType, m: GenoToken, f: GenoToken): Record<ChildZyg
   return tally;
 }
 
-/**
- * ──────────────────────────────────────────────────────────────────────────────
- * Extraction des génotypes parents (robuste)
- * ──────────────────────────────────────────────────────────────────────────────
- */
 function extractParentGenoFromJson(parent: Snake, locus: LocusJson): GenoToken {
   const z = (parent.genetics || {})[locus.name] as Zygosity | undefined;
   if (z) return mapZygosityToGeno(locus.type, z);
@@ -213,11 +182,6 @@ function extractParentGenoFromJson(parent: Snake, locus: LocusJson): GenoToken {
   return locus.type === "recessive" ? "RR" : "dd";
 }
 
-/**
- * ──────────────────────────────────────────────────────────────────────────────
- * Validateur: exclusivité par complexe (group)
- * ──────────────────────────────────────────────────────────────────────────────
- */
 function validateAllelicExclusivityFromJson(male: Snake, female: Snake, reg: SpeciesRegistry): ParentViolation[] {
   const groupConf = new Map(reg.groups.map((g) => [g.id, g]));
 
@@ -245,11 +209,6 @@ function validateAllelicExclusivityFromJson(male: Snake, female: Snake, reg: Spe
   return [...scan(male), ...scan(female)];
 }
 
-/**
- * ──────────────────────────────────────────────────────────────────────────────
- * Aides libellés (superNames, namedCombos, inter-alléliques)
- * ──────────────────────────────────────────────────────────────────────────────
- */
 function formatPhenotype(l: LocusJson, z: ChildZygo, reg: SpeciesRegistry) {
   const superKeyCandidates = [l.name, `${l.name}:2`, `${l.name}:DD`];
 
@@ -291,13 +250,11 @@ function applyInterallelicNames(
     const allow = groupInfo?.allowInterallelicNames ?? true;
     if (!allow) continue;
 
-    // Inter-allelic names uniquement quand 2 allèles présents
     if (alleles.length === 2 && reg.interallelicPhenotypes[gid]) {
       const key = alleles.join("+");
       const keyR = alleles.slice().reverse().join("+");
       const phen = reg.interallelicPhenotypes[gid][key] || reg.interallelicPhenotypes[gid][keyR];
       if (phen) {
-        // Retire les tags des 2 allèles et insère le nom
         const toRemove = new Set(
           alleles
             .map((a) => {
@@ -319,9 +276,6 @@ function applyNamedCombos(tags: string[], zByLocus: Record<string, ChildZygo>, r
   const combos = reg.namedCombos || {};
   if (!Object.keys(combos).length) return tags;
 
-  // Détermine les loci "présents visuellement" pour la logique combo
-  // - récessif: uniquement si "visual"
-  // - dominant/incomplete: si "het" ou "super"
   const present = new Set<string>();
   for (const l of reg.loci) {
     const zy = zByLocus[l.name];
@@ -338,7 +292,6 @@ function applyNamedCombos(tags: string[], zByLocus: Record<string, ChildZygo>, r
   for (const [key, name] of Object.entries(combos)) {
     const req = key.split("+").map((s) => s.trim());
     if (req.every((r) => present.has(r))) {
-      // Retire les tags individuels correspondants
       const toRemove = new Set(
         req
           .map((a) => {
@@ -348,7 +301,6 @@ function applyNamedCombos(tags: string[], zByLocus: Record<string, ChildZygo>, r
           .flat()
       );
       out = out.filter((t) => !toRemove.has(t.toLowerCase()));
-      // Ajoute le nom du combo s'il n'est pas déjà là
       if (!out.some((t) => t.toLowerCase() === name.toLowerCase())) out.push(name);
     }
   }
@@ -356,11 +308,6 @@ function applyNamedCombos(tags: string[], zByLocus: Record<string, ChildZygo>, r
   return out;
 }
 
-/**
- * ──────────────────────────────────────────────────────────────────────────────
- * Calcul complet + phénotypes (depuis reg JSON)
- * ──────────────────────────────────────────────────────────────────────────────
- */
 function calculateOffspringFromJson(reg: SpeciesRegistry, male: Snake, female: Snake): GeneticPrediction[] {
   const loci = reg.loci;
   let combos: Array<{ p: number; z: Record<string, ChildZygo> }> = [{ p: 1, z: {} }];
@@ -381,7 +328,6 @@ function calculateOffspringFromJson(reg: SpeciesRegistry, male: Snake, female: S
   for (const c of combos) {
     let tags: string[] = [];
 
-    // Tags de base (gènes + supers)
     loci.forEach((l) => {
       const zy = c.z[l.name];
       if (!zy) return;
@@ -389,13 +335,10 @@ function calculateOffspringFromJson(reg: SpeciesRegistry, male: Snake, female: S
       if (f.tag) tags.push(f.tag);
     });
 
-    // Inter-alléliques (Highway, Krypton, Candino, Ultramel… si autorisés)
     tags = applyInterallelicNames(tags, c.z, reg);
 
-    // Combos nommés (Snow, Ghost, Blizzard, Ice, Avalanche, Ultramel, etc.)
     tags = applyNamedCombos(tags, c.z, reg);
 
-    // Étiquettes consolidées
     const uniq = Array.from(new Set(tags));
     const label = uniq.length ? uniq.join(" ") : "Normal";
     const visual = uniq.some((t) => !t.toLowerCase().startsWith("het "));
@@ -418,25 +361,19 @@ function calculateOffspringFromJson(reg: SpeciesRegistry, male: Snake, female: S
     }))
     .sort((a, b) => b.probability - a.probability);
 
-  // Option A : arrondi propre à 2 décimales
   out.forEach((o) => {
     o.probability = Number(o.probability.toFixed(2));
   });
   return out;
 }
 
-/**
- * ──────────────────────────────────────────────────────────────────────────────
- * Facteurs communs (100 %) — helpers
- * ──────────────────────────────────────────────────────────────────────────────
- */
 const normTag = (t: string) => t.trim().toLowerCase();
 
 function computeCommonTags(preds: GeneticPrediction[]): string[] {
   if (!preds.length) return [];
   const counts = new Map<string, { canon: string; count: number }>();
   preds.forEach((p) => {
-    const set = new Set(p.genes.map(normTag)); // éviter double comptage
+    const set = new Set(p.genes.map(normTag));
     set.forEach((key) => {
       const canon = p.genes.find((g) => normTag(g) === key) || key;
       const prev = counts.get(key);
@@ -446,7 +383,7 @@ function computeCommonTags(preds: GeneticPrediction[]): string[] {
   });
   const n = preds.length;
   return Array.from(counts.entries())
-    .filter(([, v]) => v.count === n) // présent dans 100 % des issues
+    .filter(([, v]) => v.count === n)
     .map(([, v]) => v.canon);
 }
 
@@ -455,11 +392,6 @@ function withoutCommon(tags: string[], commons: string[]): string[] {
   return tags.filter((t) => !set.has(normTag(t)));
 }
 
-/**
- * ──────────────────────────────────────────────────────────────────────────────
- * Fallback minimal si les JSON sont absents (permet de tester immédiatement)
- * ──────────────────────────────────────────────────────────────────────────────
- */
 const FALLBACK_REG: SpeciesRegistry = {
   version: 1,
   species: { id: "python-regius", label: "Ball Python", aliases: ["python regius", "ball python"] },
@@ -495,11 +427,6 @@ const FALLBACK_REG: SpeciesRegistry = {
   namedCombos: {},
 };
 
-/**
- * ──────────────────────────────────────────────────────────────────────────────
- * Composant React
- * ──────────────────────────────────────────────────────────────────────────────
- */
 const GeneticsCalculator: React.FC = () => {
   const { user } = useAuth();
   const [snakes, setSnakes] = useState<Snake[]>([]);
@@ -744,7 +671,7 @@ const GeneticsCalculator: React.FC = () => {
     try {
       const reg = await resolveRegistryForSpeciesName(male.species);
       if (!reg) {
-        setWarnings([`Espèce "${male.species}" non supportée (pas de registre JSON).`]);
+        setWarnings([t('genetics.warn.unsupportedSpecies', { species: male.species })]);
         setRegistry(null);
       } else {
         setRegistry(reg);
@@ -752,7 +679,7 @@ const GeneticsCalculator: React.FC = () => {
     } catch (e) {
       setWarnings((w) => [
         ...w,
-        "Impossible de charger les JSON externes. Utilisation d’un registre minimal local (fallback).",
+        t('genetics.warn.registryFallback'),
       ]);
       setRegistry(FALLBACK_REG);
     } finally {
@@ -786,7 +713,7 @@ const GeneticsCalculator: React.FC = () => {
     if (vios.length) {
       setViolations(vios);
       setWarnings([
-        "Conflit d’allèles dans un même complexe (exclusivité forcée). Corrige les génétiques du parent concerné.",
+        t('genetics.warn.allelicConflictMessage'),
       ]);
       return;
     }
@@ -795,16 +722,14 @@ const GeneticsCalculator: React.FC = () => {
     setPredictions(preds);
   };
 
-  // Facteurs communs (100 %) parmi les prédictions
   const commonTags = useMemo(() => computeCommonTags(predictions), [predictions]);
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-xl font-bold text-gray-900">Calculateur de Génétique</h3>
+        <h3 className="text-xl font-bold text-gray-900">{t('genetics.title')}</h3>
         <p className="text-gray-600 mt-1">
-          Croisements mendéliens par locus, contrôle des complexes alléliques, phénotypes inter-alléliques, supers &
-          combos nommés, support multi-espèces via registres JSON.
+          {t('genetics.subtitle')}
         </p>
       </div>
 
@@ -812,14 +737,14 @@ const GeneticsCalculator: React.FC = () => {
         <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
           <div className="flex items-center mb-4">
             <div className="w-3 h-3 bg-blue-500 rounded-full mr-2" />
-            <h4 className="font-semibold text-blue-900">Parent Mâle</h4>
+            <h4 className="font-semibold text-blue-900">{t('genetics.maleParent')}</h4>
           </div>
           <select
             value={maleId}
             onChange={(e) => setMaleId(e.target.value)}
             className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
           >
-            <option value="">Sélectionner un mâle…</option>
+            <option value="">{t('genetics.selectMale')}</option>
             {males.map((snake) => (
               <option key={snake.id} value={snake.id}>
                 {snake.name} — {snake.species} — {snake.morph}
@@ -830,7 +755,7 @@ const GeneticsCalculator: React.FC = () => {
             <div className="mt-4 p-3 bg-white rounded-lg">
               <p className="text-sm font-medium text-gray-900">{snakes.find((s) => s.id === maleId)?.name}</p>
               <p className="text-xs text-gray-600 mt-1">
-                {snakes.find((s) => s.id === maleId)?.species} — Morph: {snakes.find((s) => s.id === maleId)?.morph}
+                {snakes.find((s) => s.id === maleId)?.species} — {t('genetics.morphLabel')}: {snakes.find((s) => s.id === maleId)?.morph}
               </p>
             </div>
           )}
@@ -839,14 +764,14 @@ const GeneticsCalculator: React.FC = () => {
         <div className="bg-pink-50 border-2 border-pink-200 rounded-xl p-6">
           <div className="flex items-center mb-4">
             <div className="w-3 h-3 bg-pink-500 rounded-full mr-2" />
-            <h4 className="font-semibold text-pink-900">Parent Femelle</h4>
+            <h4 className="font-semibold text-pink-900">{t('genetics.femaleParent')}</h4>
           </div>
           <select
             value={femaleId}
             onChange={(e) => setFemaleId(e.target.value)}
             className="w-full px-4 py-3 border border-pink-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white"
           >
-            <option value="">Sélectionner une femelle…</option>
+            <option value="">{t('genetics.selectFemale')}</option>
             {females.map((snake) => (
               <option key={snake.id} value={snake.id}>
                 {snake.name} — {snake.species} — {snake.morph}
@@ -857,7 +782,7 @@ const GeneticsCalculator: React.FC = () => {
             <div className="mt-4 p-3 bg-white rounded-lg">
               <p className="text-sm font-medium text-gray-900">{snakes.find((s) => s.id === femaleId)?.name}</p>
               <p className="text-xs text-gray-600 mt-1">
-                {snakes.find((s) => s.id === femaleId)?.species} — Morph: {snakes.find((s) => s.id === femaleId)?.morph}
+                {snakes.find((s) => s.id === femaleId)?.species} — {t('genetics.morphLabel')}: {snakes.find((s) => s.id === femaleId)?.morph}
               </p>
             </div>
           )}
@@ -867,7 +792,7 @@ const GeneticsCalculator: React.FC = () => {
       {loading && (
         <div className="flex items-start gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-900">
           <Dna className="h-5 w-5 text-blue-600 mt-0.5" />
-          Chargement du registre génétique…
+          {t('genetics.loadingRegistry')}
         </div>
       )}
 
@@ -883,17 +808,17 @@ const GeneticsCalculator: React.FC = () => {
             <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
               <div className="flex items-center gap-2 text-red-800 font-semibold mb-2">
                 <ShieldAlert className="h-5 w-5" />
-                Conflit(s) d’allèles dans le même complexe
+                {t('genetics.violations.title')}
               </div>
               <ul className="list-disc list-inside text-sm text-red-900">
                 {violations.map((v, i) => (
                   <li key={`v-${i}`}>
-                    <strong>{v.parentName}</strong> — Complexe <em>{v.group}</em> : {v.genes.join(" + ")}
+                    <strong>{t('genetics.violations.item', { parent: v.parentName, group: v.group, genes: v.genes.join(' + ') })}</strong>
                   </li>
                 ))}
               </ul>
               <p className="text-xs text-red-700 mt-2">
-                Corrige les génétiques du parent : un parent ne peut pas porter plusieurs allèles d’un même complexe.
+                {t('genetics.violations.hint')}
               </p>
             </div>
           )}
@@ -911,7 +836,7 @@ const GeneticsCalculator: React.FC = () => {
           }`}
         >
           <Calculator className="h-5 w-5 mr-2" />
-          Calculer les Probabilités
+          {t('genetics.calculate')}
         </button>
       </div>
 
@@ -919,13 +844,12 @@ const GeneticsCalculator: React.FC = () => {
         <div className="bg-white border border-gray-200 rounded-xl p-6">
           <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <Dna className="h-5 w-5 text-green-600 mr-2" />
-            Résultats génétiques prédits
+            {t('genetics.results.title')}
           </h4>
 
-          {/* Facteurs communs (100 %) */}
           {commonTags.length > 0 && (
             <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-800">
-              <span className="font-semibold mr-2">Facteurs communs (100 %) :</span>
+              <span className="font-semibold mr-2">{t('genetics.results.commons')}</span>
               {commonTags.map((t) => (
                 <span
                   key={t}
@@ -939,9 +863,8 @@ const GeneticsCalculator: React.FC = () => {
 
           <div className="space-y-3">
             {predictions.map((pred, idx) => {
-              // Nettoyage : on retire les facteurs communs de chaque ligne pour alléger l’affichage
               const filteredGenes = withoutCommon(pred.genes, commonTags);
-              const displayLabel = filteredGenes.length ? filteredGenes.join(" ") : "Normal";
+              const displayLabel = filteredGenes.length ? filteredGenes.join(" ") : t('genetics.normal');
               const displayIsVisual = filteredGenes.some((t) => !t.toLowerCase().startsWith("het "));
 
               return (
@@ -960,12 +883,12 @@ const GeneticsCalculator: React.FC = () => {
                       )}
                     </div>
                     <div className="mt-2 text-xs text-gray-600">
-                      Gènes: {filteredGenes.length ? filteredGenes.join(", ") : "—"}
+                      {t('genetics.results.genes')}: {filteredGenes.length ? filteredGenes.join(", ") : "—"}
                     </div>
                   </div>
                   <div className="text-right ml-4">
                     <div className="text-2xl font-bold text-green-600">{pred.probability}%</div>
-                    <div className="text-xs text-gray-500">probabilité</div>
+                    <div className="text-xs text-gray-500">{t('genetics.results.probability')}</div>
                   </div>
                 </div>
               );
@@ -973,8 +896,7 @@ const GeneticsCalculator: React.FC = () => {
           </div>
 
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-900">
-            Données calculées par locus (dominant, récessif, incomplete), avec agrégation, contrôle des complexes
-            alléliques, noms inter-alléliques/combos nommés et “supers” personnalisés définis dans le registre JSON.
+            {t('genetics.results.methodNote')}
           </div>
         </div>
       )}
@@ -982,7 +904,7 @@ const GeneticsCalculator: React.FC = () => {
       {predictions.length === 0 && maleId && femaleId && violations.length === 0 && !loading && (
         <div className="text-center py-8">
           <Dna className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600">Clique sur “Calculer” pour voir les prédictions</p>
+          <p className="text-gray-600">{t('genetics.emptyAfterSelect')}</p>
         </div>
       )}
     </div>

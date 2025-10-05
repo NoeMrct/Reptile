@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { t } from 'i18next';
 import { 
   Shield, 
   BarChart3, 
@@ -26,7 +27,7 @@ const LandingPage = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
               <Shield className="h-8 w-8 text-green-600" />
-              <span className="text-xl font-bold text-gray-900">Snake Manager</span>
+              <span className="text-xl font-bold text-gray-900">{t('brand.name')}</span>
             </div>
             <div className="hidden md:flex items-center space-x-6">
               <a href="#features" className="text-gray-600 hover:text-green-600 transition-colors">{t('nav.features')}</a>
@@ -41,7 +42,6 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <section className="bg-gradient-to-br from-green-50 to-green-100 py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
@@ -122,7 +122,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -140,7 +139,7 @@ const LandingPage = () => {
                 "{t('testimonials.testimonial1')}"
               </p>
               <div className="font-semibold text-gray-900">Sarah Chen</div>
-              <div className="text-sm text-gray-500">Professional Breeder</div>
+              <div className="text-sm text-gray-500">{t('landing.roles.professionalBreeder')}</div>
             </div>
 
             <div className="bg-white p-6 rounded-xl shadow-sm">
@@ -153,7 +152,7 @@ const LandingPage = () => {
                 "{t('testimonials.testimonial2')}"
               </p>
               <div className="font-semibold text-gray-900">Michael Rodriguez</div>
-              <div className="text-sm text-gray-500">Reptile Enthusiast</div>
+              <div className="text-sm text-gray-500">{t('landing.roles.reptileEnthusiast')}</div>
             </div>
 
             <div className="bg-white p-6 rounded-xl shadow-sm">
@@ -166,13 +165,12 @@ const LandingPage = () => {
                 "{t('testimonials.testimonial3')}"
               </p>
               <div className="font-semibold text-gray-900">Dr. Emily Watson</div>
-              <div className="text-sm text-gray-500">Exotic Veterinarian</div>
+              <div className="text-sm text-gray-500">{t('landing.roles.exoticVeterinarian')}</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Pricing Section */}
       <section id="pricing" className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -314,7 +312,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* FAQ Section */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
           <div className="text-center mb-16">
@@ -340,14 +337,13 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <Shield className="h-6 w-6 text-green-500" />
-                <span className="text-xl font-bold">Snake Manager</span>
+                <span className="text-xl font-bold">{t('brand.name')}</span>
               </div>
               <p className="text-gray-400">{t('footer.description')}</p>
             </div>
@@ -372,7 +368,7 @@ const LandingPage = () => {
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 Snake Manager. {t('footer.rights')}</p>
+            <p>&copy; 2025 {t('brand.name')}. {t('footer.rights')}</p>
           </div>
         </div>
       </footer>

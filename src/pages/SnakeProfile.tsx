@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import jsPDF from 'jspdf';
 import { useAuth } from '../context/AuthContext';
 import EventEditModal, { EditableEvent } from '../components/EventEditModal';
+import { t } from 'i18next';
 
 
 const SnakeProfile = () => {
@@ -163,11 +164,9 @@ const SnakeProfile = () => {
 
     const doc = new jsPDF();
     
-    // Title
     doc.setFontSize(20);
     doc.text(`${snake.name} - ${t('snake.profile')} Report`, 20, 20);
     
-    // Global section
     doc.setFontSize(14);
     doc.text(`${t('snake.profile')} Details:`, 20, 40);
     doc.setFontSize(12);
@@ -178,7 +177,6 @@ const SnakeProfile = () => {
     doc.text(`${t('snake.weight')}: ${snake.weight}g`, 20, 95);
     doc.text(`${t('snake.length')}: ${snake.length}cm`, 20, 105);
     
-    // Feeding section
     doc.setFontSize(14);
     doc.text(`${t('snake.feedings')}:`, 20, 130);
     doc.setFontSize(10);
@@ -191,7 +189,6 @@ const SnakeProfile = () => {
       yPos += 10;
     });
     
-    // Shedding section
     yPos += 10;
     doc.setFontSize(14);
     doc.text(`${t('snake.sheds')}:`, 20, yPos);
@@ -204,7 +201,6 @@ const SnakeProfile = () => {
       yPos += 10;
     });
     
-    // Vet visits section
     yPos += 10;
     doc.setFontSize(14);
     doc.text(`${t('snake.vetVisits')}:`, 20, yPos);
@@ -224,7 +220,6 @@ const SnakeProfile = () => {
     return <div>{t('common.loading')}</div>;
   }
 
-  // Weight chart data
   const weightData = events
     .filter(e => e.weight)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
@@ -251,7 +246,6 @@ const SnakeProfile = () => {
         />
       )}
 
-      {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
@@ -286,7 +280,6 @@ const SnakeProfile = () => {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Profile Card */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="aspect-w-16 aspect-h-9">
@@ -350,9 +343,7 @@ const SnakeProfile = () => {
             </div>
           </div>
 
-          {/* Main Content */}
           <div className="lg:col-span-2">
-            {/* Tabs */}
             <div className="bg-white rounded-xl shadow-sm mb-6">
               <div className="border-b border-gray-200">
                 <nav className="flex space-x-8 px-6">
@@ -378,7 +369,6 @@ const SnakeProfile = () => {
               </div>
 
               <div className="p-6">
-                {/* Overview Tab */}
                 {activeTab === 'overview' && (
                   <div className="space-y-6">
                     <div className="grid grid-cols-3 gap-4">
@@ -407,7 +397,6 @@ const SnakeProfile = () => {
                   </div>
                 )}
 
-                {/* Events Tab */}
                 {activeTab === 'events' && (
                   <div>
                     <div className="flex justify-between items-center mb-6">
@@ -427,7 +416,6 @@ const SnakeProfile = () => {
                   </div>
                 )}
 
-                {/* Analytics Tab */}
                 {activeTab === 'analytics' && (
                   <div className="space-y-6">
                     {weightData.length > 0 && (

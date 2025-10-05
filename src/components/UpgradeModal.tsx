@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, Crown, Check, Loader2 } from 'lucide-react';
+import { t } from 'i18next';
 
 interface UpgradeModalProps {
   onClose: () => void;
@@ -31,7 +32,7 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ onClose, onUpgrade }) => {
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div className="flex items-center space-x-3">
             <Crown className="h-8 w-8 text-yellow-500" />
-            <h2 className="text-2xl font-bold text-gray-900">Débloquez tout le potentiel</h2>
+            <h2 className="text-2xl font-bold text-gray-900">{t('upgrade.unlockFull')}</h2>
           </div>
           <button
             onClick={onClose}

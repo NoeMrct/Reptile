@@ -6,6 +6,7 @@ import { Event, Snake } from '../types';
 import EventCard from '../components/EventCard';
 import { useAuth } from '../context/AuthContext';
 import EventEditModal, { EditableEvent } from '../components/EventEditModal';
+import { t } from 'i18next';
 
 const EventsPage = () => {
   const { t } = useTranslation();
@@ -169,7 +170,6 @@ const EventsPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center space-x-4">
@@ -188,7 +188,6 @@ const EventsPage = () => {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Filters */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
@@ -218,7 +217,6 @@ const EventsPage = () => {
           </div>
         </div>
 
-        {/* Events List */}
         <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-gray-900">
