@@ -10,6 +10,7 @@ import SettingsPage from './pages/SettingsPage';
 import EventsPage from './pages/EventsPage';
 import BreedingPage from './pages/BreedingPage';
 import ContributePage from './pages/ContributePage';
+import { AdminApp } from './admin/AdminRoutes';
 import './App.css';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -24,6 +25,7 @@ function App() {
         <div className="min-h-screen bg-gray-50">
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/admin/*" element={<AdminApp />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/contribute" element={<ContributePage />} />
