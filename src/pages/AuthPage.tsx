@@ -1,238 +1,144 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Shield, Eye, EyeOff, Loader2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '../components/LanguageSelector';
 import { useAuth } from '../context/AuthContext';
-import { t } from 'i18next';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const AuthPage = () => {
+export default function AuthPage() {
+  const { t } = useTranslation();
+  const { login, register } = useAuth();
+  const navigate = useNavigate();
+
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: ''
-  });
+
+  const [form, setForm] = useState({ email: '', password: '', confirm: '' });
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = (location.state as any)?.from || '/dashboard';
+  const [loading, setLoading] = useState(false);
 
-  const { signIn, signUp, resetPassword, user } = useAuth();
-
-  useEffect(() => {
-    if (user) {
-      navigate(from, { replace: true });
-    }
-  }, [user, navigate, from]);
+  const resetFeedback = () => { setError(''); setMessage(''); };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    resetFeedback();
     setLoading(true);
 
     try {
-      if (showForgotPassword) {
-        const { error } = await resetPassword(formData.email);
-        if (error) {
-          setError(error.message);
-        } else {
-          setMessage(t('auth.resetSent'));
-        }
-      } else if (isLogin) {
-        const { error } = await signIn(formData.email, formData.password);
-        if (error) {
-          setError(error.message);
-        }
+      if (isLogin) {
+        const { error } = await login(form.email, form.password);
+        if (error) throw error;
+        setMessage(t('auth.loggedIn'));
+        navigate('/dashboard');
       } else {
-        if (formData.password !== formData.confirmPassword) {
-          setError(t('auth.passwordsDontMatch'));
-          return;
-        }
-        const { error } = await signUp(formData.email, formData.password);
-        if (error) {
-          setError(error.message);
-        } else {
-          setMessage(t('auth.signUpSuccess', { defaultValue: 'Account created successfully! Please check your email to verify your account.' }));
-        }
+        if (form.password !== form.confirm) throw new Error(t('auth.passwordsNotMatch'));
+        const { error } = await register(form.email, form.password);
+        if (error) throw error;
+        setMessage(t('auth.accountCreated'));
+        setIsLogin(true);
+        navigate('/dashboard');
       }
-    } catch (_err) {
-      setError(t('common.unexpectedError'));
+    } catch (err: any) {
+      setError(err?.message || t('common.unexpectedError'));
     } finally {
       setLoading(false);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center space-x-2">
-            <Shield className="h-10 w-10 text-green-600" />
-            <span className="text-2xl font-bold text-gray-900">{t('brand.name')}</span>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-4 relative">
+      <LanguageSelector className="absolute top-4 right-4" />
+
+      <form onSubmit={handleSubmit} className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+        <h1 className="text-2xl font-bold mb-1">
+          {isLogin ? t('auth.signIn') : t('auth.signUp')}
+        </h1>
+        <p className="text-gray-600 mb-6">
+          {isLogin ? t('auth.welcomeBack') : t('auth.createYourAccount')}
+        </p>
+
+        {error ? (
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 text-red-700 p-3">{error}</div>
+        ) : null}
+        {message ? (
+          <div className="mb-4 rounded-lg border border-green-200 bg-green-50 text-green-700 p-3">{message}</div>
+        ) : null}
+
+        <label className="block text-sm font-medium mb-1">{t('auth.email')}</label>
+        <input
+          type="email"
+          name="email"
+          autoComplete="email"
+          value={form.email}
+          onChange={(e) => setForm(s => ({ ...s, email: e.target.value }))}
+          required
+          className="w-full mb-4 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400"
+          placeholder={t('auth.emailPlaceholder') as string}
+        />
+
+        <label className="block text-sm font-medium mb-1">{t('auth.password')}</label>
+        <div className="relative mb-4">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            name="password"
+            autoComplete={isLogin ? 'current-password' : 'new-password'}
+            value={form.password}
+            onChange={(e) => setForm(s => ({ ...s, password: e.target.value }))}
+            required
+            minLength={6}
+            className="w-full pr-12 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400"
+            placeholder={t('auth.passwordPlaceholder') as string}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(v => !v)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-gray-600"
+            aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
+            title={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
+          >
+            {showPassword ? t('auth.hide') : t('auth.show')}
+          </button>
+        </div>
+
+        {!isLogin && (
+          <>
+            <label className="block text-sm font-medium mb-1">{t('auth.confirmPassword')}</label>
+            <input
+              type="password"
+              name="confirm"
+              autoComplete="new-password"
+              value={form.confirm}
+              onChange={(e) => setForm(s => ({ ...s, confirm: e.target.value }))}
+              required
+              minLength={6}
+              className="w-full mb-4 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400"
+              placeholder={t('auth.confirmPasswordPlaceholder') as string}
+            />
+          </>
+        )}
+
+        <button
+          disabled={loading}
+          className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition disabled:opacity-60"
+        >
+          {loading ? t('auth.processing') : (isLogin ? t('auth.signIn') : t('auth.signUp'))}
+        </button>
+
+        <div className="mt-4 flex items-center justify-between text-sm">
+          <button
+            type="button"
+            onClick={() => { setIsLogin(v => !v); resetFeedback(); }}
+            className="text-green-700 hover:underline"
+          >
+            {isLogin ? t('auth.createAccount') : t('auth.backToSignIn')}
+          </button>
+
+          <Link to="/forgot-password" className="text-gray-600 hover:underline">
+            {t('auth.forgotPassword')}
           </Link>
         </div>
-
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          {showForgotPassword ? (
-            <>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.resetPassword')}</h2>
-              <p className="text-gray-600 mb-6">{t('auth.resetSubtitle')}</p>
-            </>
-          ) : (
-            <>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                {isLogin ? t('auth.welcomeBack') : t('auth.createAccount')}
-              </h2>
-              <p className="text-gray-600 mb-6">
-                {isLogin ? t('auth.signInSubtitle') : t('auth.signUpSubtitle')}
-              </p>
-            </>
-          )}
-
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-4">
-              {error}
-            </div>
-          )}
-
-          {message && (
-            <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-lg mb-4">
-              {message}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                {t('auth.email')}
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
-                placeholder={t('auth.emailPlaceholder')}
-              />
-            </div>
-
-            {!showForgotPassword && (
-              <>
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('auth.password')}
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      id="password"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors pr-12"
-                      placeholder={t('auth.passwordPlaceholder')}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      aria-label={showPassword ? t('auth.hidePassword', { defaultValue: 'Hide password' }) : t('auth.showPassword', { defaultValue: 'Show password' })}
-                    >
-                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                    </button>
-                  </div>
-                </div>
-
-                {!isLogin && (
-                  <div>
-                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('auth.confirmPassword')}
-                    </label>
-                    <input
-                      type="password"
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
-                      placeholder={t('auth.confirmPasswordPlaceholder')}
-                    />
-                  </div>
-                )}
-              </>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                  {t('auth.processing')}
-                </div>
-              ) : showForgotPassword ? t('auth.sendReset') : isLogin ? t('auth.signInBtn') : t('auth.createAccountBtn')}
-            </button>
-          </form>
-
-          <div className="mt-6 space-y-4">
-            {showForgotPassword ? (
-              <button
-                onClick={() => setShowForgotPassword(false)}
-                className="text-green-600 hover:text-green-500 text-sm"
-              >
-                {t('auth.backToSignIn')}
-              </button>
-            ) : (
-              <>
-                {isLogin && (
-                  <button
-                    onClick={() => setShowForgotPassword(true)}
-                    className="text-green-600 hover:text-green-500 text-sm"
-                  >
-                    {t('auth.forgotPassword')}
-                  </button>
-                )}
-
-                <div className="text-center">
-                  <span className="text-gray-600">
-                    {isLogin ? t('auth.noAccount') : t('auth.hasAccount')}{' '}
-                  </span>
-                  <button
-                    onClick={() => setIsLogin(!isLogin)}
-                    className="text-green-600 hover:text-green-500 font-medium"
-                  >
-                    {isLogin ? t('auth.createAccountBtn') : t('auth.signInBtn')}
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-
-        <div className="text-center mt-8">
-          <Link to="/" className="text-gray-600 hover:text-green-600 transition-colors">
-            <span aria-hidden="true">←</span> {t('common.backToHome')}
-          </Link>
-        </div>
-      </div>
+      </form>
     </div>
   );
-};
-
-export default AuthPage;
+}

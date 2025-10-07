@@ -1,45 +1,32 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
-// Check if we have valid Supabase credentials
-const hasValidSupabaseConfig = supabaseUrl && supabaseAnonKey && 
-  supabaseUrl.startsWith('https://') &&
-  supabaseUrl.includes('.supabase.co') &&
-  supabaseAnonKey.length > 20;
+const hasValidSupabaseConfig = !!(supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('https://') && supabaseUrl.includes('.supabase.co') && supabaseAnonKey.length > 20);
+export const supabase = hasValidSupabaseConfig ? createClient(supabaseUrl!, supabaseAnonKey!) : null;
 
-// Only create client if we have valid environment variables
-const supabase = hasValidSupabaseConfig 
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
+type User = { id: string; email: string | null };
 
-interface User {
-  id: string;
-  email: string;
-  name?: string;
-  profileImage?: string;
-  plan?: 'free' | 'professional' | 'enterprise';
-}
-
-interface AuthContextType {
+type Ctx = {
   user: User | null;
   loading: boolean;
   signUp: (email: string, password: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: any }>;
-}
+  login: (email: string, password: string) => Promise<{ error: any }>;
+  register: (email: string, password: string) => Promise<{ error: any }>;
+  updatePasswordWithToken: (token: string, password: string) => Promise<{ error: any }>;
+};
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<Ctx | undefined>(undefined);
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+  return ctx;
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -47,39 +34,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!supabase) {
-      setLoading(false);
-      return;
-    }
+    if (!supabase) { setLoading(false); return; }
 
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ? { id: session.user.id, email: session.user.email!, plan: 'free' } : null);
+      setUser(session?.user ? { id: session.user.id, email: session.user.email } : null);
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ? { id: session.user.id, email: session.user.email!, plan: 'free' } : null);
+      setUser(session?.user ? { id: session.user.id, email: session.user.email } : null);
       setLoading(false);
     });
 
     return () => subscription?.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string) => {
-    if (!supabase || !hasValidSupabaseConfig) {
-      return { error: { message: 'Supabase not configured. Please set up your environment variables.' } };
-    }
-    const { error } = await supabase.auth.signUp({ email, password });
-    return { error };
-  };
+  const ensureConfigured = () =>
+    (!supabase || !hasValidSupabaseConfig)
+      ? { error: { message: 'Supabase not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.' } }
+      : null;
 
-  const signIn = async (email: string, password: string) => {
-    if (!supabase || !hasValidSupabaseConfig) {
-      return { error: { message: 'Supabase not configured. Please set up your environment variables.' } };
-    }
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error };
-  };
+const signUp = async (email: string, password: string) => {
+  const bad = ensureConfigured(); if (bad) return bad;
+  const { data, error } = await supabase!.auth.signUp({ email, password });
+  if (!error && data.user) {
+    setUser({ id: data.user.id, email: data.user.email });
+  }
+  return { error };
+};
+
+const signIn = async (email: string, password: string) => {
+  const bad = ensureConfigured(); if (bad) return bad;
+  const { data, error } = await supabase!.auth.signInWithPassword({ email, password });
+  if (!error && data.user) {
+    setUser({ id: data.user.id, email: data.user.email });
+  }
+  return { error };
+};
 
   const signOut = async () => {
     if (!supabase || !hasValidSupabaseConfig) return;
@@ -87,27 +78,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const resetPassword = async (email: string) => {
-    if (!supabase || !hasValidSupabaseConfig) {
-      return { error: { message: 'Supabase not configured. Please set up your environment variables.' } };
-    }
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    const bad = ensureConfigured(); if (bad) return bad;
+    const redirectTo = `${window.location.origin}/reset-password`;
+    const { error } = await supabase!.auth.resetPasswordForEmail(email, { redirectTo });
     return { error };
   };
 
-  const value = {
-    user,
-    loading,
-    signUp,
-    signIn,
-    signOut,
-    resetPassword,
+  const login = signIn;
+  const register = signUp;
+  const updatePasswordWithToken = async (_token: string, password: string) => {
+    const bad = ensureConfigured(); if (bad) return bad;
+
+    const { data: { session } } = await supabase!.auth.getSession();
+    if (!session) return { error: { message: 'Recovery session missing. Open the reset link from your email on this device, then retry.' } };
+
+    const { error } = await supabase!.auth.updateUser({ password });
+    return { error };
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+  const value: Ctx = {
+    user, loading,
+    signUp, signIn, signOut, resetPassword,
+    login, register, updatePasswordWithToken,
+  };
 
-export { supabase };
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
