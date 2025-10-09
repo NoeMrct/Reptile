@@ -12,13 +12,13 @@ import {
   Languages
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import I18nTab from '../components/admin/I18nTab';
-import HusbandryTab from '../components/admin/HusbandryTab';
-import RevenueTab from '../components/admin/RevenueTab';
-import SupportTab from '../components/admin/SupportTab';
-import EngagementTab from '../components/admin/EngagementTab';
-import DashboardTab from '../components/admin/DashboardTab';
-import ContributionsTab from '../components/admin/ContributionsTab';
+import I18nTab from './admin/I18nTab';
+import HusbandryTab from './admin/HusbandryTab';
+import RevenueTab from './admin/RevenueTab';
+import SupportTab from './admin/SupportTab';
+import EngagementTab from './admin/EngagementTab';
+import DashboardTab from './admin/DashboardTab';
+import ContributionsTab from './admin/ContributionsTab';
 
 export default function AdminPage() {
   const { user } = useAuth();

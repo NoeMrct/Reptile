@@ -4,6 +4,8 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Scale, Ruler, CreditCard as Edit, Download, Activity, TrendingUp, Plus } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar, Legend, ComposedChart, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts';
 import { Snake, Event } from '../types';
+import EventEditModal, { EditableEvent } from '../components/EventEditModal';
+import { Trash2, Archive, Undo2 } from 'lucide-react';
 import EventCard from '../components/EventCard';
 import AddEventModal from '../components/AddEventModal';
 import EditSnakeModal from '../components/EditSnakeModal';
@@ -24,7 +26,6 @@ const SnakeProfile = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
-    // Mock data - in real app, fetch from API
     const mockSnakes: Snake[] = [
       {
         id: '1',
@@ -106,6 +107,65 @@ const SnakeProfile = () => {
     setSnake(mockSnake);
     setEvents(mockEvents);
   }, [id]);
+
+  const [editOpen, setEditOpen] = useState(false);
+  const [editEvent, setEditEvent] = useState<EditableEvent | null>(null);
+
+  const handleEditOpen = (id: string) => {
+    const ev = events.find(e => e.id === id);
+    if (!ev) return;
+    setEditEvent({
+      id: ev.id,
+      snakeId: ev.snakeId,
+      type: ev.type as EditableEvent['type'],
+      date: ev.date,
+      weight: ev.weight ?? null,
+      notes: ev.notes ?? null,
+    });
+    setEditOpen(true);
+  };
+
+  const handleEditSave = (updated: EditableEvent) => {
+    setEvents(prev => prev.map(e => (e.id === updated.id ? { ...e, ...updated } : e)));
+    setEditOpen(false);
+    setEditEvent(null);
+  };
+
+  const handleEditClose = () => {
+    setEditOpen(false);
+    setEditEvent(null);
+  };
+
+  const handleDeleteEvent = (id: string) => {
+    if (!window.confirm(t('events.delete') || 'Supprimer cet événement ?')) return;
+    setEvents(prev => prev.filter(e => e.id !== id));
+  };
+
+  const [showDeleteSnake, setShowDeleteSnake] = useState(false);
+  const [archivedUntil, setArchivedUntil] = useState<string | null>(null);
+
+  useEffect(() => {
+    const v = localStorage.getItem(`snake_archive_until_${id}`);
+    setArchivedUntil(v || null);
+  }, [id]);
+
+  const archiveSnake = (days = 30) => {
+    const until = new Date(Date.now() + days * 24 * 3600 * 1000).toISOString();
+    localStorage.setItem(`snake_archive_until_${id}`, until);
+    setArchivedUntil(until);
+    setShowDeleteSnake(false);
+  };
+
+  const restoreSnake = () => {
+    localStorage.removeItem(`snake_archive_until_${id}`);
+    setArchivedUntil(null);
+  };
+
+  const hardDeleteSnake = () => {
+    if (!window.confirm('Supprimer définitivement ce serpent et TOUT l’historique associé ?')) return;
+    localStorage.removeItem(`snake_archive_until_${id}`);
+    window.location.href = '/dashboard';
+  };
 
   const addEvent = (event: Omit<Event, 'id' | 'userId'>) => {
     const newEvent: Event = {
@@ -312,10 +372,36 @@ const SnakeProfile = () => {
                 <Download className="h-4 w-4 mr-2" />
                 {t('snake.exportPDF')}
               </button>
+              <button
+                onClick={() => setShowDeleteSnake(true)}
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Supprimer
+              </button>
             </div>
           </div>
         </div>
       </div>
+
+      {archivedUntil && new Date(archivedUntil) > new Date() && (
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+          <div className="p-4 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 flex items-center justify-between">
+            <div>
+              <strong>Serpent archivé.</strong>{' '}
+              Visible en lecture seule jusqu’au {new Date(archivedUntil).toLocaleString()}.
+            </div>
+            <div className="flex gap-2">
+              <button onClick={restoreSnake} className="px-3 py-1.5 rounded-lg border border-amber-300 hover:bg-white text-sm flex items-center">
+                <Undo2 className="h-4 w-4 mr-1" /> Restaurer
+              </button>
+              <button onClick={() => setShowDeleteSnake(true)} className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm">
+                Supprimer…
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
@@ -433,7 +519,13 @@ const SnakeProfile = () => {
                       <h3 className="text-lg font-semibold mb-4">{t('snake.recentActivity')}</h3>
                       <div className="space-y-3">
                         {events.slice(0, 5).map(event => (
-                          <EventCard key={event.id} event={event} snakeName={snake.name} />
+                          <EventCard
+                            key={event.id}
+                            event={event}
+                            snakeName={snake.name}
+                            onDelete={archivedUntil ? undefined : handleDeleteEvent}
+                            onEdit={archivedUntil ? undefined : handleEditOpen}
+                          />
                         ))}
                       </div>
                     </div>
@@ -454,7 +546,13 @@ const SnakeProfile = () => {
                     </div>
                     <div className="space-y-3">
                       {events.map(event => (
-                        <EventCard key={event.id} event={event} snakeName={snake.name} />
+                        <EventCard
+                          key={event.id}
+                          event={event}
+                          snakeName={snake.name}
+                          onDelete={archivedUntil ? undefined : handleDeleteEvent}
+                          onEdit={archivedUntil ? undefined : handleEditOpen}
+                        />
                       ))}
                     </div>
                   </div>
@@ -815,6 +913,60 @@ const SnakeProfile = () => {
           onClose={() => setShowEditSnake(false)}
           onSave={updateSnake}
         />
+      )}
+
+      <EventEditModal
+        open={editOpen}
+        event={editEvent}
+        onClose={handleEditClose}
+        onSave={handleEditSave}
+      />
+
+      {showDeleteSnake && (
+        <div className="fixed inset-0 z-50">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setShowDeleteSnake(false)} />
+          <div className="absolute inset-0 grid place-items-center p-4">
+            <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl border">
+              <div className="px-6 py-4 border-b flex items-center justify-between">
+                <h4 className="font-semibold">Supprimer « {snake.name} »</h4>
+                <button onClick={() => setShowDeleteSnake(false)} className="text-gray-500 hover:text-gray-700">✕</button>
+              </div>
+              <div className="p-6 space-y-4 text-sm text-gray-700">
+                <p>Choisis une option :</p>
+                <div className="space-y-3">
+                  <button
+                    onClick={() => archiveSnake(30)}
+                    className="w-full flex items-center justify-between px-4 py-3 border rounded-lg hover:bg-amber-50"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Archive className="h-5 w-5 text-amber-600" />
+                      <div>
+                        <div className="font-medium">Archiver 30 jours (recommandé)</div>
+                        <div className="text-xs text-gray-500">Le serpent reste visible en lecture seule. Tu pourras le restaurer à tout moment.</div>
+                      </div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={hardDeleteSnake}
+                    className="w-full flex items-center justify-between px-4 py-3 border rounded-lg hover:bg-red-50"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Trash2 className="h-5 w-5 text-red-600" />
+                      <div>
+                        <div className="font-medium text-red-700">Supprimer définitivement</div>
+                        <div className="text-xs text-red-600">Action irréversible : toutes les données et événements associés seront supprimés.</div>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+              <div className="px-6 py-4 border-t text-right">
+                <button onClick={() => setShowDeleteSnake(false)} className="px-4 py-2 rounded-lg border">Annuler</button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

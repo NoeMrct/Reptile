@@ -551,6 +551,7 @@
     }
   },
   "dashboard": {
+    "dropHere": "Drop here to place last",
     "addEvent": "Add Event",
     "addFirstSnake": "Start by adding your first snake to the collection.",
     "addFirstSnakeBtn": "Add Your First Snake",

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { t } from 'i18next';
 import { 
   Shield, 
   Plus, 
@@ -16,6 +15,7 @@ import {
   Sparkles,
   Coins
 } from 'lucide-react';
+import { GripVertical } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import SnakeCard from '../components/SnakeCard';
 import EventCard from '../components/EventCard';
@@ -43,6 +43,80 @@ const Dashboard = () => {
 
   const [editOpen, setEditOpen] = useState(false);
   const [editEvent, setEditEvent] = useState<EditableEvent | null>(null);
+
+  const [order, setOrder] = useState<string[]>([]);
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [overId, setOverId] = useState<string | null>(null);
+
+  const loadOrder = React.useCallback(() => {
+    const key = `snake_order_${user?.id || 'anon'}`;
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw) return JSON.parse(raw) as string[];
+    } catch {}
+    return [];
+  }, [user]);
+
+  const saveOrder = React.useCallback((next: string[]) => {
+    const key = `snake_order_${user?.id || 'anon'}`;
+    try { localStorage.setItem(key, JSON.stringify(next)); } catch {}
+  }, [user]);
+
+  useEffect(() => {
+    const stored = loadOrder();
+    const currentIds = snakes.map(s => s.id);
+    const merged = [
+      ...stored.filter(id => currentIds.includes(id)),
+      ...currentIds.filter(id => !stored.includes(id)),
+    ];
+    setOrder(merged);
+  }, [snakes, loadOrder]);
+
+  const moveId = (arr: string[], src: string, dst: string) => {
+    const a = [...arr];
+    const s = a.indexOf(src), d = a.indexOf(dst);
+    if (s === -1 || d === -1) return arr;
+    a.splice(s, 1);
+    a.splice(d, 0, src);
+    return a;
+  };
+
+  const onDragStart = (e: React.DragEvent, id: string) => {
+    setDraggingId(id);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', id);
+  };
+  const onDragOver = (e: React.DragEvent, id: string) => {
+    e.preventDefault(); // autorise le drop
+    if (overId !== id) setOverId(id);
+  };
+  const onDrop = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    const sourceId = e.dataTransfer.getData('text/plain') || draggingId;
+    if (!sourceId || sourceId === targetId) { setDraggingId(null); setOverId(null); return; }
+    const next = moveId(order, sourceId, targetId);
+    setOrder(next);
+    saveOrder(next);
+    setDraggingId(null);
+    setOverId(null);
+  };
+  const onDropEnd = (e: React.DragEvent) => {
+    e.preventDefault();
+    const sourceId = e.dataTransfer.getData('text/plain') || draggingId;
+    if (!sourceId) return;
+    const next = [...order.filter(id => id !== sourceId), sourceId];
+    setOrder(next);
+    saveOrder(next);
+    setDraggingId(null);
+    setOverId(null);
+  };
+  const onDragEnd = () => { setDraggingId(null); setOverId(null); };
+
+  const orderedSnakes = React.useMemo(() => {
+    if (!order.length) return snakes;
+    const pos = new Map(order.map((id, i) => [id, i]));
+    return [...snakes].sort((a, b) => (pos.get(a.id) ?? 1e9) - (pos.get(b.id) ?? 1e9));
+  }, [snakes, order]);
 
   const handleEditOpen = (id: string) => {
     const ev = events.find(e => e.id === id);
@@ -165,12 +239,12 @@ const Dashboard = () => {
     setShowUpgradeModal(false);
   };
 
-  const filteredSnakes = snakes.filter(snake => {
+  const filteredSnakes = orderedSnakes.filter(snake => {
     const matchesSearch = snake.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       snake.species.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     if (!matchesSearch) return false;
-    
+
     switch (selectedFilter) {
       case 'male':
         return snake.sex === 'Male';
@@ -360,29 +434,39 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {filteredSnakes.length > 0 ? (
-                <div className="grid gap-4">
+              <div className="grid gap-4">
                   {filteredSnakes.map(snake => (
-                    <SnakeCard key={snake.id} snake={snake} />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('dashboard.noSnakes')}</h3>
-                  <p className="text-gray-600 mb-4">
-                    {searchTerm ? t('dashboard.noSnakesSubtitle') : t('dashboard.addFirstSnake')}
-                  </p>
-                  {!searchTerm && (
-                    <button
-                      onClick={() => setShowAddSnake(true)}
-                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                    <div
+                      key={snake.id}
+                      draggable
+                      onDragStart={(e) => onDragStart(e, snake.id)}
+                      onDragOver={(e) => onDragOver(e, snake.id)}
+                      onDrop={(e) => onDrop(e, snake.id)}
+                      onDragEnd={onDragEnd}
+                      className={`relative group rounded-lg border border-transparent transition
+                        ${draggingId === snake.id ? 'opacity-60' : ''}
+                        ${overId === snake.id ? 'ring-2 ring-green-500' : ''}`}
                     >
-                      {t('dashboard.addFirstSnakeBtn')}
-                    </button>
-                  )}
-                </div>
-              )}
+                      <div className="absolute -left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition">
+                        <div className="p-1 rounded-md bg-white border shadow-sm cursor-grab active:cursor-grabbing">
+                          <GripVertical className="h-4 w-4 text-gray-400" />
+                        </div>
+                      </div>
+
+                      <SnakeCard snake={snake} />
+                    </div>
+                  ))}
+                  {filteredSnakes.length > 0 && (
+                  <div
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={onDropEnd}
+                    className="h-6 rounded-md border-2 border-dashed border-gray-200 text-xs text-gray-400
+                              flex items-center justify-center"
+                  >
+                    {t('dashboard.dropHere')}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

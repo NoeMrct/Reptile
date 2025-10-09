@@ -550,6 +550,7 @@
     }
   },
   "dashboard": {
+    "dropHere": "Suelta aquí para colocar al final",
     "addEvent": "Agregar Evento",
     "addFirstSnake": "Comienza agregando tu primera serpiente a la colección.",
     "addFirstSnakeBtn": "Agregar Tu Primera Serpiente",
