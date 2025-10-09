@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '../components/LanguageSelector';
 import { useAuth } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 export default function AuthPage() {
   const { t } = useTranslation();
   const { login, register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const fromState = (location.state as any)?.from;
+  const redirectTo =
+    (typeof fromState === 'string' ? fromState : fromState?.pathname) || '/dashboard';
 
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -30,14 +34,14 @@ export default function AuthPage() {
         const { error } = await login(form.email, form.password);
         if (error) throw error;
         setMessage(t('auth.loggedIn'));
-        navigate('/dashboard');
+        navigate(redirectTo, { replace: true });
       } else {
         if (form.password !== form.confirm) throw new Error(t('auth.passwordsNotMatch'));
         const { error } = await register(form.email, form.password);
         if (error) throw error;
         setMessage(t('auth.accountCreated'));
         setIsLogin(true);
-        navigate('/dashboard');
+        navigate(redirectTo, { replace: true });
       }
     } catch (err: any) {
       setError(err?.message || t('common.unexpectedError'));

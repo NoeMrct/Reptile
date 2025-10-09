@@ -87,7 +87,6 @@
     "hide": "Hide",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
-
     "loggedIn": "Signed in successfully.",
     "accountCreated": "Account created. You can sign in now.",
     "signUpSuccess": "Account created successfully.",
@@ -352,7 +351,9 @@
     "unexpectedError": "Unexpected error",
     "unknown": "Unknown",
     "update": "Update",
-    "create": "Create"
+    "create": "Create",
+    "code": "Code:",
+    "select": "Select…"
   },
   "contact": {
     "address": "Address",
@@ -396,20 +397,158 @@
     "title": "Contact"
   },
   "contribute": {
+    "title": "Contribute",
+    "tabs": {
+      "propose": "Propose",
+      "mine": "My proposals",
+      "leaderboard": "Leaderboard",
+      "about": "About"
+    },
+    "form": {
+      "type": "Contribution type",
+      "species": "Species",
+      "name": "Name",
+      "latinName": "Latin name",
+      "commonNames": "Common names",
+      "aliases": "Aliases",
+      "genType": "Genetic type",
+      "notes": "Notes",
+      "references": "References",
+      "images": "Proof images",
+      "submit": "Submit",
+      "reset": "Reset form",
+      "actions": "Actions",
+      "adviceDescription": "The more solid your sources are, the faster your proposal will be reviewed.",
+      "adviceTitle": "Tip",
+      "aliasesLabel": "Aliases (comma-separated)",
+      "aliasesPlaceholder": "Candy, Fire, …",
+      "burnedIfRejected": "burned if rejected",
+      "commonNamesLabel": "Common names",
+      "commonNamesPlaceholder": "Corn Snake, Red Rat Snake",
+      "content": "Content",
+      "date": "Date",
+      "estimatedReward": "Estimated reward",
+      "geneticTypeDominant": "Dominant",
+      "geneticTypeIncomplete": "Incomplete (codominant)",
+      "geneticTypeLabel": "Genetic type",
+      "geneticTypePlaceholder": "Select…",
+      "geneticTypeRecessive": "Recessive",
+      "latinNameLabel": "Latin name",
+      "latinNamePlaceholder": "e.g. Pantherophis guttatus",
+      "myProposals": "My proposals",
+      "noProposals": "You haven't proposed any contribution yet.",
+      "notesLabel": "Notes",
+      "notesPlaceholder": "Add any note to help the review…",
+      "photosLabel": "Proof photos",
+      "photosUploadLabel": "Upload photos",
+      "proposedNameAliasPlaceholder": "e.g. Candy, Fire, etc.",
+      "proposedNameLabel": "Proposed name",
+      "proposedNamePlaceholder": "e.g. Banana, Pastel, etc.",
+      "referencesLabel": "References (URLs separated by commas)",
+      "refundedIfApproved": "refunded if approved",
+      "reward": "Reward",
+      "rewardsTitle": "Rewards",
+      "speciesLabel": "Species",
+      "stakeRequired": "Stake required on submission",
+      "status": "Status",
+      "submitProposal": "Submit proposal",
+      "title": "Contribution form",
+      "typeLabel": "Contribution type",
+      "typeOptions": {
+        "alias": "Alias",
+        "group": "Allelic group",
+        "locality": "Locality",
+        "locus": "Locus (gene)",
+        "morph": "Morph",
+        "species": "New species"
+      },
+      "acceptedElements": "Accepted items include: established morphs, documented localities, widely-used aliases, loci/genetic mechanisms, coherent allelic groups.",
+      "addPhotos": "Add photos",
+      "addType": "Add type",
+      "alias": "Alias",
+      "burned": "burned",
+      "concernedSpecies": "Concerned species",
+      "delete": "Delete",
+      "dominant": "Dominant",
+      "duplicateProposals": "Duplicate or unsourced proposals may be rejected.",
+      "edit": "Edit",
+      "editProposal": "Edit proposal",
+      "geneticType": "Genetic type",
+      "group": "Group",
+      "incomplete": "Incomplete (codominant)",
+      "leaderboard": "Leaderboard",
+      "locality": "Locality",
+      "locked": "locked",
+      "locus": "Locus (gene)",
+      "moderation": "Moderation",
+      "moderatorNote": "Moderator note",
+      "morph": "Morph",
+      "otherPhotos": "Other photos",
+      "photos": "Photos",
+      "proposedName": "Proposed name",
+      "recessive": "Recessive",
+      "refunded": "refunded",
+      "reliableSources": "Provide reliable sources (recognized breeders, publications, substantiated discussions, pairing tests).",
+      "rewards": "Rewards",
+      "rules": "Contribution rules",
+      "stake": "Stake"
+    },
+    "alert": {
+      "loginRequired": "Log in to propose a contribution.",
+      "selectSpecies": "Select a species.",
+      "latinRequired": "Latin name of the new species is required.",
+      "nameRequired": "Proposed name is required.",
+      "genTypeRequired": "Select the genetic type (recessive/incomplete/dominant).",
+      "insufficientFunds": "You need at least {{deposit}} ⟡ available to submit (stake).",
+      "imageTooLarge": "Image too large (> {{max}} MB): {{file}}",
+      "success": "Contribution submitted successfully!",
+      "error": "An error occurred."
+    },
+    "wallet": {
+      "title": "Wallet",
+      "balance": "Available balance",
+      "locked": "Locked stake",
+      "redeem": "Redeem my scales",
+      "receivedValidated": "Scales received (validated)",
+      "stakeLocked": "Scales in stake (locked)",
+      "note": "All accounts start with {{initial}} ⟡. Each submission consumes {{deposit}} ⟡ (refunded if approved)."
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "leaderboard": {
+      "title": "Top Contributors"
+    },
     "photo": {
       "delete": "Delete photo"
     },
     "redeem": {
+      "title": "Redeem Scales",
       "generateCoupon": "Generate coupon",
-      "title": "Redeem Scales"
+      "coinsRange": "between {{min}} and {{max}}",
+      "successBasic": "Exchange successful: 1 month Basic paid in Scales.",
+      "successPro": "Exchange successful: 1 month Pro paid in Scales.",
+      "created": "Coupon created: {{code}}",
+      "generateCode": "Generate code",
+      "monthPlansTitle": "Redeem for a monthly plan",
+      "toSpend": "to spend"
     },
-    "tabs": {
-      "about": "About",
-      "leaderboard": "Leaderboard",
-      "mine": "My proposals",
-      "propose": "Propose"
-    },
-    "title": "Contribute"
+    "steps": {
+      "moderation": {
+        "text": "We review, adjust and validate.",
+        "title": "2. Moderation"
+      },
+      "propose": {
+        "text": "Fill in the detailed form.",
+        "title": "1. Propose"
+      },
+      "reward": {
+        "text": "Earn Scales you can use on the site.",
+        "title": "3. Reward"
+      }
+    }
   },
   "dashboard": {
     "addEvent": "Add Event",
@@ -450,7 +589,8 @@
       "title": "Contribute to the project",
       "subtitle": "Suggest morphs, locations and features to earn Scales you can redeem on paid plans.",
       "ctaDiscover": "Discover",
-      "ctaStart": "Start contributing"
+      "ctaStart": "Start contributing",
+      "description": "Suggest morphs, localities, aliases, loci and more to improve the registry and earn Scales."
     }
   },
   "eggTracking": {
@@ -801,23 +941,23 @@
   "pricing": {
     "enterprise": {
       "cta": "Contact Us",
-      "duration": "billed monthly",
+      "duration": " / month",
       "features": {
         "api": "Full API access",
         "integrations": "Integrations (coming soon)",
         "snakes": "Unlimited snakes & clutches",
         "support": "Priority support"
       },
-      "price": "€24.99 / month",
+      "price": "€24.99",
       "title": "Enterprise",
-      "yearlyDuration": "billed yearly",
-      "yearlyPrice": "€249 / year",
+      "yearlyDuration": " / year",
+      "yearlyPrice": "€249",
       "yearlySavings": "2 months free vs monthly"
     },
     "monthly": "Monthly",
     "professional": {
       "cta": "Subscribe Now",
-      "duration": "billed monthly",
+      "duration": " / month",
       "features": {
         "analytics": "Advanced analytics",
         "exports": "PDF/CSV exports",
@@ -825,10 +965,10 @@
         "snakes": "Unlimited snakes"
       },
       "popular": "Most Popular",
-      "price": "€9.99 / month",
+      "price": "€9.99",
       "title": "Professional",
-      "yearlyDuration": "billed yearly",
-      "yearlyPrice": "€99 / year",
+      "yearlyDuration": " / year",
+      "yearlyPrice": "€99",
       "yearlySavings": "2 months free vs monthly"
     },
     "save2Months": "Save 2 months",
@@ -987,5 +1127,9 @@
     },
     "changed": "Language updated",
     "current": "Current: {{lang}}"
+  },
+  "plans": {
+    "basic": "Basic",
+    "pro": "Pro"
   }
 }

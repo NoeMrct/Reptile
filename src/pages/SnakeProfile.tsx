@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Scale, Ruler, CreditCard as Edit, Download, Activity, TrendingUp, Plus } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar, Legend, ComposedChart, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts';
 import { Snake, Event } from '../types';
 import EventCard from '../components/EventCard';
 import AddEventModal from '../components/AddEventModal';
@@ -11,9 +11,6 @@ import UpgradeModal from '../components/UpgradeModal';
 import { format } from 'date-fns';
 import jsPDF from 'jspdf';
 import { useAuth } from '../context/AuthContext';
-import EventEditModal, { EditableEvent } from '../components/EventEditModal';
-import { t } from 'i18next';
-
 
 const SnakeProfile = () => {
   const { t } = useTranslation();
@@ -26,61 +23,34 @@ const SnakeProfile = () => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
-  const [editOpen, setEditOpen] = useState(false);
-  const [editEvent, setEditEvent] = useState<EditableEvent | null>(null);
-  
-  const handleEditOpen = (id: string) => {
-    const ev = events.find(e => e.id === id);
-    if (!ev) return;
-    setEditEvent({
-      id: ev.id,
-      snakeId: ev.snakeId,
-      type: ev.type as EditableEvent['type'],
-      date: ev.date,
-      weight: ev.weight ?? null,
-      notes: ev.notes ?? null,
-    });
-    setEditOpen(true);
-  };
-  
-  const handleEditSave = async (updated: EditableEvent) => {
-    setEvents(prev => prev.map(e => (e.id === updated.id ? { ...e, ...updated } : e)));
-    setEditOpen(false);
-    setEditEvent(null);
-  };
-  
-  const handleEditClose = () => {
-    setEditOpen(false);
-    setEditEvent(null);
-  };
-
   useEffect(() => {
+    // Mock data - in real app, fetch from API
     const mockSnakes: Snake[] = [
       {
         id: '1',
-        name: 'Mira',
-        species: 'Python Regius',
+        name: 'Luna',
+        species: 'Ball Python',
         morph: 'Pastel',
         sex: 'Female',
         birthDate: '2022-03-15',
         weight: 1200,
         length: 120,
-        imageUrl: 'https://images.pexels.com/photos/8142977/pexels-photo-8142977.jpeg?auto=compress&cs=tinysrgb&w=400',
-        notes: 'Très docile et facile à manipuler',
-        userId: user?.id || ''
+        imageUrl: 'https://images.pexels.com/photos/45863/python-snake-reptile-green-45863.jpeg?auto=compress&cs=tinysrgb&w=800',
+        notes: 'Very docile and easy to handle. Excellent feeder, rarely refuses meals.',
+        userId: 'user1'
       },
       {
         id: '2',
-        name: 'Yuzu',
-        species: 'Python Regius',
-        morph: 'Pastel',
+        name: 'Thor',
+        species: 'Corn Snake',
+        morph: 'Anery',
         sex: 'Male',
         birthDate: '2021-08-20',
         weight: 800,
         length: 95,
         imageUrl: 'https://images.pexels.com/photos/8142977/pexels-photo-8142977.jpeg?auto=compress&cs=tinysrgb&w=400',
-        notes: 'Excellent nourrisseur, très actif',
-        userId: user?.id || ''
+        notes: 'Great feeder, very active',
+        userId: 'user1'
       }
     ];
 
@@ -92,7 +62,7 @@ const SnakeProfile = () => {
         snakeId: id!,
         type: 'feeding',
         date: '2025-01-10',
-        notes: 'Souris adulte, a bien mangé',
+        notes: 'Adult mouse, ate well',
         weight: 1210,
         userId: 'user1'
       },
@@ -101,7 +71,7 @@ const SnakeProfile = () => {
         snakeId: id!,
         type: 'shed',
         date: '2025-01-08',
-        notes: 'Mue complète, parfaite',
+        notes: 'Complete shed, perfect',
         userId: 'user1'
       },
       {
@@ -109,7 +79,7 @@ const SnakeProfile = () => {
         snakeId: id!,
         type: 'feeding',
         date: '2025-01-03',
-        notes: 'Souris adulte',
+        notes: 'Adult mouse',
         weight: 1200,
         userId: 'user1'
       },
@@ -118,7 +88,7 @@ const SnakeProfile = () => {
         snakeId: id!,
         type: 'vet_visit',
         date: '2024-12-15',
-        notes: 'Visite annuelle - en bonne santé',
+        notes: 'Annual checkup - healthy',
         weight: 1180,
         userId: 'user1'
       },
@@ -127,7 +97,7 @@ const SnakeProfile = () => {
         snakeId: id!,
         type: 'feeding',
         date: '2024-12-20',
-        notes: 'Souris adulte',
+        notes: 'Adult mouse',
         weight: 1190,
         userId: 'user1'
       }
@@ -136,11 +106,6 @@ const SnakeProfile = () => {
     setSnake(mockSnake);
     setEvents(mockEvents);
   }, [id]);
-
-  const handleDeleteEvent = (id: string) => {
-    if (!window.confirm(t('events.delete'))) return;
-    setEvents(prev => prev.filter(e => e.id !== id));
-  };
 
   const addEvent = (event: Omit<Event, 'id' | 'userId'>) => {
     const newEvent: Event = {
@@ -164,9 +129,11 @@ const SnakeProfile = () => {
 
     const doc = new jsPDF();
     
+    // Title
     doc.setFontSize(20);
     doc.text(`${snake.name} - ${t('snake.profile')} Report`, 20, 20);
     
+    // Global section
     doc.setFontSize(14);
     doc.text(`${t('snake.profile')} Details:`, 20, 40);
     doc.setFontSize(12);
@@ -177,6 +144,7 @@ const SnakeProfile = () => {
     doc.text(`${t('snake.weight')}: ${snake.weight}g`, 20, 95);
     doc.text(`${t('snake.length')}: ${snake.length}cm`, 20, 105);
     
+    // Feeding section
     doc.setFontSize(14);
     doc.text(`${t('snake.feedings')}:`, 20, 130);
     doc.setFontSize(10);
@@ -189,6 +157,7 @@ const SnakeProfile = () => {
       yPos += 10;
     });
     
+    // Shedding section
     yPos += 10;
     doc.setFontSize(14);
     doc.text(`${t('snake.sheds')}:`, 20, yPos);
@@ -201,6 +170,7 @@ const SnakeProfile = () => {
       yPos += 10;
     });
     
+    // Vet visits section
     yPos += 10;
     doc.setFontSize(14);
     doc.text(`${t('snake.vetVisits')}:`, 20, yPos);
@@ -220,6 +190,11 @@ const SnakeProfile = () => {
     return <div>{t('common.loading')}</div>;
   }
 
+  const feedingEvents = events.filter(e => e.type === 'feeding');
+  const shedEvents = events.filter(e => e.type === 'shed');
+  const vetEvents = events.filter(e => e.type === 'vet_visit');
+
+  // Weight chart data
   const weightData = events
     .filter(e => e.weight)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
@@ -228,9 +203,72 @@ const SnakeProfile = () => {
       weight: e.weight
     }));
 
-  const feedingEvents = events.filter(e => e.type === 'feeding');
-  const shedEvents = events.filter(e => e.type === 'shed');
-  const vetEvents = events.filter(e => e.type === 'vet_visit');
+  // Length chart data (simulated - in real app, track length in events)
+  const lengthData = events
+    .filter(e => e.weight)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .map((e, index) => ({
+      date: format(new Date(e.date), 'MMM dd'),
+      length: snake.length - (events.length - index - 1) * 2
+    }));
+
+  // Feeding frequency data
+  const feedingDates = feedingEvents
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .map(e => new Date(e.date));
+
+  const feedingIntervals = feedingDates.slice(1).map((date, i) => {
+    const diff = Math.floor((date.getTime() - feedingDates[i].getTime()) / (1000 * 60 * 60 * 24));
+    return {
+      period: format(date, 'MMM dd'),
+      days: diff
+    };
+  });
+
+  // Shedding timeline data
+  const sheddingTimeline = shedEvents
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .map((e, index) => {
+      const nextShed = shedEvents[index + 1];
+      const daysBetween = nextShed
+        ? Math.floor((new Date(nextShed.date).getTime() - new Date(e.date).getTime()) / (1000 * 60 * 60 * 24))
+        : null;
+      return {
+        date: format(new Date(e.date), 'MMM dd, yyyy'),
+        daysSinceLast: daysBetween
+      };
+    });
+
+  // Combined weight and feeding data
+  const combinedData = events
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .map(e => ({
+      date: format(new Date(e.date), 'MMM dd'),
+      weight: e.weight || null,
+      feeding: e.type === 'feeding' ? e.weight || 1 : null
+    }))
+    .filter(d => d.weight || d.feeding);
+
+  // Health indicators
+  const avgFeedingInterval = feedingIntervals.length > 0
+    ? feedingIntervals.reduce((sum, f) => sum + f.days, 0) / feedingIntervals.length
+    : 0;
+
+  const avgSheddingInterval = sheddingTimeline.filter(s => s.daysSinceLast).length > 0
+    ? sheddingTimeline.filter(s => s.daysSinceLast).reduce((sum, s) => sum + (s.daysSinceLast || 0), 0) / sheddingTimeline.filter(s => s.daysSinceLast).length
+    : 0;
+
+  const feedingRegularity = avgFeedingInterval > 0 ? Math.min(100, (7 / avgFeedingInterval) * 100) : 0;
+  const sheddingHealth = avgSheddingInterval > 0 && avgSheddingInterval < 60 ? 100 : avgSheddingInterval > 0 ? Math.max(50, 100 - (avgSheddingInterval - 60)) : 0;
+  const weightTrend = weightData.length >= 2 ? ((weightData[weightData.length - 1].weight! - weightData[0].weight!) / weightData[0].weight!) * 100 : 0;
+  const overallHealth = (feedingRegularity + sheddingHealth + Math.min(100, weightTrend * 2)) / 3;
+
+  const healthData = [
+    { name: 'Alimentation', value: Math.round(feedingRegularity), fill: '#3b82f6' },
+    { name: 'Mues', value: Math.round(sheddingHealth), fill: '#8b5cf6' },
+    { name: 'Croissance', value: Math.round(Math.min(100, weightTrend * 2)), fill: '#10b981' },
+    { name: 'Santé Globale', value: Math.round(overallHealth), fill: '#16a34a' }
+  ];
 
   const age = Math.floor((Date.now() - new Date(snake.birthDate).getTime()) / (1000 * 60 * 60 * 24 * 365.25));
 
@@ -246,6 +284,7 @@ const SnakeProfile = () => {
         />
       )}
 
+      {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
@@ -280,6 +319,7 @@ const SnakeProfile = () => {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
+          {/* Profile Card */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="aspect-w-16 aspect-h-9">
@@ -343,7 +383,9 @@ const SnakeProfile = () => {
             </div>
           </div>
 
+          {/* Main Content */}
           <div className="lg:col-span-2">
+            {/* Tabs */}
             <div className="bg-white rounded-xl shadow-sm mb-6">
               <div className="border-b border-gray-200">
                 <nav className="flex space-x-8 px-6">
@@ -369,6 +411,7 @@ const SnakeProfile = () => {
               </div>
 
               <div className="p-6">
+                {/* Overview Tab */}
                 {activeTab === 'overview' && (
                   <div className="space-y-6">
                     <div className="grid grid-cols-3 gap-4">
@@ -390,13 +433,14 @@ const SnakeProfile = () => {
                       <h3 className="text-lg font-semibold mb-4">{t('snake.recentActivity')}</h3>
                       <div className="space-y-3">
                         {events.slice(0, 5).map(event => (
-                          <EventCard key={event.id} event={event} snakeName={snake.name} onDelete={handleDeleteEvent} onEdit={handleEditOpen} />
+                          <EventCard key={event.id} event={event} snakeName={snake.name} />
                         ))}
                       </div>
                     </div>
                   </div>
                 )}
 
+                {/* Events Tab */}
                 {activeTab === 'events' && (
                   <div>
                     <div className="flex justify-between items-center mb-6">
@@ -410,30 +454,134 @@ const SnakeProfile = () => {
                     </div>
                     <div className="space-y-3">
                       {events.map(event => (
-                        <EventCard key={event.id} event={event} snakeName={snake.name} onDelete={handleDeleteEvent} onEdit={handleEditOpen} />
+                        <EventCard key={event.id} event={event} snakeName={snake.name} />
                       ))}
                     </div>
                   </div>
                 )}
 
+                {/* Analytics Tab */}
                 {activeTab === 'analytics' && (
-                  <div className="space-y-6">
+                  <div className="space-y-8">
+                    {/* Health Indicators */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4">Indicateurs de Santé</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {healthData.map((item, index) => (
+                          <div key={index} className="bg-gray-50 p-4 rounded-lg text-center">
+                            <div className="relative h-24 mb-2">
+                              <ResponsiveContainer width="100%" height="100%">
+                                <RadialBarChart
+                                  cx="50%"
+                                  cy="50%"
+                                  innerRadius="60%"
+                                  outerRadius="90%"
+                                  data={[item]}
+                                  startAngle={90}
+                                  endAngle={-270}
+                                >
+                                  <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
+                                  <RadialBar
+                                    background
+                                    dataKey="value"
+                                    cornerRadius={10}
+                                    fill={item.fill}
+                                  />
+                                </RadialBarChart>
+                              </ResponsiveContainer>
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-xl font-bold" style={{ color: item.fill }}>
+                                  {item.value}%
+                                </span>
+                              </div>
+                            </div>
+                            <p className="text-sm font-medium text-gray-900">{item.name}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Weight Trend with Area */}
                     {weightData.length > 0 && (
                       <div>
                         <h3 className="text-lg font-semibold mb-4">{t('snake.weightTrend')}</h3>
-                        <div className="h-64 w-full">
+                        <div className="h-64 w-full bg-gradient-to-br from-green-50 to-white p-4 rounded-lg">
                           <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={weightData}>
-                              <CartesianGrid strokeDasharray="3 3" />
-                              <XAxis dataKey="date" />
-                              <YAxis />
-                              <Tooltip />
-                              <Line
+                            <AreaChart data={weightData}>
+                              <defs>
+                                <linearGradient id="colorWeight" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="5%" stopColor="#16a34a" stopOpacity={0.8}/>
+                                  <stop offset="95%" stopColor="#16a34a" stopOpacity={0.1}/>
+                                </linearGradient>
+                              </defs>
+                              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                              <XAxis
+                                dataKey="date"
+                                stroke="#6b7280"
+                                style={{ fontSize: '12px' }}
+                              />
+                              <YAxis
+                                stroke="#6b7280"
+                                style={{ fontSize: '12px' }}
+                                label={{ value: 'Poids (g)', angle: -90, position: 'insideLeft' }}
+                              />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: 'white',
+                                  border: '1px solid #e5e7eb',
+                                  borderRadius: '8px',
+                                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                                }}
+                                labelStyle={{ fontWeight: 'bold', color: '#111827' }}
+                              />
+                              <Area
                                 type="monotone"
                                 dataKey="weight"
                                 stroke="#16a34a"
-                                strokeWidth={2}
-                                dot={{ fill: '#16a34a' }}
+                                strokeWidth={3}
+                                fill="url(#colorWeight)"
+                                dot={{ fill: '#16a34a', strokeWidth: 2, r: 5 }}
+                                activeDot={{ r: 8, fill: '#15803d' }}
+                              />
+                            </AreaChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Length Growth Chart */}
+                    {lengthData.length > 0 && (
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4">Évolution de la Longueur</h3>
+                        <div className="h-64 w-full bg-gradient-to-br from-blue-50 to-white p-4 rounded-lg">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={lengthData}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                              <XAxis
+                                dataKey="date"
+                                stroke="#6b7280"
+                                style={{ fontSize: '12px' }}
+                              />
+                              <YAxis
+                                stroke="#6b7280"
+                                style={{ fontSize: '12px' }}
+                                label={{ value: 'Longueur (cm)', angle: -90, position: 'insideLeft' }}
+                              />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: 'white',
+                                  border: '1px solid #e5e7eb',
+                                  borderRadius: '8px',
+                                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                                }}
+                              />
+                              <Line
+                                type="monotone"
+                                dataKey="length"
+                                stroke="#3b82f6"
+                                strokeWidth={3}
+                                dot={{ fill: '#3b82f6', strokeWidth: 2, r: 5 }}
+                                activeDot={{ r: 8, fill: '#2563eb' }}
                               />
                             </LineChart>
                           </ResponsiveContainer>
@@ -441,25 +589,205 @@ const SnakeProfile = () => {
                       </div>
                     )}
 
+                    {/* Combined Weight & Feeding Chart */}
+                    {combinedData.length > 0 && (
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4">Poids et Alimentation</h3>
+                        <div className="h-64 w-full bg-gradient-to-br from-purple-50 to-white p-4 rounded-lg">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <ComposedChart data={combinedData}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                              <XAxis
+                                dataKey="date"
+                                stroke="#6b7280"
+                                style={{ fontSize: '12px' }}
+                              />
+                              <YAxis
+                                yAxisId="left"
+                                stroke="#6b7280"
+                                style={{ fontSize: '12px' }}
+                                label={{ value: 'Poids (g)', angle: -90, position: 'insideLeft' }}
+                              />
+                              <YAxis
+                                yAxisId="right"
+                                orientation="right"
+                                stroke="#6b7280"
+                                style={{ fontSize: '12px' }}
+                              />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: 'white',
+                                  border: '1px solid #e5e7eb',
+                                  borderRadius: '8px',
+                                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                                }}
+                              />
+                              <Legend />
+                              <Line
+                                yAxisId="left"
+                                type="monotone"
+                                dataKey="weight"
+                                stroke="#16a34a"
+                                strokeWidth={2}
+                                name="Poids"
+                                dot={{ fill: '#16a34a', r: 4 }}
+                              />
+                              <Bar
+                                yAxisId="right"
+                                dataKey="feeding"
+                                fill="#f59e0b"
+                                name="Repas"
+                                opacity={0.6}
+                              />
+                            </ComposedChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Feeding Frequency */}
+                    {feedingIntervals.length > 0 && (
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4">Intervalle entre Repas</h3>
+                        <div className="h-64 w-full bg-gradient-to-br from-orange-50 to-white p-4 rounded-lg">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={feedingIntervals}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                              <XAxis
+                                dataKey="period"
+                                stroke="#6b7280"
+                                style={{ fontSize: '12px' }}
+                              />
+                              <YAxis
+                                stroke="#6b7280"
+                                style={{ fontSize: '12px' }}
+                                label={{ value: 'Jours', angle: -90, position: 'insideLeft' }}
+                              />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: 'white',
+                                  border: '1px solid #e5e7eb',
+                                  borderRadius: '8px',
+                                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                                }}
+                                formatter={(value) => [`${value} jours`, 'Intervalle']}
+                              />
+                              <Bar
+                                dataKey="days"
+                                fill="#f59e0b"
+                                radius={[8, 8, 0, 0]}
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                        <div className="mt-4 p-4 bg-orange-50 rounded-lg">
+                          <p className="text-sm font-medium text-gray-900">
+                            Intervalle moyen: <span className="text-orange-600">{avgFeedingInterval.toFixed(1)} jours</span>
+                          </p>
+                          <p className="text-sm text-gray-600 mt-1">
+                            Dernier repas: {feedingEvents[0] ? format(new Date(feedingEvents[0].date), 'MMM dd, yyyy') : 'N/A'}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Shedding Timeline */}
+                    {sheddingTimeline.length > 0 && (
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4">Historique des Mues</h3>
+                        <div className="bg-gradient-to-br from-purple-50 to-white p-6 rounded-lg">
+                          <div className="space-y-3">
+                            {sheddingTimeline.reverse().map((shed, index) => (
+                              <div key={index} className="flex items-center justify-between p-3 bg-white rounded-lg border border-purple-200">
+                                <div className="flex items-center space-x-4">
+                                  <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <TrendingUp className="h-5 w-5 text-purple-600" />
+                                  </div>
+                                  <div>
+                                    <p className="font-medium text-gray-900">{shed.date}</p>
+                                    {shed.daysSinceLast && (
+                                      <p className="text-sm text-gray-600">
+                                        {shed.daysSinceLast} jours après la précédente
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                                {shed.daysSinceLast && (
+                                  <div className="text-right">
+                                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                                      {shed.daysSinceLast}j
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                          {avgSheddingInterval > 0 && (
+                            <div className="mt-4 p-4 bg-purple-100 rounded-lg">
+                              <p className="text-sm font-medium text-gray-900">
+                                Cycle moyen: <span className="text-purple-600">{avgSheddingInterval.toFixed(0)} jours</span>
+                              </p>
+                              <p className="text-sm text-gray-600 mt-1">
+                                Prochaine mue estimée dans {avgSheddingInterval.toFixed(0)} jours
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Summary Stats */}
                     <div className="grid grid-cols-2 gap-6">
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <h4 className="font-semibold mb-2">{t('snake.feedingSchedule')}</h4>
-                        <p className="text-sm text-gray-600">
-                          {t('snake.avgInterval')}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {t('snake.lastFeeding')} {feedingEvents[0] ? format(new Date(feedingEvents[0].date), 'MMM dd, yyyy') : 'N/A'}
-                        </p>
+                      <div className="bg-gradient-to-br from-green-50 to-white p-6 rounded-lg border border-green-200">
+                        <h4 className="font-semibold text-gray-900 mb-3">Croissance</h4>
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">Poids actuel:</span>
+                            <span className="font-medium text-gray-900">{snake.weight}g</span>
+                          </div>
+                          {weightData.length >= 2 && (
+                            <>
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Poids initial:</span>
+                                <span className="font-medium text-gray-900">{weightData[0].weight}g</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Gain total:</span>
+                                <span className="font-medium text-green-600">
+                                  +{(weightData[weightData.length - 1].weight - weightData[0].weight).toFixed(0)}g
+                                </span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Progression:</span>
+                                <span className="font-medium text-green-600">
+                                  +{weightTrend.toFixed(1)}%
+                                </span>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
 
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <h4 className="font-semibold mb-2">{t('snake.growthRate')}</h4>
-                        <p className="text-sm text-gray-600">
-                          {t('snake.weightGain')}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {t('snake.growthTrend')}
-                        </p>
+                      <div className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-lg border border-blue-200">
+                        <h4 className="font-semibold text-gray-900 mb-3">Statistiques</h4>
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">Total repas:</span>
+                            <span className="font-medium text-gray-900">{feedingEvents.length}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">Total mues:</span>
+                            <span className="font-medium text-gray-900">{shedEvents.length}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">Visites véto:</span>
+                            <span className="font-medium text-gray-900">{vetEvents.length}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">Total événements:</span>
+                            <span className="font-medium text-gray-900">{events.length}</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -470,6 +798,7 @@ const SnakeProfile = () => {
         </div>
       </div>
 
+      {/* Add Event Modal */}
       {showAddEvent && (
         <AddEventModal
           onClose={() => setShowAddEvent(false)}
@@ -479,6 +808,7 @@ const SnakeProfile = () => {
         />
       )}
 
+      {/* Edit Snake Modal */}
       {showEditSnake && (
         <EditSnakeModal
           snake={snake}
@@ -486,13 +816,6 @@ const SnakeProfile = () => {
           onSave={updateSnake}
         />
       )}
-      
-      <EventEditModal
-        open={editOpen}
-        event={editEvent}
-        onClose={handleEditClose}
-        onSave={handleEditSave}
-      />
     </div>
   );
 };

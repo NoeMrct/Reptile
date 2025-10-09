@@ -396,20 +396,158 @@
     "title": "Contacto"
   },
   "contribute": {
+    "title": "Contribuir",
+    "tabs": {
+      "propose": "Proponer",
+      "mine": "Mis propuestas",
+      "leaderboard": "Clasificación",
+      "about": "Acerca de"
+    },
+    "form": {
+      "type": "Tipo de contribución",
+      "species": "Especie",
+      "name": "Nombre",
+      "latinName": "Nombre latino",
+      "commonNames": "Nombres comunes",
+      "aliases": "Alias",
+      "genType": "Tipo genético",
+      "notes": "Notas",
+      "references": "Referencias",
+      "images": "Imágenes de prueba",
+      "submit": "Enviar",
+      "reset": "Reiniciar formulario",
+      "actions": "Acciones",
+      "adviceDescription": "Cuanto más sólidas sean tus fuentes, más rápido se revisará tu propuesta.",
+      "adviceTitle": "Consejo",
+      "aliasesLabel": "Alias (separados por comas)",
+      "aliasesPlaceholder": "Candy, Fire, …",
+      "burnedIfRejected": "quemado si se rechaza",
+      "commonNamesLabel": "Nombres comunes",
+      "commonNamesPlaceholder": "Corn Snake, Red Rat Snake",
+      "content": "Contenido",
+      "date": "Fecha",
+      "estimatedReward": "Recompensa estimada",
+      "geneticTypeDominant": "Dominante",
+      "geneticTypeIncomplete": "Incompleto (codominante)",
+      "geneticTypeLabel": "Tipo genético",
+      "geneticTypePlaceholder": "Seleccionar…",
+      "geneticTypeRecessive": "Recesivo",
+      "latinNameLabel": "Nombre latino",
+      "latinNamePlaceholder": "p. ej.: Pantherophis guttatus",
+      "myProposals": "Mis propuestas",
+      "noProposals": "Todavía no has propuesto ninguna contribución.",
+      "notesLabel": "Notas",
+      "notesPlaceholder": "Añade cualquier nota que ayude a la revisión…",
+      "photosLabel": "Fotos de prueba",
+      "photosUploadLabel": "Subir fotos",
+      "proposedNameAliasPlaceholder": "p. ej.: Candy, Fire, etc.",
+      "proposedNameLabel": "Nombre propuesto",
+      "proposedNamePlaceholder": "p. ej.: Banana, Pastel, etc.",
+      "referencesLabel": "Referencias (URL separadas por comas)",
+      "refundedIfApproved": "reembolsado si se aprueba",
+      "reward": "Recompensa",
+      "rewardsTitle": "Recompensas",
+      "speciesLabel": "Especie",
+      "stakeRequired": "Stake requerido al enviar",
+      "status": "Estado",
+      "submitProposal": "Enviar propuesta",
+      "title": "Formulario de contribución",
+      "typeLabel": "Tipo de contribución",
+      "typeOptions": {
+        "alias": "Alias",
+        "group": "Grupo alélico",
+        "locality": "Localidad",
+        "locus": "Locus (gen)",
+        "morph": "Morfismo",
+        "species": "Nueva especie"
+      },
+      "acceptedElements": "Elementos aceptados: morfos establecidos, localidades documentadas, alias de uso extendido, loci/mecanismos genéticos y grupos alélicos coherentes.",
+      "addPhotos": "Añadir fotos",
+      "addType": "Añadir tipo",
+      "alias": "Alias",
+      "burned": "quemado",
+      "concernedSpecies": "Especie en cuestión",
+      "delete": "Eliminar",
+      "dominant": "Dominante",
+      "duplicateProposals": "Las propuestas duplicadas o sin fuentes pueden ser rechazadas.",
+      "edit": "Editar",
+      "editProposal": "Editar propuesta",
+      "geneticType": "Tipo genético",
+      "group": "Grupo",
+      "incomplete": "Incompleto (codominante)",
+      "leaderboard": "Clasificación",
+      "locality": "Localidad",
+      "locked": "bloqueado",
+      "locus": "Locus (gen)",
+      "moderation": "Moderación",
+      "moderatorNote": "Nota del moderador",
+      "morph": "Morfismo",
+      "otherPhotos": "Otras fotos",
+      "photos": "Fotos",
+      "proposedName": "Nombre propuesto",
+      "recessive": "Recesivo",
+      "refunded": "reembolsado",
+      "reliableSources": "Aporta fuentes fiables (criadores reconocidos, publicaciones, debates fundamentados, pruebas de cruce).",
+      "rewards": "Recompensas",
+      "rules": "Reglas de contribución",
+      "stake": "Stake"
+    },
+    "alert": {
+      "loginRequired": "Inicia sesión para proponer una contribución.",
+      "selectSpecies": "Selecciona una especie.",
+      "latinRequired": "Se requiere el nombre latino de la nueva especie.",
+      "nameRequired": "Se requiere el nombre propuesto.",
+      "genTypeRequired": "Selecciona el tipo genético (recesivo/incompleto/dominante).",
+      "insufficientFunds": "Necesitas al menos {{deposit}} ⟡ disponibles para enviar (stake).",
+      "imageTooLarge": "Imagen demasiado grande (> {{max}} MB): {{file}}",
+      "success": "¡Contribución enviada correctamente!",
+      "error": "Se produjo un error."
+    },
+    "wallet": {
+      "title": "Monedero",
+      "balance": "Saldo disponible",
+      "locked": "Stake bloqueado",
+      "redeem": "Canjear mis Escamas",
+      "receivedValidated": "Escamas recibidas (validadas)",
+      "stakeLocked": "Escamas en stake (bloqueadas)",
+      "note": "Todas las cuentas empiezan con {{initial}} ⟡. Cada envío consume {{deposit}} ⟡ (reembolsadas si se aprueba)."
+    },
+    "status": {
+      "pending": "Pendiente",
+      "approved": "Aprobada",
+      "rejected": "Rechazada"
+    },
+    "leaderboard": {
+      "title": "Mejores colaboradores"
+    },
     "photo": {
       "delete": "Eliminar foto"
     },
     "redeem": {
+      "title": "Canjear Escamas",
       "generateCoupon": "Generar cupón",
-      "title": "Canjear Escamas"
+      "coinsRange": "entre {{min}} y {{max}}",
+      "successBasic": "Canje realizado: 1 mes Basic pagado en Escamas.",
+      "successPro": "Canje realizado: 1 mes Pro pagado en Escamas.",
+      "created": "Cupón creado: {{code}}",
+      "generateCode": "Generar código",
+      "monthPlansTitle": "Canjear por un plan mensual",
+      "toSpend": "a gastar"
     },
-    "tabs": {
-      "about": "Acerca de",
-      "leaderboard": "Clasificación",
-      "mine": "Mis propuestas",
-      "propose": "Proponer"
-    },
-    "title": "Contribuir"
+    "steps": {
+      "moderation": {
+        "text": "Revisamos, ajustamos y validamos.",
+        "title": "2. Moderación"
+      },
+      "propose": {
+        "text": "Rellena el formulario detallado.",
+        "title": "1. Proponer"
+      },
+      "reward": {
+        "text": "Recibe Escamas utilizables en el sitio.",
+        "title": "3. Recompensa"
+      }
+    }
   },
   "dashboard": {
     "addEvent": "Agregar Evento",
@@ -801,23 +939,23 @@
   "pricing": {
     "enterprise": {
       "cta": "Contáctanos",
-      "duration": "facturación mensual",
+      "duration": " / mensual",
       "features": {
         "api": "Acceso completo a la API",
         "integrations": "Integraciones (próximamente)",
         "snakes": "Serpientes y puestas ilimitadas",
         "support": "Soporte prioritario"
       },
-      "price": "24,99 € / mes",
+      "price": "24,99 €",
       "title": "Enterprise",
-      "yearlyDuration": "facturación anual",
-      "yearlyPrice": "249 € / año",
+      "yearlyDuration": " / anual",
+      "yearlyPrice": "249 €",
       "yearlySavings": "2 meses gratis frente a mensual"
     },
     "monthly": "Mensual",
     "professional": {
       "cta": "Suscribirse Ahora",
-      "duration": "facturación mensual",
+      "duration": " / mensual",
       "features": {
         "analytics": "Analíticas avanzadas",
         "exports": "Exportaciones PDF/CSV",
@@ -825,10 +963,10 @@
         "snakes": "Serpientes ilimitadas"
       },
       "popular": "Más Popular",
-      "price": "9,99 € / mes",
+      "price": "9,99 €",
       "title": "Profesional",
-      "yearlyDuration": "facturación anual",
-      "yearlyPrice": "99 € / año",
+      "yearlyDuration": " / anual",
+      "yearlyPrice": "99 €",
       "yearlySavings": "2 meses gratis frente a mensual"
     },
     "save2Months": "Ahorra 2 meses",

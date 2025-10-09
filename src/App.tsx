@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LandingPage from './pages/LandingPage';
 import ContactPage from './pages/ContactPage';
@@ -12,12 +12,21 @@ import BreedingPage from './pages/BreedingPage';
 import ContributePage from './pages/ContributePage';
 import ForgotPasswordPage from './pages/ForgotPassword';
 import ResetPasswordPage from './pages/ResetPassword';
-import { AdminApp } from './admin/AdminRoutes';
+import AdminPage from './pages/AdminPage';
 import './App.css';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   return user ? <>{children}</> : <Navigate to="/auth" />;
+}
+
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
+  const location = useLocation();
+  const isAdmin = user?.role === 'admin' || user?.email === 'mercourt.noe@outlook.fr';
+  if (!user) return <Navigate to="/auth" replace state={{ from: location }} />;
+  if (!isAdmin) return <Navigate to="/dashboard" replace />;
+  return <>{children}</>;
 }
 
 function App() {
@@ -27,7 +36,6 @@ function App() {
         <div className="min-h-screen bg-gray-50">
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/admin/*" element={<AdminApp />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/contribute" element={<ContributePage />} />
@@ -71,6 +79,14 @@ function App() {
                 <ProtectedRoute>
                   <BreedingPage />
                 </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminPage />
+                </AdminRoute>
               }
             />
           </Routes>

@@ -178,40 +178,40 @@ const RedeemCoinsModal: React.FC<{
               <Coins className="h-5 w-5 text-green-600" />
               <h4 className="font-semibold">{t('contribute.redeem.title')}</h4>
             </div>
-            <button className="p-2 hover:bg-gray-50 rounded-lg" onClick={onClose} aria-label="Fermer">
+            <button className="p-2 hover:bg-gray-50 rounded-lg" onClick={onClose} aria-label={t('common.close')}>
               <X className="h-5 w-5" />
             </button>
           </div>
           <div className="p-5 space-y-6">
             <div className="bg-gray-50 rounded-xl p-4">
-              <div className="text-sm text-gray-600">Solde disponible</div>
+              <div className="text-sm text-gray-600">{t('contribute.wallet.balance')}</div>
               <div className="text-3xl font-extrabold">{wallet} ⟡</div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-5">
               <div className="border rounded-xl p-4">
-                <h5 className="font-semibold mb-2">Échanger contre un mois de plan</h5>
+                <h5 className="font-semibold mb-2">{t('contribute.redeem.monthPlansTitle')}</h5>
                 <div className="space-y-2">
                   <button
                     disabled={!canBasic}
-                    onClick={() => { onDebit(COIN_RULES.redeem.basicMonth); alert('Échange réussi : 1 mois Basic payé en Écailles.'); onClose(); }}
+                    onClick={() => { onDebit(COIN_RULES.redeem.basicMonth); alert(t('contribute.redeem.successBasic')); onClose(); }}
                     className={`w-full px-4 py-2 rounded-lg border font-medium ${canBasic ? 'hover:bg-green-50' : 'opacity-50 cursor-not-allowed'}`}
                   >
-                    Basic — {COIN_RULES.redeem.basicMonth} ⟡
+                   {t('plans.basic')} — {COIN_RULES.redeem.basicMonth} ⟡
                   </button>
                   <button
                     disabled={!canPro}
-                    onClick={() => { onDebit(COIN_RULES.redeem.proMonth); alert('Échange réussi : 1 mois Pro payé en Écailles.'); onClose(); }}
+                    onClick={() => { onDebit(COIN_RULES.redeem.proMonth); alert(t('contribute.redeem.successPro')); onClose(); }}
                     className={`w-full px-4 py-2 rounded-lg border font-medium ${canPro ? 'hover:bg-green-50' : 'opacity-50 cursor-not-allowed'}`}
                   >
-                    Pro — {COIN_RULES.redeem.proMonth} ⟡
+                   {t('plans.pro')} — {COIN_RULES.redeem.proMonth} ⟡
                   </button>
                 </div>
               </div>
 
               <div className="border rounded-xl p-4">
                 <h5 className="font-semibold mb-2">{t('contribute.redeem.generateCoupon')}</h5>
-                <p className="text-sm text-gray-600 mb-2">Déduis {t('contribute.redeem.coinsRange', { min: COIN_RULES.coupons.min, max: COIN_RULES.coupons.max })} ⟡ pour obtenir un bon ({COIN_RULES.coupons.discountRange}).</p>
+                <p className="text-sm text-gray-600 mb-2">{t('contribute.redeem.description', { min: COIN_RULES.coupons.min, max: COIN_RULES.coupons.max, discount: COIN_RULES.coupons.discountRange })}</p>
                 <div className="flex items-center gap-2 mb-2">
                   <input
                     type="number"
@@ -221,22 +221,22 @@ const RedeemCoinsModal: React.FC<{
                     value={couponSpend}
                     onChange={(e)=>setCouponSpend(Number(e.target.value))}
                   />
-                  <span className="text-sm text-gray-600">⟡ à dépenser</span>
+                  <span className="text-sm text-gray-600">⟡ {t('contribute.redeem.toSpend')}</span>
                 </div>
                 <button
                   disabled={!validCoupon}
-                  onClick={() => { onDebit(couponSpend); const code = makeCode(); setGeneratedCode(code); alert(`Bon créé : ${code}`); onClose(); }}
+                  onClick={() => { onDebit(couponSpend); const code = makeCode(); setGeneratedCode(code); alert(t('contribute.redeem.created', { code })); onClose(); }}
                   className={`px-4 py-2 rounded-lg border font-medium ${validCoupon ? 'hover:bg-green-50' : 'opacity-50 cursor-not-allowed'}`}
                 >
-                  Générer le code
+                 {t('contribute.redeem.generateCode')}
                 </button>
                 {generatedCode && (
-                  <div className="mt-2 text-sm">Code : <span className="font-mono font-semibold">{generatedCode}</span></div>
+                  <div className="mt-2 text-sm">{t('common.code')} <span className="font-mono font-semibold">{generatedCode}</span></div>
                 )}
               </div>
             </div>
 
-            <div className="text-xs text-gray-500">Les Écailles sont {COIN_RULES.transferability}. Opération maquette pour tests.
+              <div className="text-xs text-gray-500">{t('contribute.redeem.note', { transferability: COIN_RULES.transferability })}
             </div>
           </div>
         </div>
@@ -544,7 +544,7 @@ const ContributePage: React.FC = () => {
             </Link>
             <div className="flex items-center gap-2">
               <Sparkles className="h-6 w-6 text-green-600" />
-              <h1 className="text-2xl font-bold text-gray-900">Contribuer au projet</h1>
+              <h1 className="text-2xl font-bold text-gray-900">{t('dashboard.contribute.title')}</h1>
             </div>
           </div>
         </div>
@@ -556,25 +556,25 @@ const ContributePage: React.FC = () => {
             <div className="flex items-start gap-4">
               <Lightbulb className="h-10 w-10 text-amber-500" />
               <div>
-                <h2 className="text-xl font-bold text-gray-900 mb-1">Propose des ajouts, gagne des Écailles</h2>
-                <p className="text-gray-600">Suggère de nouvelles espèces, morphs, localités, alias, loci ou groupes. Quand nous validons ta proposition, tu reçois des <span className="font-semibold">Écailles</span> (monnaie interne) utilisables pour payer un plan payant.</p>
+                <h2 className="text-xl font-bold text-gray-900 mb-1">{t('dashboard.contribute.subtitle')}</h2>
+                <p className="text-gray-600">{t('dashboard.contribute.description')}</p>
               </div>
             </div>
             <div className="grid sm:grid-cols-3 gap-4 mt-6">
               <div className="bg-gray-50 rounded-xl p-4">
                 <FilePlus2 className="h-5 w-5" />
-                <p className="mt-2 font-semibold">1. Propose</p>
-                <p className="text-sm text-gray-600">Remplis le formulaire détaillé.</p>
+                <h3 className="text-lg font-semibold">{t('contribute.steps.propose.title')}</h3>
+                <p className="text-sm text-gray-600">{t('contribute.steps.propose.text')}</p>
               </div>
               <div className="bg-gray-50 rounded-xl p-4">
                 <ShieldCheck className="h-5 w-5" />
-                <p className="mt-2 font-semibold">2. Modération</p>
-                <p className="text-sm text-gray-600">Nous vérifions, ajustons et validons.</p>
+                <h3 className="text-lg font-semibold">{t('contribute.steps.moderation.title')}</h3>
+                <p className="text-sm text-gray-600">{t('contribute.steps.moderation.text')}</p>
               </div>
               <div className="bg-gray-50 rounded-xl p-4">
                 <Coins className="h-5 w-5" />
-                <p className="mt-2 font-semibold">3. Récompense</p>
-                <p className="text-sm text-gray-600">Reçois des Écailles utilisables sur le site.</p>
+                <h3 className="text-lg font-semibold">{t('contribute.steps.reward.title')}</h3>
+                <p className="text-sm text-gray-600">{t('contribute.steps.reward.text')}</p>
               </div>
             </div>
           </Card>
@@ -583,25 +583,25 @@ const ContributePage: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Coins className="h-6 w-6 text-yellow-500" />
-                <h3 className="text-lg font-bold">Mon portefeuille</h3>
+                <h3 className="text-lg font-bold">{t('contribute.wallet.title')}</h3>
               </div>
               <button onClick={handleRedeem} className="bg-green-600 hover:bg-green-700 text-white text-sm px-3 py-1.5 rounded-lg">{t('contribute.redeem.title')}</button>
             </div>
             <div className="mt-4">
               <p className="text-4xl font-extrabold text-gray-900">{wallet}</p>
-              <p className="text-sm text-gray-500">Disponible</p>
+              <p className="text-sm text-gray-500">{t('contribute.wallet.balance')}</p>
             </div>
             <div className="grid grid-cols-2 gap-3 mt-5">
               <div className="bg-green-50 border border-green-100 rounded-xl p-3">
                 <BadgeCheck className="h-5 w-5 text-green-600" />
-                <p className="text-sm mt-1 text-gray-700"><span className="font-semibold">{approvedCoins}</span> Écailles reçues (validées)</p>
+                <p className="text-sm mt-1 text-gray-700"><span className="font-semibold">{approvedCoins}</span> {t('contribute.wallet.receivedValidated')}</p>
               </div>
               <div className="bg-amber-50 border border-amber-100 rounded-xl p-3">
                 <Lock className="h-5 w-5 text-amber-600" />
-                <p className="text-sm mt-1 text-gray-700"><span className="font-semibold">{lockedStake}</span> Écailles en stake (verrouillées)</p>
+                <p className="text-sm mt-1 text-gray-700"><span className="font-semibold">{lockedStake}</span> {t('contribute.wallet.stakeLocked')}</p>
               </div>
             </div>
-            <div className="mt-4 text-xs text-gray-600">Tous les comptes démarrent avec <span className="font-semibold">{COIN_RULES.initialGrant} ⟡</span>. Chaque soumission consomme <span className="font-semibold">{COIN_RULES.stake.defaultDeposit} ⟡</span> (remboursées si validée).</div>
+            <div className="mt-4 text-xs text-gray-600">{t('contribute.wallet.note', { initial: COIN_RULES.initialGrant, deposit: COIN_RULES.stake.defaultDeposit })}</div>
           </Card>
         </div>
 
@@ -635,28 +635,28 @@ const ContributePage: React.FC = () => {
               <div>
                 <div className="grid md:grid-cols-3 gap-6">
                   <div className="md:col-span-2">
-                    <h3 className="text-lg font-bold mb-3">Formulaire de contribution</h3>
+                    <h3 className="text-lg font-bold mb-3">{t('contribute.form.title')}</h3>
                     <form onSubmit={handleSubmit} className="space-y-4">
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">Type d'ajout</label>
+                          <label className="block text-sm font-medium text-gray-700">{t('contribute.form.typeLabel')}</label>
                           <select
                             className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
                             value={type}
                             onChange={(e) => setType(e.target.value as ContributionType)}
                           >
-                            <option value="morph">Morph</option>
-                            <option value="locality">Localité</option>
-                            <option value="alias">Alias</option>
-                            <option value="locus">Locus (gène)</option>
-                            <option value="group">Groupe (complexe allélique)</option>
-                            <option value="species">Nouvelle espèce</option>
+                            <option value="morph">{t('contribute.form.typeOptions.morph')}</option>
+                            <option value="locality">{t('contribute.form.typeOptions.locality')}</option>
+                            <option value="alias">{t('contribute.form.typeOptions.alias')}</option>
+                            <option value="locus">{t('contribute.form.typeOptions.locus')}</option>
+                            <option value="group">{t('contribute.form.typeOptions.group')}</option>
+                            <option value="species">{t('contribute.form.typeOptions.species')}</option>
                           </select>
                         </div>
 
                         {type !== 'species' && (
                           <div>
-                            <label className="block text-sm font-medium text-gray-700">Espèce concernée</label>
+                            <label className="block text-sm font-medium text-gray-700">{t('contribute.form.speciesLabel')}</label>
                             <select
                               className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
                               value={speciesId}
@@ -673,19 +673,19 @@ const ContributePage: React.FC = () => {
                       {type === 'species' && (
                         <div className="grid sm:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700">Nom latin (obligatoire)</label>
+                            <label className="block text-sm font-medium text-gray-700">{t('contribute.form.latinNameLabel')}</label>
                             <input
                               className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                              placeholder="Ex : Pantherophis guttatus"
+                              placeholder={t('contribute.form.latinNamePlaceholder')}
                               value={latin}
                               onChange={(e) => setLatin(e.target.value)}
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700">Noms communs (séparés par des virgules)</label>
+                            <label className="block text-sm font-medium text-gray-700">{t('contribute.form.commonNamesLabel')}</label>
                             <input
                               className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                              placeholder="Corn Snake, Serpent des blés"
+                              placeholder={t('contribute.form.commonNamesPlaceholder')}
                               value={commonNames}
                               onChange={(e) => setCommonNames(e.target.value)}
                             />
@@ -696,10 +696,10 @@ const ContributePage: React.FC = () => {
                       {type !== 'species' && (
                         <div className="grid sm:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700">Nom proposé {type === 'alias' ? '(alias)' : ''}</label>
+                            <label className="block text-sm font-medium text-gray-700">{t('contribute.form.proposedNameLabel')} {type === 'alias' ? '(alias)' : ''}</label>
                             <input
                               className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                              placeholder={type === 'alias' ? 'Ex : CG pour Coral Glow' : 'Ex : Ultramel'}
+                              placeholder={type === 'alias' ? t('contribute.form.proposedNameAliasPlaceholder') : t('contribute.form.proposedNamePlaceholder')}
                               value={name}
                               onChange={(e) => setName(e.target.value)}
                             />
@@ -707,16 +707,16 @@ const ContributePage: React.FC = () => {
 
                           {(type === 'morph' || type === 'locus') && (
                             <div>
-                              <label className="block text-sm font-medium text-gray-700">Type génétique</label>
+                              <label className="block text-sm font-medium text-gray-700">{t('contribute.form.geneticTypeLabel')}</label>
                               <select
                                 className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
                                 value={genType}
                                 onChange={(e) => setGenType(e.target.value as any)}
                               >
-                                <option value="">Sélectionner…</option>
-                                <option value="recessive">Récessif</option>
-                                <option value="incomplete">Incomplet (codominant)</option>
-                                <option value="dominant">Dominant</option>
+                                <option value="">{t('contribute.form.geneticTypePlaceholder')}</option>
+                                <option value="recessive">{t('contribute.form.geneticTypeRecessive')}</option>
+                                <option value="incomplete">{t('contribute.form.geneticTypeIncomplete')}</option>
+                                <option value="dominant">{t('contribute.form.geneticTypeDominant')}</option>
                               </select>
                             </div>
                           )}
@@ -725,16 +725,16 @@ const ContributePage: React.FC = () => {
 
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">Alias (séparés par des virgules)</label>
+                          <label className="block text-sm font-medium text-gray-700">{t('contribute.form.aliasesLabel')}</label>
                           <input
                             className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                            placeholder="amel, T- albino, …"
+                            placeholder={t('contribute.form.aliasesPlaceholder')}
                             value={aliases}
                             onChange={(e) => setAliases(e.target.value)}
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">Références (URLs, séparées par des virgules)</label>
+                          <label className="block text-sm font-medium text-gray-700">{t('contribute.form.referencesLabel')}</label>
                           <input
                             className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
                             placeholder="https://…, https://…"
@@ -746,22 +746,22 @@ const ContributePage: React.FC = () => {
 
                       <div className="space-y-3">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">Notes (contexte, preuves, éleveurs, etc.)</label>
+                          <label className="block text-sm font-medium text-gray-700">{t('contribute.form.notesLabel')}</label>
                           <textarea
                             rows={4}
                             className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                            placeholder="Détails utiles pour la modération (captures d’échanges, publications, tests d’accouplements, etc.)"
+                            placeholder={t('contribute.form.notesPlaceholder')}
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
                           />
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">Photos (optionnel)</label>
+                          <label className="block text-sm font-medium text-gray-700">{t('contribute.form.photosLabel')}</label>
                           <div className="mt-1 flex items-center gap-3">
                             <label className="inline-flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-gray-50">
                               <Upload className="h-4 w-4" />
-                              <span className="text-sm">Ajouter des photos</span>
+                              <span className="text-sm">{t('contribute.form.photosUploadLabel')}</span>
                               <input
                                 type="file"
                                 multiple
@@ -774,7 +774,7 @@ const ContributePage: React.FC = () => {
                                 }}
                               />
                             </label>
-                            <span className="text-xs text-gray-500">Jusqu’à {MAX_IMAGES} images • {MAX_IMAGE_MB} Mo max / image</span>
+                            <span className="text-xs text-gray-500">{t('contribute.form.photosUploadInfo', { maxImages: MAX_IMAGES, maxSize: MAX_IMAGE_MB })}</span>
                           </div>
                           <div className="mt-2">
                             <Thumbs images={images} onRemove={onRemoveImage} />
@@ -784,21 +784,21 @@ const ContributePage: React.FC = () => {
 
                       <div className="flex items-center justify-between">
                         <div className="text-sm text-gray-600 space-y-0.5">
-                          <div>Récompense estimée : <span className="font-semibold">{rewardForCurrent} ⟡</span></div>
-                          <div className="text-amber-700">Stake requis à la soumission : <span className="font-semibold">{COIN_RULES.stake.defaultDeposit} ⟡</span> (remboursées si validée, brûlé si refus de qualité)</div>
+                          <div>{t('contribute.form.estimatedReward')}: <span className="font-semibold">{rewardForCurrent} ⟡</span></div>
+                          <div className="text-amber-700">{t('contribute.form.stakeRequired')}: <span className="font-semibold">{COIN_RULES.stake.defaultDeposit} ⟡</span> ({t('contribute.form.refundedIfApproved')}, {t('contribute.form.burnedIfRejected')})</div>
                         </div>
                         <button
                           type="submit"
                           className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-semibold"
                         >
-                          Envoyer la proposition
+                          {t('contribute.form.submitProposal')}
                         </button>
                       </div>
                     </form>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-bold mb-3">Barème des récompenses</h3>
+                    <h3 className="text-lg font-bold mb-3">{t('contribute.form.rewardsTitle')}</h3>
                     <ul className="space-y-2">
                       {(
                         [
@@ -821,8 +821,8 @@ const ContributePage: React.FC = () => {
                       <div className="flex items-start gap-2">
                         <Users className="h-5 w-5 text-blue-600" />
                         <div>
-                          <p className="font-semibold">Conseil</p>
-                          <p className="text-sm text-blue-800">Plus ta proposition est sourcée (références, photos, élevages), plus elle a de chances d’être validée rapidement.</p>
+                          <p className="font-semibold">{t('contribute.form.adviceTitle')}</p>
+                          <p className="text-sm text-blue-800">{t('contribute.form.adviceDescription')}</p>
                         </div>
                       </div>
                     </div>
@@ -833,24 +833,24 @@ const ContributePage: React.FC = () => {
 
             {tab === 'mine' && (
               <div>
-                <h3 className="text-lg font-bold mb-4">Mes propositions</h3>
+                <h3 className="text-lg font-bold mb-4">{t('contribute.form.myProposals')}</h3>
                 {mySubs.length === 0 ? (
                   <div className="text-center py-12">
                     <FilePlus2 className="h-10 w-10 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-600">Tu n’as pas encore proposé d’ajout.</p>
+                    <p className="text-gray-600">{t('contribute.form.noProposals')}</p>
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="min-w-full text-sm">
                       <thead>
                         <tr className="text-left text-gray-600 border-b">
-                          <th className="py-2 pr-4">Date</th>
-                          <th className="py-2 pr-4">Type</th>
-                          <th className="py-2 pr-4">Espèce</th>
-                          <th className="py-2 pr-4">Contenu</th>
-                          <th className="py-2 pr-4">Statut</th>
-                          <th className="py-2 pr-4 text-right">Récompense</th>
-                          <th className="py-2 pr-4 text-right">Actions</th>
+                          <th className="py-2 pr-4">{t('contribute.form.date')}</th>
+                          <th className="py-2 pr-4">{t('contribute.form.type')}</th>
+                          <th className="py-2 pr-4">{t('contribute.form.species')}</th>
+                          <th className="py-2 pr-4">{t('contribute.form.content')}</th>
+                          <th className="py-2 pr-4">{t('contribute.form.status')}</th>
+                          <th className="py-2 pr-4 text-right">{t('contribute.form.reward')}</th>
+                          <th className="py-2 pr-4 text-right">{t('contribute.form.actions')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -865,17 +865,17 @@ const ContributePage: React.FC = () => {
                                 <div className="mt-2">
                                   <Thumbs images={s.payload.images.slice(0, 3)} />
                                   {s.payload.images.length > 3 && (
-                                    <div className="text-xs text-gray-500 mt-1">+ {s.payload.images.length - 3} autres photo(s)</div>
+                                    <div className="text-xs text-gray-500 mt-1">+ {s.payload.images.length - 3} {t('contribute.form.otherPhotos')}</div>
                                   )}
                                 </div>
                               ) : null}
                               {s.stake ? (
                                 <div className="text-xs text-amber-700 mt-1">
-                                  Stake : {s.stake} ⟡ — {s.stakeStatus === 'locked' ? 'verrouillé' : s.stakeStatus === 'refunded' ? 'remboursé' : 'brûlé'}
+                                  {t('contribute.form.stake')}: {s.stake} ⟡ — {s.stakeStatus === 'locked' ? t('contribute.form.locked') : s.stakeStatus === 'refunded' ? t('contribute.form.refunded') : t('contribute.form.burned')}
                                 </div>
                               ) : null}
                               {s.moderatorNote && (
-                                <div className="text-xs text-gray-500 mt-1">Note modérateur : {s.moderatorNote}</div>
+                                <div className="text-xs text-gray-500 mt-1">{t('contribute.form.moderatorNote')}: {s.moderatorNote}</div>
                               )}
                             </td>
                             <td className="py-2 pr-4"><StatusBadge status={s.status} /></td>
@@ -888,7 +888,7 @@ const ContributePage: React.FC = () => {
                                   title={s.status === 'pending' ? 'Modifier' : 'Édition disponible uniquement en attente'}
                                 >
                                   <Edit3 className="h-4 w-4" />
-                                  Éditer
+                                  {t('contribute.form.edit')}
                                 </button>
                                 <button
                                   className={`inline-flex items-center gap-1 px-2 py-1 rounded-md border text-rose-600 ${s.status === 'pending' ? 'hover:bg-rose-50' : 'opacity-50 cursor-not-allowed'}`}
@@ -896,7 +896,7 @@ const ContributePage: React.FC = () => {
                                   title={s.status === 'pending' ? 'Supprimer' : 'Suppression disponible uniquement en attente'}
                                 >
                                   <Trash2 className="h-4 w-4" />
-                                  Supprimer
+                                  {t('contribute.form.delete')}
                                 </button>
                               </div>
                             </td>
@@ -911,7 +911,7 @@ const ContributePage: React.FC = () => {
 
             {tab === 'leaderboard' && (
               <div>
-                <h3 className="text-lg font-bold mb-4">Classement des contributeurs</h3>
+                <h3 className="text-lg font-bold mb-4">{t('contribute.form.leaderboard')}</h3>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {leaderboard.map((u, idx) => (
                     <div key={u.id} className="bg-gray-50 rounded-xl p-4 border border-gray-100 flex items-center justify-between">
@@ -931,14 +931,15 @@ const ContributePage: React.FC = () => {
 
             {tab === 'about' && (
               <div className="prose prose-sm max-w-none">
-                <h3>Règles de contribution</h3>
+                <h3>{t('contribute.form.rules')}</h3>
                 <ul>
-                  <li>Fournis des sources fiables (éleveurs reconnus, publications, discussions étayées, tests d’accouplement).</li>
-                  <li>Exemples d’éléments acceptés : nouveaux morphs établis, localités documentées, alias largement utilisés, loci/mécanismes génétiques, groupes allélique cohérents.</li>
-                  <li>Les propositions dupliquées ou non sourcées peuvent être refusées.</li>
-                  <li>La modération peut renommer/normaliser pour cohérence (casse, accents, alias ↔ label).</li>
-                  <li>Les récompenses sont versées uniquement après validation.</li>
-                  <li>Tous les comptes démarrent avec {COIN_RULES.initialGrant} ⟡. Chaque soumission consomme {COIN_RULES.stake.defaultDeposit} ⟡ (remboursées si validée).</li>
+                  <li>{t('contribute.form.reliableSources')}</li>
+                  <li>{t('contribute.form.acceptedElements')}</li>
+                  <li>{t('contribute.form.duplicateProposals')}</li>
+                  <li>{t('contribute.form.moderation')}</li>
+                  <li>{t('contribute.form.rewards')}</li>
+                  <li>{t('contribute.form.initialGrant', { amount: COIN_RULES.initialGrant })}</li>
+                  <li>{t('contribute.form.defaultDeposit', { amount: COIN_RULES.stake.defaultDeposit })}</li>
                 </ul>
               </div>
             )}
@@ -972,7 +973,7 @@ const ContributePage: React.FC = () => {
               <div className="flex items-center justify-between px-5 py-3 border-b">
                 <div className="flex items-center gap-2">
                   <ImagePlus className="h-5 w-5 text-green-600" />
-                  <h4 className="font-semibold">Éditer la proposition</h4>
+                  <h4 className="font-semibold">{t('contribute.form.editProposal')}</h4>
                 </div>
                 <button className="p-2 hover:bg-gray-50 rounded-lg" onClick={closeEdit} aria-label="Fermer">
                   <X className="h-5 w-5" />
@@ -982,24 +983,24 @@ const ContributePage: React.FC = () => {
               <form onSubmit={saveEdit} className="p-5 space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Type d'ajout</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('contribute.form.addType')}</label>
                     <select
                       className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
                       value={eType}
                       onChange={(ev) => setEType(ev.target.value as ContributionType)}
                     >
-                      <option value="morph">Morph</option>
-                      <option value="locality">Localité</option>
-                      <option value="alias">Alias</option>
-                      <option value="locus">Locus (gène)</option>
-                      <option value="group">Groupe (complexe allélique)</option>
-                      <option value="species">Nouvelle espèce</option>
+                      <option value="morph">{t('contribute.form.morph')}</option>
+                      <option value="locality">{t('contribute.form.locality')}</option>
+                      <option value="alias">{t('contribute.form.alias')}</option>
+                      <option value="locus">{t('contribute.form.locus')}</option>
+                      <option value="group">{t('contribute.form.group')}</option>
+                      <option value="species">{t('contribute.form.species')}</option>
                     </select>
                   </div>
 
                   {eType !== 'species' && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Espèce concernée</label>
+                      <label className="block text-sm font-medium text-gray-700">{t('contribute.form.concernedSpecies')}</label>
                       <select
                         className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
                         value={eSpeciesId}
@@ -1016,28 +1017,28 @@ const ContributePage: React.FC = () => {
                 {eType === 'species' ? (
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Nom latin (obligatoire)</label>
+                      <label className="block text-sm font-medium text-gray-700">{t('contribute.form.latinName')}</label>
                       <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eLatin} onChange={(e)=>setELatin(e.target.value)} />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Noms communs (séparés par des virgules)</label>
+                      <label className="block text-sm font-medium text-gray-700">{t('contribute.form.commonNames')}</label>
                       <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eCommonNames} onChange={(e)=>setECommonNames(e.target.value)} />
                     </div>
                   </div>
                 ) : (
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Nom proposé</label>
+                      <label className="block text-sm font-medium text-gray-700">{t('contribute.form.proposedName')}</label>
                       <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eName} onChange={(e)=>setEName(e.target.value)} />
                     </div>
                     {(eType === 'morph' || eType === 'locus') && (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">Type génétique</label>
+                        <label className="block text-sm font-medium text-gray-700">{t('contribute.form.geneticType')}</label>
                         <select className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eGenType} onChange={(e)=>setEGenType(e.target.value as any)}>
-                          <option value="">Sélectionner…</option>
-                          <option value="recessive">Récessif</option>
-                          <option value="incomplete">Incomplet (codominant)</option>
-                          <option value="dominant">Dominant</option>
+                          <option value="">{t('common.select')}</option>
+                          <option value="recessive">{t('contribute.form.recessive')}</option>
+                          <option value="incomplete">{t('contribute.form.incomplete')}</option>
+                          <option value="dominant">{t('contribute.form.dominant')}</option>
                         </select>
                       </div>
                     )}
@@ -1046,37 +1047,37 @@ const ContributePage: React.FC = () => {
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Alias (séparés par des virgules)</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('contribute.form.aliases')}</label>
                     <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eAliases} onChange={(e)=>setEAliases(e.target.value)} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Références (URLs, séparées par des virgules)</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('contribute.form.references')}</label>
                     <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eReferences} onChange={(e)=>setEReferences(e.target.value)} />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Notes</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('contribute.form.notes')}</label>
                     <textarea rows={3} className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eNotes} onChange={(e)=>setENotes(e.target.value)} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Photos</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('contribute.form.photos')}</label>
                     <div className="mt-1 flex items-center gap-3">
                       <label className="inline-flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-gray-50">
                         <Upload className="h-4 w-4" />
-                        <span className="text-sm">Ajouter des photos</span>
+                        <span className="text-sm">{t('contribute.form.addPhotos')}</span>
                         <input type="file" multiple accept="image/*" className="hidden" onChange={(ev)=>{ const f=(ev.target as HTMLInputElement).files; if(f) editReadFiles(f); (ev.target as HTMLInputElement).value=''; }} />
                       </label>
-                      <span className="text-xs text-gray-500">Jusqu’à {MAX_IMAGES} images • {MAX_IMAGE_MB} Mo max / image</span>
+                      <span className="text-xs text-gray-500">{t('contribute.form.photoLimit', { maxImages: MAX_IMAGES, maxSize: MAX_IMAGE_MB })}</span>
                     </div>
                     <div className="mt-2"><Thumbs images={eImages} onRemove={removeEditImage} /></div>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-end gap-2 pt-2">
-                  <button type="button" onClick={closeEdit} className="px-4 py-2 rounded-lg border hover:bg-gray-50">Annuler</button>
-                  <button type="submit" className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700">Enregistrer</button>
+                  <button type="button" onClick={closeEdit} className="px-4 py-2 rounded-lg border hover:bg-gray-50">{t('common.cancel')}</button>
+                  <button type="submit" className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700">{t('common.save')}</button>
                 </div>
               </form>
             </div>

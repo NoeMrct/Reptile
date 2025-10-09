@@ -82,7 +82,7 @@
     "signUpSubtitle": "Commencez à gérer votre collection de serpents aujourd'hui",
     "subscribe": "Démarrer Maintenant",
     "trialExpired": "Votre essai gratuit de 14 jours a expiré. Veuillez vous abonner pour continuer à utiliser Snake Manager.",
-    "welcomeBack": "Bon Retour parmi nous !",
+    "welcomeBack": "Bon retour parmi nous !",
     "show": "Afficher",
     "hide": "Masquer",
     "showPassword": "Afficher le mot de passe",
@@ -396,20 +396,158 @@
     "title": "Contact"
   },
   "contribute": {
+    "title": "Contribuer",
+    "tabs": {
+      "propose": "Proposer",
+      "mine": "Mes propositions",
+      "leaderboard": "Classement",
+      "about": "À propos"
+    },
+    "form": {
+      "type": "Type de contribution",
+      "species": "Espèce",
+      "name": "Nom",
+      "latinName": "Nom latin",
+      "commonNames": "Noms communs",
+      "aliases": "Alias",
+      "genType": "Type génétique",
+      "notes": "Notes",
+      "references": "Références",
+      "images": "Images de preuve",
+      "submit": "Envoyer",
+      "reset": "Réinitialiser le formulaire",
+      "actions": "Actions",
+      "adviceDescription": "Plus tes sources sont solides, plus ta proposition sera revue rapidement.",
+      "adviceTitle": "Conseil",
+      "aliasesLabel": "Alias (séparés par des virgules)",
+      "aliasesPlaceholder": "Candy, Fire, …",
+      "burnedIfRejected": "brûlé si refusé",
+      "commonNamesLabel": "Noms communs",
+      "commonNamesPlaceholder": "Serpent des blés, Corn Snake",
+      "content": "Contenu",
+      "date": "Date",
+      "estimatedReward": "Récompense estimée",
+      "geneticTypeDominant": "Dominant",
+      "geneticTypeIncomplete": "Incomplet (codominant)",
+      "geneticTypeLabel": "Type génétique",
+      "geneticTypePlaceholder": "Sélectionner…",
+      "geneticTypeRecessive": "Récessif",
+      "latinNameLabel": "Nom latin",
+      "latinNamePlaceholder": "Ex : Pantherophis guttatus",
+      "myProposals": "Mes propositions",
+      "noProposals": "Tu n’as pas encore proposé de contribution.",
+      "notesLabel": "Notes",
+      "notesPlaceholder": "Ajoute toute note utile à la revue…",
+      "photosLabel": "Photos de preuve",
+      "photosUploadLabel": "Ajouter des photos",
+      "proposedNameAliasPlaceholder": "Ex : Candy, Fire, etc.",
+      "proposedNameLabel": "Nom proposé",
+      "proposedNamePlaceholder": "Ex : Banana, Pastel, etc.",
+      "referencesLabel": "Références (URL séparées par des virgules)",
+      "refundedIfApproved": "remboursé si validé",
+      "reward": "Récompense",
+      "rewardsTitle": "Récompenses",
+      "speciesLabel": "Espèce",
+      "stakeRequired": "Stake requis à la soumission",
+      "status": "Statut",
+      "submitProposal": "Soumettre la proposition",
+      "title": "Formulaire de contribution",
+      "typeLabel": "Type de contribution",
+      "typeOptions": {
+        "alias": "Alias",
+        "group": "Groupe allélique",
+        "locality": "Localité",
+        "locus": "Locus (gène)",
+        "morph": "Morph",
+        "species": "Nouvelle espèce"
+      },
+      "acceptedElements": "Éléments acceptés : morphs établis, localités documentées, alias largement utilisés, loci/mécanismes génétiques et groupes allélique cohérents.",
+      "addPhotos": "Ajouter des photos",
+      "addType": "Ajouter un type",
+      "alias": "Alias",
+      "burned": "brûlé",
+      "concernedSpecies": "Espèce concernée",
+      "delete": "Supprimer",
+      "dominant": "Dominant",
+      "duplicateProposals": "Les propositions dupliquées ou non sourcées peuvent être refusées.",
+      "edit": "Modifier",
+      "editProposal": "Éditer la proposition",
+      "geneticType": "Type génétique",
+      "group": "Groupe",
+      "incomplete": "Incomplet (codominant)",
+      "leaderboard": "Classement",
+      "locality": "Localité",
+      "locked": "verrouillé",
+      "locus": "Locus (gène)",
+      "moderation": "Modération",
+      "moderatorNote": "Note du modérateur",
+      "morph": "Morph",
+      "otherPhotos": "Autres photos",
+      "photos": "Photos",
+      "proposedName": "Nom proposé",
+      "recessive": "Récessif",
+      "refunded": "remboursé",
+      "reliableSources": "Fournis des sources fiables (éleveurs reconnus, publications, discussions étayées, tests d’accouplement).",
+      "rewards": "Récompenses",
+      "rules": "Règles de contribution",
+      "stake": "Stake"
+    },
+    "alert": {
+      "loginRequired": "Connecte-toi pour proposer une contribution.",
+      "selectSpecies": "Sélectionne une espèce.",
+      "latinRequired": "Le nom latin de la nouvelle espèce est requis.",
+      "nameRequired": "Le nom proposé est requis.",
+      "genTypeRequired": "Sélectionne le type génétique (récessif/incomplet/dominant).",
+      "insufficientFunds": "Il te faut au moins {{deposit}} ⟡ disponibles pour soumettre (stake).",
+      "imageTooLarge": "Image trop lourde (> {{max}} Mo) : {{file}}",
+      "success": "Contribution envoyée avec succès !",
+      "error": "Une erreur est survenue."
+    },
+    "wallet": {
+      "title": "Portefeuille",
+      "balance": "Solde disponible",
+      "locked": "Stake verrouillé",
+      "redeem": "Échanger mes Écailles",
+      "receivedValidated": "Écailles reçues (validées)",
+      "stakeLocked": "Écailles en stake (verrouillées)",
+      "note": "Tous les comptes démarrent avec {{initial}} ⟡. Chaque soumission consomme {{deposit}} ⟡ (remboursées si validée)."
+    },
+    "status": {
+      "pending": "En attente",
+      "approved": "Validée",
+      "rejected": "Refusée"
+    },
+    "leaderboard": {
+      "title": "Meilleurs contributeurs"
+    },
     "photo": {
       "delete": "Supprimer la photo"
     },
     "redeem": {
+      "title": "Échanger des Écailles",
       "generateCoupon": "Générer un bon",
-      "title": "Échanger des Écailles"
+      "coinsRange": "entre {{min}} et {{max}}",
+      "successBasic": "Échange réussi : 1 mois Basic payé en Écailles.",
+      "successPro": "Échange réussi : 1 mois Pro payé en Écailles.",
+      "created": "Bon créé : {{code}}",
+      "generateCode": "Générer le code",
+      "monthPlansTitle": "Échanger contre un mois de plan",
+      "toSpend": "à dépenser"
     },
-    "tabs": {
-      "about": "À propos",
-      "leaderboard": "Classement",
-      "mine": "Mes propositions",
-      "propose": "Proposer"
-    },
-    "title": "Contribuer"
+    "steps": {
+      "moderation": {
+        "text": "Nous vérifions, ajustons et validons.",
+        "title": "2. Modération"
+      },
+      "propose": {
+        "text": "Remplis le formulaire détaillé.",
+        "title": "1. Propose"
+      },
+      "reward": {
+        "text": "Reçois des Écailles utilisables sur le site.",
+        "title": "3. Récompense"
+      }
+    }
   },
   "dashboard": {
     "addEvent": "Ajouter un Événement",
@@ -801,23 +939,23 @@
   "pricing": {
     "enterprise": {
       "cta": "Nous contacter",
-      "duration": "facturé mensuellement",
+      "duration": " / mois",
       "features": {
         "api": "Accès API complet",
         "integrations": "Intégrations (bientôt)",
         "snakes": "Serpents & pontes illimités",
         "support": "Support prioritaire"
       },
-      "price": "24,99 € / mois",
+      "price": "24,99 €",
       "title": "Entreprise",
-      "yearlyDuration": "facturé annuellement",
-      "yearlyPrice": "249 € / an",
+      "yearlyDuration": " / an",
+      "yearlyPrice": "249 €",
       "yearlySavings": "2 mois offerts vs mensuel"
     },
     "monthly": "Mensuel",
     "professional": {
       "cta": "S'abonner Maintenant",
-      "duration": "facturé mensuellement",
+      "duration": " / mois",
       "features": {
         "analytics": "Analyses avancées",
         "exports": "Exports PDF/CSV",
@@ -825,10 +963,10 @@
         "snakes": "Serpents illimités"
       },
       "popular": "Le Plus Populaire",
-      "price": "9,99 € / mois",
+      "price": "9,99 €",
       "title": "Professionnel",
-      "yearlyDuration": "facturé annuellement",
-      "yearlyPrice": "99 € / an",
+      "yearlyDuration": " / an",
+      "yearlyPrice": "99 €",
       "yearlySavings": "2 mois offerts vs mensuel"
     },
     "save2Months": "2 mois offerts",
