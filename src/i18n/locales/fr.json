@@ -248,6 +248,7 @@
     }
   },
   "snake": {
+    "editPhoto": "Modifier",
     "overview": "Aperçu",
     "events": "Événements",
     "analytics": "Analyses",
