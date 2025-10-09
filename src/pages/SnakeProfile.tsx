@@ -137,7 +137,7 @@ const SnakeProfile = () => {
   };
 
   const handleDeleteEvent = (id: string) => {
-    if (!window.confirm(t('events.delete') || 'Supprimer cet événement ?')) return;
+    if (!window.confirm(t('events.deleteConfirm'))) return;
     setEvents(prev => prev.filter(e => e.id !== id));
   };
 
@@ -162,7 +162,7 @@ const SnakeProfile = () => {
   };
 
   const hardDeleteSnake = () => {
-    if (!window.confirm('Supprimer définitivement ce serpent et TOUT l’historique associé ?')) return;
+    if (!window.confirm(t('snake.deleteConfirm'))) return;
     localStorage.removeItem(`snake_archive_until_${id}`);
     window.location.href = '/dashboard';
   };
@@ -179,6 +179,7 @@ const SnakeProfile = () => {
   const updateSnake = (updatedSnake: Snake) => {
     setSnake(updatedSnake);
   };
+
   const exportToPDF = () => {
     if (user?.plan === 'free') {
       setShowUpgradeModal(true);
@@ -188,27 +189,27 @@ const SnakeProfile = () => {
     if (!snake) return;
 
     const doc = new jsPDF();
-    
+
     // Title
     doc.setFontSize(20);
-    doc.text(`${snake.name} - ${t('snake.profile')} Report`, 20, 20);
-    
+    doc.text(`${snake.name} - ${t('snake.profile')} ${t('common.report')}`, 20, 20);
+
     // Global section
     doc.setFontSize(14);
-    doc.text(`${t('snake.profile')} Details:`, 20, 40);
+    doc.text(`${t('snake.details')}:`, 20, 40);
     doc.setFontSize(12);
     doc.text(`${t('snake.species')}: ${snake.species}`, 20, 55);
-    doc.text(`${t('snake.morph')}: ${snake.morph || 'N/A'}`, 20, 65);
+    doc.text(`${t('snake.morph')}: ${snake.morph || t('common.unknown')}`, 20, 65);
     doc.text(`${t('snake.sex')}: ${snake.sex}`, 20, 75);
-    doc.text(`Birth Date: ${format(new Date(snake.birthDate), 'MMM dd, yyyy')}`, 20, 85);
-    doc.text(`${t('snake.weight')}: ${snake.weight}g`, 20, 95);
-    doc.text(`${t('snake.length')}: ${snake.length}cm`, 20, 105);
-    
+    doc.text(`${t('snake.birthDate')}: ${format(new Date(snake.birthDate), 'MMM dd, yyyy')}`, 20, 85);
+    doc.text(`${t('snake.weight')}: ${snake.weight}${t('units.g')}`, 20, 95);
+    doc.text(`${t('snake.length')}: ${snake.length}${t('units.cm')}`, 20, 105);
+
     // Feeding section
     doc.setFontSize(14);
     doc.text(`${t('snake.feedings')}:`, 20, 130);
     doc.setFontSize(10);
-    
+
     let yPos = 145;
     const feedingEvents = events.filter(e => e.type === 'feeding');
     feedingEvents.forEach((event) => {
@@ -216,7 +217,7 @@ const SnakeProfile = () => {
       doc.text(eventText, 20, yPos);
       yPos += 10;
     });
-    
+
     // Shedding section
     yPos += 10;
     doc.setFontSize(14);
@@ -229,7 +230,7 @@ const SnakeProfile = () => {
       doc.text(eventText, 20, yPos);
       yPos += 10;
     });
-    
+
     // Vet visits section
     yPos += 10;
     doc.setFontSize(14);
@@ -242,7 +243,7 @@ const SnakeProfile = () => {
       doc.text(eventText, 20, yPos);
       yPos += 10;
     });
-    
+
     doc.save(`${snake.name}_profile.pdf`);
   };
 
@@ -263,7 +264,7 @@ const SnakeProfile = () => {
       weight: e.weight
     }));
 
-  // Length chart data (simulated - in real app, track length in events)
+  // Length chart data (simulated)
   const lengthData = events
     .filter(e => e.weight)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
@@ -324,10 +325,10 @@ const SnakeProfile = () => {
   const overallHealth = (feedingRegularity + sheddingHealth + Math.min(100, weightTrend * 2)) / 3;
 
   const healthData = [
-    { name: 'Alimentation', value: Math.round(feedingRegularity), fill: '#3b82f6' },
-    { name: 'Mues', value: Math.round(sheddingHealth), fill: '#8b5cf6' },
-    { name: 'Croissance', value: Math.round(Math.min(100, weightTrend * 2)), fill: '#10b981' },
-    { name: 'Santé Globale', value: Math.round(overallHealth), fill: '#16a34a' }
+    { name: t('snake.health.feeding'), value: Math.round(feedingRegularity), fill: '#3b82f6' },
+    { name: t('snake.health.sheds'), value: Math.round(sheddingHealth), fill: '#8b5cf6' },
+    { name: t('snake.health.growth'), value: Math.round(Math.min(100, weightTrend * 2)), fill: '#10b981' },
+    { name: t('snake.health.overall'), value: Math.round(overallHealth), fill: '#16a34a' }
   ];
 
   const age = Math.floor((Date.now() - new Date(snake.birthDate).getTime()) / (1000 * 60 * 60 * 24 * 365.25));
@@ -377,7 +378,7 @@ const SnakeProfile = () => {
                 className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
-                Supprimer
+                {t('common.delete')}
               </button>
             </div>
           </div>
@@ -388,15 +389,15 @@ const SnakeProfile = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-6">
           <div className="p-4 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 flex items-center justify-between">
             <div>
-              <strong>Serpent archivé.</strong>{' '}
-              Visible en lecture seule jusqu’au {new Date(archivedUntil).toLocaleString()}.
+              <strong>{t('snake.archived')}</strong>{' '}
+              {t('snake.readonlyUntil', { date: new Date(archivedUntil).toLocaleString() })}
             </div>
             <div className="flex gap-2">
               <button onClick={restoreSnake} className="px-3 py-1.5 rounded-lg border border-amber-300 hover:bg-white text-sm flex items-center">
-                <Undo2 className="h-4 w-4 mr-1" /> Restaurer
+                <Undo2 className="h-4 w-4 mr-1" /> {t('snake.restore')}
               </button>
               <button onClick={() => setShowDeleteSnake(true)} className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm">
-                Supprimer…
+                {t('common.delete')}…
               </button>
             </div>
           </div>
@@ -433,7 +434,7 @@ const SnakeProfile = () => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">{t('snake.morph')}:</span>
-                    <span className="font-medium">{snake.morph || 'N/A'}</span>
+                    <span className="font-medium">{snake.morph || t('common.unknown')}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">{t('snake.sex')}:</span>
@@ -447,14 +448,14 @@ const SnakeProfile = () => {
                     <span className="text-gray-600">{t('snake.weight')}:</span>
                     <span className="font-medium flex items-center">
                       <Scale className="h-4 w-4 mr-1" />
-                      {snake.weight}g
+                      {snake.weight}{t('units.g')}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">{t('snake.length')}:</span>
                     <span className="font-medium flex items-center">
                       <Ruler className="h-4 w-4 mr-1" />
-                      {snake.length}cm
+                      {snake.length}{t('units.cm')}
                     </span>
                   </div>
                 </div>
@@ -563,7 +564,7 @@ const SnakeProfile = () => {
                   <div className="space-y-8">
                     {/* Health Indicators */}
                     <div>
-                      <h3 className="text-lg font-semibold mb-4">Indicateurs de Santé</h3>
+                      <h3 className="text-lg font-semibold mb-4">{t('snake.healthIndicators')}</h3>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {healthData.map((item, index) => (
                           <div key={index} className="bg-gray-50 p-4 rounded-lg text-center">
@@ -613,15 +614,11 @@ const SnakeProfile = () => {
                                 </linearGradient>
                               </defs>
                               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                              <XAxis
-                                dataKey="date"
-                                stroke="#6b7280"
-                                style={{ fontSize: '12px' }}
-                              />
+                              <XAxis dataKey="date" stroke="#6b7280" style={{ fontSize: '12px' }} />
                               <YAxis
                                 stroke="#6b7280"
                                 style={{ fontSize: '12px' }}
-                                label={{ value: 'Poids (g)', angle: -90, position: 'insideLeft' }}
+                                label={{ value: `${t('snake.weight')} (${t('units.g')})`, angle: -90, position: 'insideLeft' }}
                               />
                               <Tooltip
                                 contentStyle={{
@@ -650,20 +647,16 @@ const SnakeProfile = () => {
                     {/* Length Growth Chart */}
                     {lengthData.length > 0 && (
                       <div>
-                        <h3 className="text-lg font-semibold mb-4">Évolution de la Longueur</h3>
+                        <h3 className="text-lg font-semibold mb-4">{t('snake.lengthEvolution')}</h3>
                         <div className="h-64 w-full bg-gradient-to-br from-blue-50 to-white p-4 rounded-lg">
                           <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={lengthData}>
                               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                              <XAxis
-                                dataKey="date"
-                                stroke="#6b7280"
-                                style={{ fontSize: '12px' }}
-                              />
+                              <XAxis dataKey="date" stroke="#6b7280" style={{ fontSize: '12px' }} />
                               <YAxis
                                 stroke="#6b7280"
                                 style={{ fontSize: '12px' }}
-                                label={{ value: 'Longueur (cm)', angle: -90, position: 'insideLeft' }}
+                                label={{ value: `${t('snake.length')} (${t('units.cm')})`, angle: -90, position: 'insideLeft' }}
                               />
                               <Tooltip
                                 contentStyle={{
@@ -690,21 +683,17 @@ const SnakeProfile = () => {
                     {/* Combined Weight & Feeding Chart */}
                     {combinedData.length > 0 && (
                       <div>
-                        <h3 className="text-lg font-semibold mb-4">Poids et Alimentation</h3>
+                        <h3 className="text-lg font-semibold mb-4">{t('snake.weightAndFeeding')}</h3>
                         <div className="h-64 w-full bg-gradient-to-br from-purple-50 to-white p-4 rounded-lg">
                           <ResponsiveContainer width="100%" height="100%">
                             <ComposedChart data={combinedData}>
                               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                              <XAxis
-                                dataKey="date"
-                                stroke="#6b7280"
-                                style={{ fontSize: '12px' }}
-                              />
+                              <XAxis dataKey="date" stroke="#6b7280" style={{ fontSize: '12px' }} />
                               <YAxis
                                 yAxisId="left"
                                 stroke="#6b7280"
                                 style={{ fontSize: '12px' }}
-                                label={{ value: 'Poids (g)', angle: -90, position: 'insideLeft' }}
+                                label={{ value: `${t('snake.weight')} (${t('units.g')})`, angle: -90, position: 'insideLeft' }}
                               />
                               <YAxis
                                 yAxisId="right"
@@ -727,14 +716,14 @@ const SnakeProfile = () => {
                                 dataKey="weight"
                                 stroke="#16a34a"
                                 strokeWidth={2}
-                                name="Poids"
+                                name={t('snake.weight')}
                                 dot={{ fill: '#16a34a', r: 4 }}
                               />
                               <Bar
                                 yAxisId="right"
                                 dataKey="feeding"
                                 fill="#f59e0b"
-                                name="Repas"
+                                name={t('snake.meals')}
                                 opacity={0.6}
                               />
                             </ComposedChart>
@@ -746,20 +735,16 @@ const SnakeProfile = () => {
                     {/* Feeding Frequency */}
                     {feedingIntervals.length > 0 && (
                       <div>
-                        <h3 className="text-lg font-semibold mb-4">Intervalle entre Repas</h3>
+                        <h3 className="text-lg font-semibold mb-4">{t('snake.feedingIntervalTitle')}</h3>
                         <div className="h-64 w-full bg-gradient-to-br from-orange-50 to-white p-4 rounded-lg">
                           <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={feedingIntervals}>
                               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                              <XAxis
-                                dataKey="period"
-                                stroke="#6b7280"
-                                style={{ fontSize: '12px' }}
-                              />
+                              <XAxis dataKey="period" stroke="#6b7280" style={{ fontSize: '12px' }} />
                               <YAxis
                                 stroke="#6b7280"
                                 style={{ fontSize: '12px' }}
-                                label={{ value: 'Jours', angle: -90, position: 'insideLeft' }}
+                                label={{ value: t('units.days'), angle: -90, position: 'insideLeft' }}
                               />
                               <Tooltip
                                 contentStyle={{
@@ -768,22 +753,18 @@ const SnakeProfile = () => {
                                   borderRadius: '8px',
                                   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                                 }}
-                                formatter={(value) => [`${value} jours`, 'Intervalle']}
+                                formatter={(value: any) => [`${value} ${t('units.days')}`, t('charts.interval')]}
                               />
-                              <Bar
-                                dataKey="days"
-                                fill="#f59e0b"
-                                radius={[8, 8, 0, 0]}
-                              />
+                              <Bar dataKey="days" fill="#f59e0b" radius={[8, 8, 0, 0]} />
                             </BarChart>
                           </ResponsiveContainer>
                         </div>
                         <div className="mt-4 p-4 bg-orange-50 rounded-lg">
                           <p className="text-sm font-medium text-gray-900">
-                            Intervalle moyen: <span className="text-orange-600">{avgFeedingInterval.toFixed(1)} jours</span>
+                            {t('snake.avgFeedingIntervalLabel')} <span className="text-orange-600">{avgFeedingInterval.toFixed(1)} {t('units.days')}</span>
                           </p>
                           <p className="text-sm text-gray-600 mt-1">
-                            Dernier repas: {feedingEvents[0] ? format(new Date(feedingEvents[0].date), 'MMM dd, yyyy') : 'N/A'}
+                            {t('snake.lastFeedingLabel')} {feedingEvents[0] ? format(new Date(feedingEvents[0].date), 'MMM dd, yyyy') : 'N/A'}
                           </p>
                         </div>
                       </div>
@@ -792,7 +773,7 @@ const SnakeProfile = () => {
                     {/* Shedding Timeline */}
                     {sheddingTimeline.length > 0 && (
                       <div>
-                        <h3 className="text-lg font-semibold mb-4">Historique des Mues</h3>
+                        <h3 className="text-lg font-semibold mb-4">{t('snake.sheddingHistoryTitle')}</h3>
                         <div className="bg-gradient-to-br from-purple-50 to-white p-6 rounded-lg">
                           <div className="space-y-3">
                             {sheddingTimeline.reverse().map((shed, index) => (
@@ -805,7 +786,7 @@ const SnakeProfile = () => {
                                     <p className="font-medium text-gray-900">{shed.date}</p>
                                     {shed.daysSinceLast && (
                                       <p className="text-sm text-gray-600">
-                                        {shed.daysSinceLast} jours après la précédente
+                                        {t('snake.daysAfterPrevious', { days: shed.daysSinceLast })}
                                       </p>
                                     )}
                                   </div>
@@ -813,7 +794,7 @@ const SnakeProfile = () => {
                                 {shed.daysSinceLast && (
                                   <div className="text-right">
                                     <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-                                      {shed.daysSinceLast}j
+                                      {shed.daysSinceLast}{t('units.days')[0]}
                                     </span>
                                   </div>
                                 )}
@@ -823,10 +804,10 @@ const SnakeProfile = () => {
                           {avgSheddingInterval > 0 && (
                             <div className="mt-4 p-4 bg-purple-100 rounded-lg">
                               <p className="text-sm font-medium text-gray-900">
-                                Cycle moyen: <span className="text-purple-600">{avgSheddingInterval.toFixed(0)} jours</span>
+                                {t('snake.avgShedCycleLabel')} <span className="text-purple-600">{avgSheddingInterval.toFixed(0)} {t('units.days')}</span>
                               </p>
                               <p className="text-sm text-gray-600 mt-1">
-                                Prochaine mue estimée dans {avgSheddingInterval.toFixed(0)} jours
+                                {t('snake.nextShedEstimate', { days: avgSheddingInterval.toFixed(0) })}
                               </p>
                             </div>
                           )}
@@ -837,26 +818,26 @@ const SnakeProfile = () => {
                     {/* Summary Stats */}
                     <div className="grid grid-cols-2 gap-6">
                       <div className="bg-gradient-to-br from-green-50 to-white p-6 rounded-lg border border-green-200">
-                        <h4 className="font-semibold text-gray-900 mb-3">Croissance</h4>
+                        <h4 className="font-semibold text-gray-900 mb-3">{t('snake.growthTitle')}</h4>
                         <div className="space-y-2">
                           <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600">Poids actuel:</span>
-                            <span className="font-medium text-gray-900">{snake.weight}g</span>
+                            <span className="text-sm text-gray-600">{t('snake.currentWeight')}</span>
+                            <span className="font-medium text-gray-900">{snake.weight}{t('units.g')}</span>
                           </div>
                           {weightData.length >= 2 && (
                             <>
                               <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-600">Poids initial:</span>
-                                <span className="font-medium text-gray-900">{weightData[0].weight}g</span>
+                                <span className="text-sm text-gray-600">{t('snake.initialWeight')}</span>
+                                <span className="font-medium text-gray-900">{weightData[0].weight}{t('units.g')}</span>
                               </div>
                               <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-600">Gain total:</span>
+                                <span className="text-sm text-gray-600">{t('snake.totalGain')}</span>
                                 <span className="font-medium text-green-600">
-                                  +{(weightData[weightData.length - 1].weight - weightData[0].weight).toFixed(0)}g
+                                  +{(weightData[weightData.length - 1].weight - weightData[0].weight).toFixed(0)}{t('units.g')}
                                 </span>
                               </div>
                               <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-600">Progression:</span>
+                                <span className="text-sm text-gray-600">{t('snake.progression')}</span>
                                 <span className="font-medium text-green-600">
                                   +{weightTrend.toFixed(1)}%
                                 </span>
@@ -867,22 +848,22 @@ const SnakeProfile = () => {
                       </div>
 
                       <div className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-lg border border-blue-200">
-                        <h4 className="font-semibold text-gray-900 mb-3">Statistiques</h4>
+                        <h4 className="font-semibold text-gray-900 mb-3">{t('snake.statsTitle')}</h4>
                         <div className="space-y-2">
                           <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600">Total repas:</span>
+                            <span className="text-sm text-gray-600">{t('snake.totalFeedingsLabel')}</span>
                             <span className="font-medium text-gray-900">{feedingEvents.length}</span>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600">Total mues:</span>
+                            <span className="text-sm text-gray-600">{t('snake.totalShedsLabel')}</span>
                             <span className="font-medium text-gray-900">{shedEvents.length}</span>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600">Visites véto:</span>
+                            <span className="text-sm text-gray-600">{t('snake.totalVetVisitsLabel')}</span>
                             <span className="font-medium text-gray-900">{vetEvents.length}</span>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600">Total événements:</span>
+                            <span className="text-sm text-gray-600">{t('snake.totalEventsLabel')}</span>
                             <span className="font-medium text-gray-900">{events.length}</span>
                           </div>
                         </div>
@@ -928,11 +909,11 @@ const SnakeProfile = () => {
           <div className="absolute inset-0 grid place-items-center p-4">
             <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl border">
               <div className="px-6 py-4 border-b flex items-center justify-between">
-                <h4 className="font-semibold">Supprimer « {snake.name} »</h4>
+                <h4 className="font-semibold">{t('snake.deleteTitle', { name: snake.name })}</h4>
                 <button onClick={() => setShowDeleteSnake(false)} className="text-gray-500 hover:text-gray-700">✕</button>
               </div>
               <div className="p-6 space-y-4 text-sm text-gray-700">
-                <p>Choisis une option :</p>
+                <p>{t('common.chooseOption')} :</p>
                 <div className="space-y-3">
                   <button
                     onClick={() => archiveSnake(30)}
@@ -941,8 +922,8 @@ const SnakeProfile = () => {
                     <div className="flex items-center gap-3">
                       <Archive className="h-5 w-5 text-amber-600" />
                       <div>
-                        <div className="font-medium">Archiver 30 jours (recommandé)</div>
-                        <div className="text-xs text-gray-500">Le serpent reste visible en lecture seule. Tu pourras le restaurer à tout moment.</div>
+                        <div className="font-medium">{t('snake.archive30dTitle')}</div>
+                        <div className="text-xs text-gray-500">{t('snake.archiveReadOnlyInfo')}</div>
                       </div>
                     </div>
                   </button>
@@ -954,15 +935,15 @@ const SnakeProfile = () => {
                     <div className="flex items-center gap-3">
                       <Trash2 className="h-5 w-5 text-red-600" />
                       <div>
-                        <div className="font-medium text-red-700">Supprimer définitivement</div>
-                        <div className="text-xs text-red-600">Action irréversible : toutes les données et événements associés seront supprimés.</div>
+                        <div className="font-medium text-red-700">{t('snake.permanentDeleteTitle')}</div>
+                        <div className="text-xs text-red-600">{t('snake.permanentDeleteWarning')}</div>
                       </div>
                     </div>
                   </button>
                 </div>
               </div>
               <div className="px-6 py-4 border-t text-right">
-                <button onClick={() => setShowDeleteSnake(false)} className="px-4 py-2 rounded-lg border">Annuler</button>
+                <button onClick={() => setShowDeleteSnake(false)} className="px-4 py-2 rounded-lg border">{t('common.cancel')}</button>
               </div>
             </div>
           </div>

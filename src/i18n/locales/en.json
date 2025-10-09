@@ -1,58 +1,163 @@
 {
-  "+": "+",
-  ",": ",",
-  "Bon créé : ${code}": "Coupon created: ${code}",
-  "Connecte-toi pour proposer une contribution": {
-    "": "Log in to propose a contribution."
+  "brand": {
+    "name": "Reptile Manager"
   },
-  "Il te faut au moins ${deposit} ⟡ disponibles pour soumettre (stake)": {
-    "": "You need at least ${deposit} ⟡ available to submit (stake)."
+  "language": {
+    "selector": {
+      "label": "Language"
+    },
+    "names": {
+      "en": "English",
+      "fr": "French",
+      "es": "Spanish"
+    },
+    "changed": "Language updated",
+    "current": "Current: {{lang}}"
   },
-  "Image trop lourde (> ${MAX_IMAGE_MB} Mo): ${file": {
-    "name}": "Image too large (> ${MAX_IMAGE_MB} MB): ${file.name}"
+  "plans": {
+    "basic": "Basic",
+    "pro": "Pro"
   },
-  "Le nom latin de la nouvelle espèce est requis": {
-    "": "Latin name of the new species is required."
+  "charts": {
+    "interval": "Interval"
   },
-  "Le nom proposé est requis": {
-    "": "Proposed name is required."
+  "date": {
+    "cardStyle": "medium"
   },
-  "Seules les propositions en attente peuvent être supprimées": {
-    "": "Only pending proposals can be deleted."
+  "units": {
+    "days": "days",
+    "cm": "cm",
+    "grams": "g"
   },
-  "Sélectionne le type génétique (récessif/incomplet/dominant)": {
-    "": "Select the genetic type (recessive/incomplete/dominant)."
-  },
-  "Sélectionne une espèce": {
-    "": "Select a species."
-  },
-  "T": "T",
-  "a": "a",
-  "addSnake": {
-    "add": "Add Snake",
-    "addPhoto": "Add a photo",
-    "added": "Added!",
-    "adding": "Adding...",
-    "birthDate": "Birth Date",
+  "common": {
+    "report": "Report",
+    "chooseOption": "Choose an option",
+    "backToHome": "Back to home",
     "cancel": "Cancel",
-    "female": "Female",
-    "imageUrl": "Image URL",
-    "imageUrlPlaceholder": "e.g. https://example.com/image.jpg",
-    "length": "Length (cm)",
-    "male": "Male",
-    "morph": "Morph",
-    "morphPlaceholder": "e.g., Pastel",
-    "name": "Name",
-    "namePlaceholder": "Enter snake name",
-    "notes": "Notes",
-    "notesPlaceholder": "Any additional notes about this snake...",
-    "photo": "Snake photo",
-    "sex": "Sex",
-    "species": "Species",
-    "speciesPlaceholder": "e.g., Ball Python",
-    "title": "Add New Snake",
+    "close": "Close",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "error": "Error",
+    "exportPdf": "Export PDF",
+    "formatCard": "dd MMM, yyyy",
+    "loading": "Loading...",
+    "save": "Save",
+    "saved": "Saved!",
+    "saving": "Saving...",
+    "success": "Success",
+    "unexpectedError": "Unexpected error",
     "unknown": "Unknown",
-    "weight": "Weight (grams)"
+    "update": "Update",
+    "create": "Create",
+    "code": "Code:",
+    "select": "Select…"
+  },
+  "nav": {
+    "backToHome": "Back to Home",
+    "contact": "Contact",
+    "features": "Features",
+    "pricing": "Pricing",
+    "signIn": "Sign In"
+  },
+  "hero": {
+    "description": "Track, manage, and monitor your reptile collection with comprehensive health records, feeding schedules, and detailed analytics.",
+    "learnMore": "Learn More",
+    "subtitle": "Made Simple",
+    "title": "Professional Snake Management",
+    "tryFree": "Start Now"
+  },
+  "landing": {
+    "roles": {
+      "exoticVeterinarian": "Exotics veterinarian",
+      "professionalBreeder": "Professional breeder",
+      "reptileEnthusiast": "Reptile enthusiast"
+    }
+  },
+  "features": {
+    "analytics": {
+      "description": "Visual insights into growth patterns, feeding success, and health trends.",
+      "title": "Analytics & Charts"
+    },
+    "detailedProfiles": {
+      "description": "Complete snake profiles with photos, species info, genetics, and health records.",
+      "title": "Detailed Profiles"
+    },
+    "eventTracking": {
+      "description": "Monitor feeding schedules, shedding cycles, and veterinary appointments.",
+      "title": "Event Tracking"
+    },
+    "exportReports": {
+      "description": "Generate PDF and Excel reports for veterinarians or breeding records.",
+      "title": "Export Reports"
+    },
+    "multiUser": {
+      "description": "Share access with partners, veterinarians, or breeding collaborators.",
+      "title": "Multi-User Access"
+    },
+    "photoManagement": {
+      "description": "Organize and track photos with date stamps and automatic galleries.",
+      "title": "Photo Management"
+    },
+    "subtitle": "Comprehensive tools designed specifically for reptile enthusiasts and professional breeders.",
+    "title": "Everything You Need to Manage Your Collection"
+  },
+  "pricing": {
+    "enterprise": {
+      "cta": "Contact Us",
+      "duration": " / month",
+      "features": {
+        "api": "Full API access",
+        "integrations": "Integrations (coming soon)",
+        "snakes": "Unlimited snakes & clutches",
+        "support": "Priority support"
+      },
+      "price": "€24.99",
+      "title": "Enterprise",
+      "yearlyDuration": " / year",
+      "yearlyPrice": "€249",
+      "yearlySavings": "2 months free vs monthly"
+    },
+    "monthly": "Monthly",
+    "professional": {
+      "cta": "Subscribe Now",
+      "duration": " / month",
+      "features": {
+        "analytics": "Advanced analytics",
+        "exports": "PDF/CSV exports",
+        "multiUser": "Multi-user access",
+        "snakes": "Unlimited snakes"
+      },
+      "popular": "Most Popular",
+      "price": "€9.99",
+      "title": "Professional",
+      "yearlyDuration": " / year",
+      "yearlyPrice": "€99",
+      "yearlySavings": "2 months free vs monthly"
+    },
+    "save2Months": "Save 2 months",
+    "starter": {
+      "cta": "Start Now",
+      "duration": "",
+      "features": {
+        "photos": "Photo storage",
+        "snakes": "Up to 5 snakes",
+        "tracking": "Basic event tracking"
+      },
+      "price": "Free",
+      "title": "Starter"
+    },
+    "subtitle": "Choose the plan that fits your collection size",
+    "title": "Simple, Transparent Pricing",
+    "yearly": "Yearly"
+  },
+  "upgrade": {
+    "choosePlan": "Choose this plan",
+    "description": "Upgrade to continue adding data and access all premium features.",
+    "guarantee": "30-day money-back guarantee. Cancel anytime.",
+    "limitReached": "You’ve reached the free plan limit",
+    "processing": "Processing…",
+    "unlockFull": "Unlock the full potential"
   },
   "auth": {
     "backToSignIn": "Back to Sign In",
@@ -96,6 +201,467 @@
     "defineNewPasswordSubtitle": "Choose a strong password for your account.",
     "newPassword": "New Password",
     "updatePassword": "Update Password"
+  },
+  "dashboard": {
+    "dropHere": "Drop here to place last",
+    "addEvent": "Add Event",
+    "addFirstSnake": "Start by adding your first snake to the collection.",
+    "addFirstSnakeBtn": "Add Your First Snake",
+    "addSnake": "Add Snake",
+    "filter": "Filter",
+    "filters": {
+      "all": "All",
+      "female": "Females",
+      "male": "Males",
+      "needsFeeding": "Needs feeding",
+      "recentChanges": "Recent changes",
+      "unknown": "Unknown sex"
+    },
+    "mySnakes": "My Snakes",
+    "noEvents": "No recent events",
+    "noSnakes": "No snakes found",
+    "noSnakesSubtitle": "No snakes match your search.",
+    "recentEvents": "Recent Events",
+    "search": "Search snakes...",
+    "settings": "Settings",
+    "signOut": "Sign Out",
+    "stats": {
+      "allTime": "All time",
+      "lastWeek": "Lasts 7 days",
+      "recentFeedings": "Recent Feedings",
+      "recentSheds": "Recent Sheds",
+      "thisMonth": "this month",
+      "thisWeek": "This week",
+      "totalEvents": "Total Events",
+      "totalSnakes": "Total Snakes"
+    },
+    "subtitle": "Manage your snake collection",
+    "title": "Dashboard",
+    "viewAllEvents": "View All Events",
+    "contribute": {
+      "title": "Contribute to the project",
+      "subtitle": "Suggest morphs, locations and features to earn Scales you can redeem on paid plans.",
+      "ctaDiscover": "Discover",
+      "ctaStart": "Start contributing",
+      "description": "Suggest morphs, localities, aliases, loci and more to improve the registry and earn Scales."
+    }
+  },
+  "snake": {
+    "overview": "Overview",
+    "events": "Events",
+    "analytics": "Analytics",
+    "recentActivity": "Recent activity",
+    "eventHistory": "Event history",
+    "healthIndicators": "Health indicators",
+    "weightTrend": "Weight trend",
+    "lengthEvolution": "Length evolution",
+    "weightAndFeeding": "Weight & feeding",
+    "feedingIntervalTitle": "Feeding interval",
+    "sheddingHistoryTitle": "Shedding history",
+    "avgFeedingIntervalLabel": "Average interval:",
+    "lastFeedingLabel": "Last feeding:",
+    "avgShedCycleLabel": "Average cycle:",
+    "nextShedEstimate": "Next shed estimated in {{days}} days",
+    "daysAfterPrevious": "{{days}} days after previous",
+    "growthTitle": "Growth",
+    "statsTitle": "Statistics",
+    "currentWeight": "Current weight:",
+    "initialWeight": "Initial weight:",
+    "totalGain": "Total gain:",
+    "progression": "Progress:",
+    "totalFeedingsLabel": "Total meals:",
+    "totalShedsLabel": "Total sheds:",
+    "totalVetVisitsLabel": "Vet visits:",
+    "totalEventsLabel": "Total events:",
+    "deleteTitle": "Delete “{{name}}”",
+    "archive30dTitle": "Archive 30 days (recommended)",
+    "archiveReadOnlyInfo": "The snake remains visible read-only. You can restore it at any time.",
+    "permanentDeleteTitle": "Delete permanently",
+    "permanentDeleteWarning": "Irreversible action: all associated data and events will be deleted.",
+    "details": "Details",
+    "birthDate": "Birth date",
+    "age": "Age",
+    "years": "years",
+    "meals": "Meals",
+    "archived": "Snake archived.",
+    "readonlyUntil": "Read-only until {{date}}.",
+    "restore": "Restore",
+    "deleteConfirm": "Delete this snake? This action is permanent.",
+    "exportPDF": "Export PDF",
+    "health": {
+      "feeding": "Feeding",
+      "sheds": "Sheds",
+      "growth": "Growth",
+      "overall": "Overall health"
+    },
+    "profile": "Profile",
+    "feedingSchedule": "Feeding Schedule",
+    "feedings": "Feedings",
+    "growthRate": "Growth Rate",
+    "growthTrend": "Growth trend: Healthy",
+    "lastFeeding": "Last feeding:",
+    "length": "Length",
+    "morph": "Morph",
+    "notes": "Notes",
+    "sheds": "Sheds",
+    "species": "Species",
+    "vetVisits": "Vet Visits",
+    "weight": "Weight",
+    "weightGain": "Weight gain: +30g this month",
+    "yearsOld": "{{count}} years old",
+    "yearsOld_one": "{{count}} year old",
+    "yearsOld_other": "{{count}} years old",
+    "addTitle": "Add snake",
+    "editTitle": "Edit snake",
+    "fields": {
+      "name": "Name",
+      "species": "Species",
+      "morph": "Morph",
+      "sex": "Sex",
+      "birthDate": "Birth date",
+      "weight": "Weight (g)",
+      "length": "Length (cm)",
+      "imageUrl": "Image URL"
+    },
+    "placeholders": {
+      "name": "e.g. Luna",
+      "species": "e.g. Ball Python",
+      "morph": "e.g. Pastel",
+      "weight": "e.g. 1200",
+      "length": "e.g. 120",
+      "imageUrl": "https://…"
+    },
+    "sex": {
+      "male": "Male",
+      "female": "Female",
+      "unknown": "Unknown"
+    }
+  },
+  "addSnake": {
+    "add": "Add Snake",
+    "addPhoto": "Add a photo",
+    "added": "Added!",
+    "adding": "Adding...",
+    "birthDate": "Birth Date",
+    "cancel": "Cancel",
+    "female": "Female",
+    "imageUrl": "Image URL",
+    "imageUrlPlaceholder": "e.g. https://example.com/image.jpg",
+    "length": "Length (cm)",
+    "male": "Male",
+    "morph": "Morph",
+    "morphPlaceholder": "e.g., Pastel",
+    "name": "Name",
+    "namePlaceholder": "Enter snake name",
+    "notes": "Notes",
+    "notesPlaceholder": "Any additional notes about this snake...",
+    "photo": "Snake photo",
+    "sex": "Sex",
+    "species": "Species",
+    "speciesPlaceholder": "e.g., Ball Python",
+    "title": "Add New Snake",
+    "unknown": "Unknown",
+    "weight": "Weight (grams)"
+  },
+  "events": {
+    "actions": {
+      "ariaLabel": "Event actions",
+      "menuLabel": "Event actions menu"
+    },
+    "add": "Add Event",
+    "addEvent": "Add Event",
+    "addPhotos": "Add Photos (max 5)",
+    "all": "All",
+    "allEvents": "All Events",
+    "cancel": "Cancel",
+    "date": "Date",
+    "confirmDelete": "Delete this event? This action is permanent.",
+    "delete": "Delete this event? This action is permanent.",
+    "eventHistory": "Event History",
+    "eventType": "Event Type",
+    "feeding": "Feeding",
+    "handling": "Handling",
+    "noEventsFound": "No events found",
+    "noEventsMatch": "No events match your search.",
+    "noEventsYet": "No events recorded yet.",
+    "notes": "Notes",
+    "notesPlaceholder": "Any additional details about this event...",
+    "other": "Other",
+    "photos": "Photos",
+    "searchPlaceholder": "Search events...",
+    "selectSnake": "Select a snake",
+    "shed": "Shedding",
+    "vetVisit": "Vet Visit",
+    "weight": "Weight (grams)",
+    "weightOptional": "Optional - weight at time of event",
+    "types": {
+      "feeding": "Feeding",
+      "shed": "Shedding",
+      "vet_visit": "Vet visit",
+      "handling": "Handling"
+    },
+    "weightWithUnit": "Weight: {{weight}}g",
+    "editTitle": "Edit event",
+    "addTitle": "Add event",
+    "fields": {
+      "type": "Type",
+      "date": "Date",
+      "weight": "Weight (g)",
+      "notes": "Notes"
+    },
+    "placeholders": {
+      "weight": "e.g. 120",
+      "notes": "Free notes…"
+    }
+  },
+  "breeding": {
+    "proOnly": {
+      "features": {
+        "certificates": "PDF certificates",
+        "eggs": "Egg tracking",
+        "genetics": "Genetics calculator",
+        "pairings": "Pairing management",
+        "pedigree": "Pedigree"
+      },
+      "subtitle": "Unlock advanced tools for your operation.",
+      "title": "Pro features"
+    },
+    "title": "Breeding",
+    "header": {
+      "subtitle": "Visualize lineages and manage your breeding program"
+    },
+    "tabs": {
+      "pedigree": "Pedigree",
+      "genetics": "Genetics Calculator",
+      "pairings": "Pairings",
+      "eggs": "Eggs",
+      "certificates": "Certificates"
+    },
+    "feature": {
+      "pedigreeDesc": "Visualize lineages and manage breeding",
+      "geneticsDesc": "Predict baby morphs before pairing",
+      "pairingsDesc": "Track pairings and outcomes",
+      "eggsDesc": "Monitor incubation with temperatures and dates",
+      "certificatesDesc": "Generate professional certificates and reports"
+    }
+  },
+  "eggTracking": {
+    "a11y": {
+      "deleteClutch": "Delete clutch",
+      "editClutch": "Edit clutch"
+    },
+    "actions": {
+      "newClutch": "New clutch"
+    },
+    "clutchLabel": "Clutch",
+    "createFirst": "Record your first clutch",
+    "delete": {
+      "subtitle": "This will also delete all associated eggs.",
+      "title": "Delete this clutch?"
+    },
+    "eggModal": {
+      "status": "Status",
+      "title": "Edit egg",
+      "weight": "Weight (g)",
+      "weightPlaceholder": "e.g. 62.5"
+    },
+    "empty": "No clutches recorded",
+    "form": {
+      "eggCount": "Number of eggs",
+      "error": {
+        "fertileExceedsTotal": "Fertile egg count cannot exceed total eggs."
+      },
+      "estHatchDate": "Estimated hatch date",
+      "expectedHatchDate": "Estimated hatch date",
+      "fertileCount": "Fertile",
+      "humidityPct": "Humidity (%)",
+      "laidDate": "Laid date",
+      "noPairings": "No pairings found. Create a pairing first in the Pairings section.",
+      "noPairingsHint": "No pairings found. Create one first in the Pairings section.",
+      "notes": "Notes",
+      "notesPlaceholder": "Observations (avg. weight, candling, losses, etc.)",
+      "pairing": "Pair (pairing)",
+      "selectPairing": "Select a pairing…",
+      "tempC": "Temperature (°C)"
+    },
+    "hatchingSoon": "Hatching soon!",
+    "humidity": "Humidity",
+    "individualEggs": "Individual eggs",
+    "legend": {
+      "damaged": "Damaged",
+      "hatched": "Hatched",
+      "incubating": "Incubating",
+      "infertile": "Infertile",
+      "title": "Legend"
+    },
+    "modal": {
+      "createTitle": "New clutch",
+      "editTitle": "Edit clutch"
+    },
+    "stat": {
+      "totalEggs": "Total eggs"
+    },
+    "stats": {
+      "damagedPlural": "Damaged",
+      "eggs": "Eggs",
+      "hatched": "Hatched",
+      "incubating": "Incubating",
+      "infertilePlural": "Infertile"
+    },
+    "status": {
+      "damaged": "Damaged",
+      "hatched": "Hatched",
+      "incubating": "Incubating",
+      "infertile": "Infertile"
+    },
+    "subtitle": "Monitor your clutches’ incubation",
+    "temperature": "Temperature",
+    "title": "Egg Tracking"
+  },
+  "pairing": {
+    "actions": {
+      "createFirst": "Create your first pairing",
+      "new": "New pairing",
+      "update": "Update"
+    },
+    "alert": {
+      "sameSnake": "Male and female cannot be the same snake."
+    },
+    "delete": {
+      "confirm": "This action is permanent. Do you really want to delete this pairing?",
+      "title": "Delete this pairing?"
+    },
+    "empty": "No pairings recorded",
+    "fields": {
+      "date": "Pairing date",
+      "female": "Female",
+      "male": "Male",
+      "notes": "Notes",
+      "status": "Status"
+    },
+    "modal": {
+      "editTitle": "Edit pairing",
+      "newTitle": "New pairing"
+    },
+    "placeholders": {
+      "notes": "Observations, behaviors, etc.",
+      "selectFemale": "Select a female…",
+      "selectMale": "Select a male…"
+    },
+    "status": {
+      "active": "Active",
+      "failed": "Failed",
+      "planned": "Planned",
+      "separated": "Separated",
+      "successful": "Successful"
+    },
+    "subtitle": "Track your pairings and their progress",
+    "title": "Pairing Management"
+  },
+  "pedigree": {
+    "actions": {
+      "addParents": "Add parents",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "depthLabel": "Depth",
+    "empty": "No pedigree data available",
+    "export": {
+      "exporting": "Exporting...",
+      "tooltip": "Export pedigree to PDF"
+    },
+    "generation": "Generation",
+    "legend": {
+      "female": "Female",
+      "male": "Male",
+      "title": "Legend",
+      "unknown": "Unknown"
+    },
+    "parents": {
+      "fatherLabel": "Father (male)",
+      "motherLabel": "Mother (female)",
+      "noneFemale": "— None / Unknown —",
+      "noneMale": "— None / Unknown —",
+      "title": "Link parents"
+    },
+    "pdf": {
+      "field": {
+        "exportedOn": "Exported on:",
+        "generationsShown": "Generations shown:",
+        "individual": "Individual:",
+        "morph": "Morph:",
+        "sex": "Sex:",
+        "species": "Species:"
+      },
+      "infoSection": "INFORMATION",
+      "title": "PEDIGREE"
+    },
+    "rel": {
+      "father": "Father",
+      "individual": "Individual",
+      "maternalGrandfather": "Maternal grandfather",
+      "maternalGrandmother": "Maternal grandmother",
+      "mother": "Mother",
+      "paternalGrandfather": "Paternal grandfather",
+      "paternalGrandmother": "Paternal grandmother",
+      "side": {
+        "maternal": "maternal",
+        "paternal": "paternal"
+      }
+    },
+    "selectLabel": "Select:",
+    "subtitle": "Visualize your snakes’ lineages",
+    "table": {
+      "birthYear": "Birth year",
+      "generation": "Generation",
+      "morph": "Morph",
+      "name": "Name",
+      "relation": "Relation",
+      "sex": "Sex"
+    },
+    "title": "Pedigree",
+    "view": {
+      "compact": "Compact",
+      "grid": "Grid",
+      "horizontal": "Horizontal",
+      "table": "Table",
+      "vertical": "Vertical"
+    },
+    "viewTitle": {
+      "compact": "Compact",
+      "grid": "Grid",
+      "horizontal": "Horizontal",
+      "table": "Table",
+      "vertical": "Vertical"
+    }
+  },
+  "genetics": {
+    "calculate": "Calculate probabilities",
+    "emptyAfterSelect": "Click “Calculate” to see predictions",
+    "femaleParent": "Female Parent",
+    "loadingRegistry": "Loading genetic registry…",
+    "maleParent": "Male Parent",
+    "morphLabel": "Morph",
+    "normal": "Normal",
+    "results": {
+      "commons": "Common factors (100%):",
+      "genes": "Genes",
+      "methodNote": "Data computed per locus (dominant, recessive, incomplete), with aggregation, allelic complexes checks, inter-allelic names/named combos, and custom “supers” defined in the JSON registry.",
+      "probability": "probability",
+      "title": "Predicted genetic results"
+    },
+    "selectFemale": "Select a female…",
+    "selectMale": "Select a male…",
+    "subtitle": "Mendelian crosses per locus, allelic complexes checks, inter-allelic phenotypes, supers & named combos, multi-species via JSON registries.",
+    "title": "Genetics Calculator",
+    "violations": {
+      "hint": "Fix the parent genetics: a parent cannot carry multiple alleles from the same complex.",
+      "title": "Allelic conflict(s) within the same complex"
+    },
+    "warn": {
+      "allelicConflictMessage": "Both parents must be the same species for a reliable calculation.",
+      "registryFallback": "Unable to load external JSON. Using a minimal local registry (fallback)."
+    }
   },
   "birthCert": {
     "actions": {
@@ -298,104 +864,6 @@
       "title": "Certificates & PDF export"
     }
   },
-  "blob": "blob",
-  "brand": {
-    "name": "Reptile Manager"
-  },
-  "breeding": {
-    "proOnly": {
-      "features": {
-        "certificates": "PDF certificates",
-        "eggs": "Egg tracking",
-        "genetics": "Genetics calculator",
-        "pairings": "Pairing management",
-        "pedigree": "Pedigree"
-      },
-      "subtitle": "Unlock advanced tools for your operation.",
-      "title": "Pro features"
-    },
-    "title": "Breeding",
-    "header": {
-      "subtitle": "Visualize lineages and manage your breeding program"
-    },
-    "tabs": {
-      "pedigree": "Pedigree",
-      "genetics": "Genetics Calculator",
-      "pairings": "Pairings",
-      "eggs": "Eggs",
-      "certificates": "Certificates"
-    },
-    "feature": {
-      "pedigreeDesc": "Visualize lineages and manage breeding",
-      "geneticsDesc": "Predict baby morphs before pairing",
-      "pairingsDesc": "Track pairings and outcomes",
-      "eggsDesc": "Monitor incubation with temperatures and dates",
-      "certificatesDesc": "Generate professional certificates and reports"
-    }
-  },
-  "common": {
-    "backToHome": "Back to home",
-    "cancel": "Cancel",
-    "close": "Close",
-    "confirm": "Confirm",
-    "delete": "Delete",
-    "edit": "Edit",
-    "error": "Error",
-    "exportPdf": "Export PDF",
-    "formatCard": "dd MMM, yyyy",
-    "loading": "Loading...",
-    "save": "Save",
-    "saved": "Saved!",
-    "saving": "Saving...",
-    "success": "Success",
-    "unexpectedError": "Unexpected error",
-    "unknown": "Unknown",
-    "update": "Update",
-    "create": "Create",
-    "code": "Code:",
-    "select": "Select…"
-  },
-  "contact": {
-    "address": "Address",
-    "email": "Email",
-    "form": {
-      "email": "Email Address",
-      "emailLabel": "Email",
-      "emailPlaceholder": "Enter your email",
-      "message": "Message",
-      "messageLabel": "Message",
-      "messagePlaceholder": "Your message…",
-      "name": "Your Name",
-      "nameLabel": "Name",
-      "namePlaceholder": "Enter your full name",
-      "placeholder": "Tell us how we can help...",
-      "send": "Send Message",
-      "sending": "Sending...",
-      "submit": "Send",
-      "success": "Message Sent!",
-      "successText": "Thank you for contacting us. We'll get back to you within 24 hours.",
-      "title": "Send us a Message",
-      "sentTitle": "Message sent!",
-      "sentShort": "Message sent!"
-    },
-    "getInTouch": "Get in touch",
-    "hours": {
-      "saturday": "Saturday",
-      "sundayClosed": "Sunday (closed)",
-      "weekdays": "Mon–Fri"
-    },
-    "hoursText": "Monday - Friday: 9:00 AM - 6:00 PM PST\nSaturday: 10:00 AM - 4:00 PM PST\nSunday: Closed",
-    "info": "Contact Information",
-    "infoTitle": "Information",
-    "phone": "Phone",
-    "subtitle": "A question or idea? Write to us.",
-    "success": {
-      "text": "We’ll get back to you soon.",
-      "title": "Thank you!"
-    },
-    "supportHours": "Support 9am–6pm CET",
-    "title": "Contact"
-  },
   "contribute": {
     "title": "Contribute",
     "tabs": {
@@ -550,216 +1018,46 @@
       }
     }
   },
-  "dashboard": {
-    "dropHere": "Drop here to place last",
-    "addEvent": "Add Event",
-    "addFirstSnake": "Start by adding your first snake to the collection.",
-    "addFirstSnakeBtn": "Add Your First Snake",
-    "addSnake": "Add Snake",
-    "filter": "Filter",
-    "filters": {
-      "all": "All",
-      "female": "Females",
-      "male": "Males",
-      "needsFeeding": "Needs feeding",
-      "recentChanges": "Recent changes",
-      "unknown": "Unknown sex"
-    },
-    "mySnakes": "My Snakes",
-    "noEvents": "No recent events",
-    "noSnakes": "No snakes found",
-    "noSnakesSubtitle": "No snakes match your search.",
-    "recentEvents": "Recent Events",
-    "search": "Search snakes...",
-    "settings": "Settings",
-    "signOut": "Sign Out",
-    "stats": {
-      "allTime": "All time",
-      "lastWeek": "Lasts 7 days",
-      "recentFeedings": "Recent Feedings",
-      "recentSheds": "Recent Sheds",
-      "thisMonth": "this month",
-      "thisWeek": "This week",
-      "totalEvents": "Total Events",
-      "totalSnakes": "Total Snakes"
-    },
-    "subtitle": "Manage your snake collection",
-    "title": "Dashboard",
-    "viewAllEvents": "View All Events",
-    "contribute": {
-      "title": "Contribute to the project",
-      "subtitle": "Suggest morphs, locations and features to earn Scales you can redeem on paid plans.",
-      "ctaDiscover": "Discover",
-      "ctaStart": "Start contributing",
-      "description": "Suggest morphs, localities, aliases, loci and more to improve the registry and earn Scales."
-    }
-  },
-  "eggTracking": {
-    "a11y": {
-      "deleteClutch": "Delete clutch",
-      "editClutch": "Edit clutch"
-    },
-    "actions": {
-      "newClutch": "New clutch"
-    },
-    "clutchLabel": "Clutch",
-    "createFirst": "Record your first clutch",
-    "delete": {
-      "subtitle": "This will also delete all associated eggs.",
-      "title": "Delete this clutch?"
-    },
-    "eggModal": {
-      "status": "Status",
-      "title": "Edit egg",
-      "weight": "Weight (g)",
-      "weightPlaceholder": "e.g. 62.5"
-    },
-    "empty": "No clutches recorded",
+  "contact": {
+    "address": "Address",
+    "email": "Email",
     "form": {
-      "eggCount": "Number of eggs",
-      "error": {
-        "fertileExceedsTotal": "Fertile egg count cannot exceed total eggs."
-      },
-      "estHatchDate": "Estimated hatch date",
-      "expectedHatchDate": "Estimated hatch date",
-      "fertileCount": "Fertile",
-      "humidityPct": "Humidity (%)",
-      "laidDate": "Laid date",
-      "noPairings": "No pairings found. Create a pairing first in the Pairings section.",
-      "noPairingsHint": "No pairings found. Create one first in the Pairings section.",
-      "notes": "Notes",
-      "notesPlaceholder": "Observations (avg. weight, candling, losses, etc.)",
-      "pairing": "Pair (pairing)",
-      "selectPairing": "Select a pairing…",
-      "tempC": "Temperature (°C)"
+      "email": "Email Address",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email",
+      "message": "Message",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Your message…",
+      "name": "Your Name",
+      "nameLabel": "Name",
+      "namePlaceholder": "Enter your full name",
+      "placeholder": "Tell us how we can help...",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "submit": "Send",
+      "success": "Message Sent!",
+      "successText": "Thank you for contacting us. We'll get back to you within 24 hours.",
+      "title": "Send us a Message",
+      "sentTitle": "Message sent!",
+      "sentShort": "Message sent!"
     },
-    "hatchingSoon": "Hatching soon!",
-    "humidity": "Humidity",
-    "individualEggs": "Individual eggs",
-    "legend": {
-      "damaged": "Damaged",
-      "hatched": "Hatched",
-      "incubating": "Incubating",
-      "infertile": "Infertile",
-      "title": "Legend"
+    "getInTouch": "Get in touch",
+    "hours": {
+      "saturday": "Saturday",
+      "sundayClosed": "Sunday (closed)",
+      "weekdays": "Mon–Fri"
     },
-    "modal": {
-      "createTitle": "New clutch",
-      "editTitle": "Edit clutch"
+    "hoursText": "Monday - Friday: 9:00 AM - 6:00 PM PST\nSaturday: 10:00 AM - 4:00 PM PST\nSunday: Closed",
+    "info": "Contact Information",
+    "infoTitle": "Information",
+    "phone": "Phone",
+    "subtitle": "A question or idea? Write to us.",
+    "success": {
+      "text": "We’ll get back to you soon.",
+      "title": "Thank you!"
     },
-    "stat": {
-      "totalEggs": "Total eggs"
-    },
-    "stats": {
-      "damagedPlural": "Damaged",
-      "eggs": "Eggs",
-      "hatched": "Hatched",
-      "incubating": "Incubating",
-      "infertilePlural": "Infertile"
-    },
-    "status": {
-      "damaged": "Damaged",
-      "hatched": "Hatched",
-      "incubating": "Incubating",
-      "infertile": "Infertile"
-    },
-    "subtitle": "Monitor your clutches’ incubation",
-    "temperature": "Temperature",
-    "title": "Egg Tracking"
-  },
-  "events": {
-    "actions": {
-      "ariaLabel": "Event actions",
-      "menuLabel": "Event actions menu"
-    },
-    "add": "Add Event",
-    "addEvent": "Add Event",
-    "addPhotos": "Add Photos (max 5)",
-    "all": "All",
-    "allEvents": "All Events",
-    "cancel": "Cancel",
-    "date": "Date",
-    "delete": "Delete this event? This action is permanent.",
-    "eventHistory": "Event History",
-    "eventType": "Event Type",
-    "feeding": "Feeding",
-    "handling": "Handling",
-    "noEventsFound": "No events found",
-    "noEventsMatch": "No events match your search.",
-    "noEventsYet": "No events recorded yet.",
-    "notes": "Notes",
-    "notesPlaceholder": "Any additional details about this event...",
-    "other": "Other",
-    "photos": "Photos",
-    "searchPlaceholder": "Search events...",
-    "selectSnake": "Select a snake",
-    "shed": "Shedding",
-    "vetVisit": "Vet Visit",
-    "weight": "Weight (grams)",
-    "weightOptional": "Optional - weight at time of event",
-    "types": {
-      "feeding": "Feeding",
-      "shed": "Shedding",
-      "vet_visit": "Vet visit",
-      "handling": "Handling"
-    },
-    "confirmDelete": "Delete this event? This action is permanent.",
-    "weightWithUnit": "Weight: {{weight}}g",
-    "editTitle": "Edit event",
-    "addTitle": "Add event",
-    "fields": {
-      "type": "Type",
-      "date": "Date",
-      "weight": "Weight (g)",
-      "notes": "Notes"
-    },
-    "placeholders": {
-      "weight": "e.g. 120",
-      "notes": "Free notes…"
-    }
-  },
-  "faq": {
-    "q1": {
-      "answer": "Yes, we use enterprise-grade encryption and security measures to protect your data. All information is stored securely and backed up regularly.",
-      "question": "Is my data secure?"
-    },
-    "q2": {
-      "answer": "Absolutely. You can export all your data in PDF or Excel format at any time. We believe your data belongs to you.",
-      "question": "Can I export my data?"
-    },
-    "q3": {
-      "answer": "We offer comprehensive onboarding support and documentation. Our team is available to help you migrate your existing records.",
-      "question": "What if I need help getting started?"
-    },
-    "title": "Frequently Asked Questions"
-  },
-  "features": {
-    "analytics": {
-      "description": "Visual insights into growth patterns, feeding success, and health trends.",
-      "title": "Analytics & Charts"
-    },
-    "detailedProfiles": {
-      "description": "Complete snake profiles with photos, species info, genetics, and health records.",
-      "title": "Detailed Profiles"
-    },
-    "eventTracking": {
-      "description": "Monitor feeding schedules, shedding cycles, and veterinary appointments.",
-      "title": "Event Tracking"
-    },
-    "exportReports": {
-      "description": "Generate PDF and Excel reports for veterinarians or breeding records.",
-      "title": "Export Reports"
-    },
-    "multiUser": {
-      "description": "Share access with partners, veterinarians, or breeding collaborators.",
-      "title": "Multi-User Access"
-    },
-    "photoManagement": {
-      "description": "Organize and track photos with date stamps and automatic galleries.",
-      "title": "Photo Management"
-    },
-    "subtitle": "Comprehensive tools designed specifically for reptile enthusiasts and professional breeders.",
-    "title": "Everything You Need to Manage Your Collection"
+    "supportHours": "Support 9am–6pm CET",
+    "title": "Contact"
   },
   "footer": {
     "about": "About",
@@ -771,224 +1069,12 @@
     "support": "Support",
     "terms": "Terms"
   },
-  "genetics": {
-    "calculate": "Calculate probabilities",
-    "emptyAfterSelect": "Click “Calculate” to see predictions",
-    "femaleParent": "Female Parent",
-    "loadingRegistry": "Loading genetic registry…",
-    "maleParent": "Male Parent",
-    "morphLabel": "Morph",
-    "normal": "Normal",
-    "results": {
-      "commons": "Common factors (100%):",
-      "genes": "Genes",
-      "methodNote": "Data computed per locus (dominant, recessive, incomplete), with aggregation, allelic complexes checks, inter‑allelic names/named combos, and custom “supers” defined in the JSON registry.",
-      "probability": "probability",
-      "title": "Predicted genetic results"
-    },
-    "selectFemale": "Select a female…",
-    "selectMale": "Select a male…",
-    "subtitle": "Mendelian crosses per locus, allelic complexes checks, inter-allelic phenotypes, supers & named combos, multi-species via JSON registries.",
-    "title": "Genetics Calculator",
-    "violations": {
-      "hint": "Fix the parent genetics: a parent cannot carry multiple alleles from the same complex.",
-      "title": "Allelic conflict(s) within the same complex"
-    },
-    "warn": {
-      "allelicConflictMessage": "Both parents must be the same species for a reliable calculation.",
-      "registryFallback": "Unable to load external JSON. Using a minimal local registry (fallback)."
-    }
+  "testimonials": {
+    "testimonial1": "Snake Manager has revolutionized how I track my collection. The feeding schedules and health monitoring are invaluable.",
+    "testimonial2": "The analytics features help me optimize feeding schedules and track growth patterns like never before.",
+    "testimonial3": "As a veterinarian, the detailed health records and export features make my job so much easier.",
+    "title": "Trusted by Reptile Enthusiasts"
   },
-  "hero": {
-    "description": "Track, manage, and monitor your reptile collection with comprehensive health records, feeding schedules, and detailed analytics.",
-    "learnMore": "Learn More",
-    "subtitle": "Made Simple",
-    "title": "Professional Snake Management",
-    "tryFree": "Start Now"
-  },
-  "html2canvas": "html2canvas",
-  "jspdf": "jsPDF",
-  "landing": {
-    "roles": {
-      "exoticVeterinarian": "Exotics veterinarian",
-      "professionalBreeder": "Professional breeder",
-      "reptileEnthusiast": "Reptile enthusiast"
-    }
-  },
-  "nav": {
-    "backToHome": "Back to Home",
-    "contact": "Contact",
-    "features": "Features",
-    "pricing": "Pricing",
-    "signIn": "Sign In"
-  },
-  "pairing": {
-    "actions": {
-      "createFirst": "Create your first pairing",
-      "new": "New pairing",
-      "update": "Update"
-    },
-    "alert": {
-      "sameSnake": "Male and female cannot be the same snake."
-    },
-    "delete": {
-      "confirm": "This action is permanent. Do you really want to delete this pairing?",
-      "title": "Delete this pairing?"
-    },
-    "empty": "No pairings recorded",
-    "fields": {
-      "date": "Pairing date",
-      "female": "Female",
-      "male": "Male",
-      "notes": "Notes",
-      "status": "Status"
-    },
-    "modal": {
-      "editTitle": "Edit pairing",
-      "newTitle": "New pairing"
-    },
-    "placeholders": {
-      "notes": "Observations, behaviors, etc.",
-      "selectFemale": "Select a female…",
-      "selectMale": "Select a male…"
-    },
-    "status": {
-      "active": "Active",
-      "failed": "Failed",
-      "planned": "Planned",
-      "separated": "Separated",
-      "successful": "Successful"
-    },
-    "subtitle": "Track your pairings and their progress",
-    "title": "Pairing Management"
-  },
-  "pedigree": {
-    "actions": {
-      "addParents": "Add parents",
-      "cancel": "Cancel",
-      "save": "Save"
-    },
-    "depthLabel": "Depth",
-    "empty": "No pedigree data available",
-    "export": {
-      "exporting": "Exporting...",
-      "tooltip": "Export pedigree to PDF"
-    },
-    "generation": "Generation",
-    "legend": {
-      "female": "Female",
-      "male": "Male",
-      "title": "Legend",
-      "unknown": "Unknown"
-    },
-    "parents": {
-      "fatherLabel": "Father (male)",
-      "motherLabel": "Mother (female)",
-      "noneFemale": "— None / Unknown —",
-      "noneMale": "— None / Unknown —",
-      "title": "Link parents"
-    },
-    "pdf": {
-      "field": {
-        "exportedOn": "Exported on:",
-        "generationsShown": "Generations shown:",
-        "individual": "Individual:",
-        "morph": "Morph:",
-        "sex": "Sex:",
-        "species": "Species:"
-      },
-      "infoSection": "INFORMATION",
-      "title": "PEDIGREE"
-    },
-    "rel": {
-      "father": "Father",
-      "individual": "Individual",
-      "maternalGrandfather": "Maternal grandfather",
-      "maternalGrandmother": "Maternal grandmother",
-      "mother": "Mother",
-      "paternalGrandfather": "Paternal grandfather",
-      "paternalGrandmother": "Paternal grandmother",
-      "side": {
-        "maternal": "maternal",
-        "paternal": "paternal"
-      }
-    },
-    "selectLabel": "Select:",
-    "subtitle": "Visualize your snakes’ lineages",
-    "table": {
-      "birthYear": "Birth year",
-      "generation": "Generation",
-      "morph": "Morph",
-      "name": "Name",
-      "relation": "Relation",
-      "sex": "Sex"
-    },
-    "title": "Pedigree",
-    "view": {
-      "compact": "Compact",
-      "grid": "Grid",
-      "horizontal": "Horizontal",
-      "table": "Table",
-      "vertical": "Vertical"
-    },
-    "viewTitle": {
-      "compact": "Compact",
-      "grid": "Grid",
-      "horizontal": "Horizontal",
-      "table": "Table",
-      "vertical": "Vertical"
-    }
-  },
-  "pricing": {
-    "enterprise": {
-      "cta": "Contact Us",
-      "duration": " / month",
-      "features": {
-        "api": "Full API access",
-        "integrations": "Integrations (coming soon)",
-        "snakes": "Unlimited snakes & clutches",
-        "support": "Priority support"
-      },
-      "price": "€24.99",
-      "title": "Enterprise",
-      "yearlyDuration": " / year",
-      "yearlyPrice": "€249",
-      "yearlySavings": "2 months free vs monthly"
-    },
-    "monthly": "Monthly",
-    "professional": {
-      "cta": "Subscribe Now",
-      "duration": " / month",
-      "features": {
-        "analytics": "Advanced analytics",
-        "exports": "PDF/CSV exports",
-        "multiUser": "Multi‑user access",
-        "snakes": "Unlimited snakes"
-      },
-      "popular": "Most Popular",
-      "price": "€9.99",
-      "title": "Professional",
-      "yearlyDuration": " / year",
-      "yearlyPrice": "€99",
-      "yearlySavings": "2 months free vs monthly"
-    },
-    "save2Months": "Save 2 months",
-    "starter": {
-      "cta": "Start Now",
-      "duration": "",
-      "features": {
-        "photos": "Photo storage",
-        "snakes": "Up to 5 snakes",
-        "tracking": "Basic event tracking"
-      },
-      "price": "Free",
-      "title": "Starter"
-    },
-    "subtitle": "Choose the plan that fits your collection size",
-    "title": "Simple, Transparent Pricing",
-    "yearly": "Yearly"
-  },
-  "script": "script",
   "settings": {
     "${key}": "Setting",
     "changePassword": "Change password",
@@ -1033,104 +1119,8 @@
     "male": "Male",
     "unknown": "Unknown"
   },
-  "snake": {
-    "age": "Age",
-    "analytics": "Analytics",
-    "avgInterval": "Average feeding interval: 7 days",
-    "editInfo": "Edit Info",
-    "editPhoto": "Edit Photo",
-    "eventHistory": "Event History",
-    "events": "Events",
-    "exportPDF": "Export PDF",
-    "feedingSchedule": "Feeding Schedule",
-    "feedings": "Feedings",
-    "growthRate": "Growth Rate",
-    "growthTrend": "Growth trend: Healthy",
-    "lastFeeding": "Last feeding:",
-    "length": "Length",
-    "morph": "Morph",
-    "notes": "Notes",
-    "overview": "Overview",
-    "profile": "Profile",
-    "recentActivity": "Recent Activity",
-    "sex": {
-      "male": "Male",
-      "female": "Female",
-      "unknown": "Unknown"
-    },
-    "sheds": "Sheds",
-    "species": "Species",
-    "vetVisits": "Vet Visits",
-    "weight": "Weight",
-    "weightGain": "Weight gain: +30g this month",
-    "weightTrend": "Weight Trend",
-    "years": "years",
-    "yearsOld": "{{count}} years old",
-    "yearsOld_one": "{{count}} year old",
-    "yearsOld_other": "{{count}} years old",
-    "addTitle": "Add snake",
-    "editTitle": "Edit snake",
-    "deleteConfirm": "Delete this snake? This action is permanent.",
-    "fields": {
-      "name": "Name",
-      "species": "Species",
-      "morph": "Morph",
-      "sex": "Sex",
-      "birthDate": "Birth date",
-      "weight": "Weight (g)",
-      "length": "Length (cm)",
-      "imageUrl": "Image URL"
-    },
-    "placeholders": {
-      "name": "e.g. Luna",
-      "species": "e.g. Ball Python",
-      "morph": "e.g. Pastel",
-      "weight": "e.g. 1200",
-      "length": "e.g. 120",
-      "imageUrl": "https://…"
-    }
-  },
-  "testimonials": {
-    "testimonial1": "Snake Manager has revolutionized how I track my collection. The feeding schedules and health monitoring are invaluable.",
-    "testimonial2": "The analytics features help me optimize feeding schedules and track growth patterns like never before.",
-    "testimonial3": "As a veterinarian, the detailed health records and export features make my job so much easier.",
-    "title": "Trusted by Reptile Enthusiasts"
-  },
-  "units": {
-    "cm": "cm",
-    "grams": "g"
-  },
-  "upgrade": {
-    "choosePlan": "Choose this plan",
-    "description": "Upgrade to continue adding data and access all premium features.",
-    "guarantee": "30‑day money‑back guarantee. Cancel anytime.",
-    "limitReached": "You’ve reached the free plan limit",
-    "processing": "Processing…",
-    "unlockFull": "Unlock the full potential"
-  },
-  "Échange réussi : 1 mois Basic payé en Écailles": {
-    "": "Successful trade: 1 month Basic paid in Scales."
-  },
-  "Échange réussi : 1 mois Pro payé en Écailles": {
-    "": "Successful trade: 1 month Pro paid in Scales."
-  },
-  "date": {
-    "cardStyle": "medium"
-  },
-  "language": {
-    "selector": {
-      "label": "Language"
-    },
-    "names": {
-      "en": "English",
-      "fr": "French",
-      "es": "Spanish"
-    },
-    "changed": "Language updated",
-    "current": "Current: {{lang}}"
-  },
-  "plans": {
-    "basic": "Basic",
-    "pro": "Pro"
-  }
+  "jspdf": "jsPDF",
+  "html2canvas": "html2canvas",
+  "blob": "blob",
+  "script": "script"
 }
