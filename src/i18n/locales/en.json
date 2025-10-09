@@ -27,6 +27,7 @@
   "units": {
     "days": "days",
     "cm": "cm",
+    "g": "g",
     "grams": "g"
   },
   "common": {
@@ -281,6 +282,7 @@
     "details": "Details",
     "birthDate": "Birth date",
     "age": "Age",
+    "sexe": "Sex",
     "years": "years",
     "meals": "Meals",
     "archived": "Snake archived.",

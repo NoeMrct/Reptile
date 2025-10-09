@@ -200,7 +200,7 @@ const SnakeProfile = () => {
     doc.setFontSize(12);
     doc.text(`${t('snake.species')}: ${snake.species}`, 20, 55);
     doc.text(`${t('snake.morph')}: ${snake.morph || t('common.unknown')}`, 20, 65);
-    doc.text(`${t('snake.sex')}: ${snake.sex}`, 20, 75);
+    doc.text(`${t('snake.sexe')}: ${snake.sex}`, 20, 75);
     doc.text(`${t('snake.birthDate')}: ${format(new Date(snake.birthDate), 'MMM dd, yyyy')}`, 20, 85);
     doc.text(`${t('snake.weight')}: ${snake.weight}${t('units.g')}`, 20, 95);
     doc.text(`${t('snake.length')}: ${snake.length}${t('units.cm')}`, 20, 105);
@@ -437,7 +437,7 @@ const SnakeProfile = () => {
                     <span className="font-medium">{snake.morph || t('common.unknown')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">{t('snake.sex')}:</span>
+                    <span className="text-gray-600">{t('snake.sexe')}:</span>
                     <span className="font-medium">{snake.sex}</span>
                   </div>
                   <div className="flex justify-between">

@@ -27,7 +27,8 @@
   "units": {
     "days": "jours",
     "cm": " cm",
-    "grams": " g"
+    "grams": " g",
+    "g": " g"
   },
   "common": {
     "report": "Rapport",
@@ -281,6 +282,7 @@
     "details": "Détails",
     "birthDate": "Date de naissance",
     "age": "Âge",
+    "sexe": "Sexe",
     "years": "années",
     "meals": "Repas",
     "archived": "Serpent archivé.",
