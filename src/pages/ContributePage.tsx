@@ -1,48 +1,52 @@
-import React, { useEffect, useMemo, useState } from 'react';
+// ContributePage.tsx — Version corrigée et épurée (Supabase)
+// - Fix TDZ (ordre des hooks / états)
+// - UI nettoyée (pas de blocs dupliqués, sections cohérentes)
+// - Alerte doublons (catalog + recherche)
+// - Édition/Suppression sur propositions en attente
+// - Porte‑monnaie local + "Redeem" fiable (anti double comptage)
+
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { t } from 'i18next';
 import {
   ArrowLeft,
-  BadgeCheck,
   FilePlus2,
-  Lightbulb,
   ListChecks,
   Medal,
-  Coins,
-  ShieldCheck,
-  Sparkles,
-  TrendingUp,
-  Users,
   HelpCircle,
+  Lightbulb,
+  ShieldCheck,
+  Coins,
+  BadgeCheck,
+  Upload,
+  X,
+  Lock,
+  Users,
   Edit3,
   Trash2,
-  ImagePlus,
-  X,
-  Upload,
-  Lock,
+  Sparkles,
+  Search
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import UpgradeModal from '../components/UpgradeModal';
+import {
+  Contribution,
+  ContributionType,
+  SpeciesOpt,
+  fetchSpecies,
+  fetchMyContributions,
+  submitContribution,
+  updateContribution,
+  deleteContribution,
+  fetchCatalog,
+  CatalogItem,
+  findDuplicatesForProposal,
+  fetchWalletBalance,
+  fetchRewardsLast30
+} from '../lib/contribApi';
 
-type ContributionType = 'species' | 'morph' | 'locality' | 'alias' | 'locus' | 'group';
-type ContributionStatus = 'pending' | 'approved' | 'rejected';
-type StakeStatus = 'locked' | 'refunded' | 'burned';
-
-interface SpeciesOpt { id: string; label: string; }
-
-interface ContributionBase {
-  id: string;
-  userId: string;
-  type: ContributionType;
-  speciesId?: string | null;
-  payload: Record<string, any> & { images?: string[] };
-  createdAt: string;
-  status: ContributionStatus;
-  moderatorNote?: string | null;
-  reward?: number;
-  stake?: number;
-  stakeStatus?: StakeStatus;
-}
+// ————————————————————————————————————————————————————————————————————————————
+// Constantes
+// ————————————————————————————————————————————————————————————————————————————
 
 const REWARD_BY_TYPE: Record<ContributionType, number> = {
   species: 250,
@@ -54,94 +58,40 @@ const REWARD_BY_TYPE: Record<ContributionType, number> = {
 };
 
 const COIN_RULES = {
-  redeem: { basicMonth: 1000, proMonth: 2500 },
-  coupons: { min: 300, max: 800, discountRange: '−10 à −25 %' },
-  badges: { verified: 80, topContributor: 200, photographer: 120 },
-  tips: { min: 10 },
-  stake: { min: 5, max: 10, defaultDeposit: 10 },
-  transferability: 'non transférables (sauf tips), non convertibles en €',
+  stake: { defaultDeposit: 10 },
   initialGrant: 50,
 } as const;
 
-const STORAGE_KEYS = {
-  SUBMISSIONS: 'contrib_submissions',
-  WALLET: 'contrib_wallet',
-};
+const FALLBACK_SPECIES: SpeciesOpt[] = [
+  { id: 'python-regius', label: 'Ball Python', latin: 'Python regius' },
+  { id: 'pantherophis-guttatus', label: 'Corn Snake', latin: 'Pantherophis guttatus' },
+  { id: 'morelia-viridis', label: 'Green Tree Python', latin: 'Morelia viridis' },
+];
 
 const MAX_IMAGES = 8;
 const MAX_IMAGE_MB = 4;
 
-const FALLBACK_SPECIES: SpeciesOpt[] = [
-  { id: 'python-regius', label: 'Ball Python' },
-  { id: 'pantherophis-guttatus', label: 'Corn Snake' },
-  { id: 'morelia-viridis', label: 'Green Tree Python' },
-  { id: 'morelia-spilota', label: 'Carpet Python' },
-  { id: 'python-reticulatus', label: 'Reticulated Python' },
-  { id: 'python-brongersmai', label: 'Blood Python' },
-  { id: 'python-bivittatus', label: 'Burmese Python' },
-];
-
-function loadSubmissions(): ContributionBase[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEYS.SUBMISSIONS);
-    return raw ? (JSON.parse(raw) as ContributionBase[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveSubmissions(all: ContributionBase[]) {
-  localStorage.setItem(STORAGE_KEYS.SUBMISSIONS, JSON.stringify(all));
-}
-
-function loadWallet(userId: string): number | null {
-  try {
-    const raw = localStorage.getItem(`${STORAGE_KEYS.WALLET}:${userId}`);
-    return raw !== null ? Number(raw) : null;
-  } catch {
-    return null;
-  }
-}
-
-function saveWallet(userId: string, balance: number) {
-  localStorage.setItem(`${STORAGE_KEYS.WALLET}:${userId}`, String(balance));
-}
-
-const StatusBadge: React.FC<{ status: ContributionStatus }> = ({ status }) => {
-  const map: Record<ContributionStatus, string> = {
-    pending: 'bg-amber-50 text-amber-700 border-amber-200',
-    approved: 'bg-green-50 text-green-700 border-green-200',
-    rejected: 'bg-rose-50 text-rose-700 border-rose-200',
-  };
-  const label: Record<ContributionStatus, string> = {
-    pending: 'En attente',
-    approved: 'Validé',
-    rejected: 'Refusé',
-  };
-  return (
-    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${map[status]}`}>
-      {label[status]}
-    </span>
-  );
-};
+// ————————————————————————————————————————————————————————————————————————————
+// Petites briques UI
+// ————————————————————————————————————————————————————————————————————————————
 
 const Card: React.FC<{ className?: string; children: React.ReactNode }> = ({ className = '', children }) => (
   <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 ${className}`}>{children}</div>
 );
 
 const Thumbs: React.FC<{ images: string[]; onRemove?: (idx: number) => void }> = ({ images, onRemove }) => {
-  if (!images || images.length === 0) return null;
+  if (!images?.length) return null;
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
       {images.map((src, idx) => (
         <div key={idx} className="relative group border rounded-lg overflow-hidden">
           <img src={src} alt={`proof-${idx}`} className="w-full h-24 object-cover" />
-          {onRemove && (
+          {!!onRemove && (
             <button
               type="button"
               onClick={() => onRemove(idx)}
               className="absolute top-1 right-1 bg-white/90 border rounded-full p-1 shadow hidden group-hover:block"
-              aria-label={t('contribute.photo.delete')}
+              aria-label={t('contribute.photo.delete', { defaultValue: 'Supprimer' })}
             >
               <X className="h-4 w-4" />
             </button>
@@ -152,162 +102,155 @@ const Thumbs: React.FC<{ images: string[]; onRemove?: (idx: number) => void }> =
   );
 };
 
-const RedeemCoinsModal: React.FC<{
-  open: boolean;
-  wallet: number;
-  onClose: () => void;
-  onDebit: (amount: number) => void;
-}> = ({ open, wallet, onClose, onDebit }) => {
-  const [couponSpend, setCouponSpend] = useState<number>(COIN_RULES.coupons.min);
-  const [generatedCode, setGeneratedCode] = useState<string | null>(null);
-  if (!open) return null;
-
-  const canBasic = wallet >= COIN_RULES.redeem.basicMonth;
-  const canPro = wallet >= COIN_RULES.redeem.proMonth;
-  const validCoupon = couponSpend >= COIN_RULES.coupons.min && couponSpend <= COIN_RULES.coupons.max && wallet >= couponSpend;
-
-  const makeCode = () => 'ECA-' + Math.random().toString(36).slice(2, 8).toUpperCase();
-
-  return (
-    <div className="fixed inset-0 z-[100]">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="absolute inset-0 grid place-items-center p-4">
-        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl border">
-          <div className="flex items-center justify-between px-5 py-3 border-b">
-            <div className="flex items-center gap-2">
-              <Coins className="h-5 w-5 text-green-600" />
-              <h4 className="font-semibold">{t('contribute.redeem.title')}</h4>
-            </div>
-            <button className="p-2 hover:bg-gray-50 rounded-lg" onClick={onClose} aria-label={t('common.close')}>
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-          <div className="p-5 space-y-6">
-            <div className="bg-gray-50 rounded-xl p-4">
-              <div className="text-sm text-gray-600">{t('contribute.wallet.balance')}</div>
-              <div className="text-3xl font-extrabold">{wallet} ⟡</div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-5">
-              <div className="border rounded-xl p-4">
-                <h5 className="font-semibold mb-2">{t('contribute.redeem.monthPlansTitle')}</h5>
-                <div className="space-y-2">
-                  <button
-                    disabled={!canBasic}
-                    onClick={() => { onDebit(COIN_RULES.redeem.basicMonth); alert(t('contribute.redeem.successBasic')); onClose(); }}
-                    className={`w-full px-4 py-2 rounded-lg border font-medium ${canBasic ? 'hover:bg-green-50' : 'opacity-50 cursor-not-allowed'}`}
-                  >
-                   {t('plans.basic')} — {COIN_RULES.redeem.basicMonth} ⟡
-                  </button>
-                  <button
-                    disabled={!canPro}
-                    onClick={() => { onDebit(COIN_RULES.redeem.proMonth); alert(t('contribute.redeem.successPro')); onClose(); }}
-                    className={`w-full px-4 py-2 rounded-lg border font-medium ${canPro ? 'hover:bg-green-50' : 'opacity-50 cursor-not-allowed'}`}
-                  >
-                   {t('plans.pro')} — {COIN_RULES.redeem.proMonth} ⟡
-                  </button>
-                </div>
-              </div>
-
-              <div className="border rounded-xl p-4">
-                <h5 className="font-semibold mb-2">{t('contribute.redeem.generateCoupon')}</h5>
-                <p className="text-sm text-gray-600 mb-2">{t('contribute.redeem.description', { min: COIN_RULES.coupons.min, max: COIN_RULES.coupons.max, discount: COIN_RULES.coupons.discountRange })}</p>
-                <div className="flex items-center gap-2 mb-2">
-                  <input
-                    type="number"
-                    className="w-32 rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                    min={COIN_RULES.coupons.min}
-                    max={COIN_RULES.coupons.max}
-                    value={couponSpend}
-                    onChange={(e)=>setCouponSpend(Number(e.target.value))}
-                  />
-                  <span className="text-sm text-gray-600">⟡ {t('contribute.redeem.toSpend')}</span>
-                </div>
-                <button
-                  disabled={!validCoupon}
-                  onClick={() => { onDebit(couponSpend); const code = makeCode(); setGeneratedCode(code); alert(t('contribute.redeem.created', { code })); onClose(); }}
-                  className={`px-4 py-2 rounded-lg border font-medium ${validCoupon ? 'hover:bg-green-50' : 'opacity-50 cursor-not-allowed'}`}
-                >
-                 {t('contribute.redeem.generateCode')}
-                </button>
-                {generatedCode && (
-                  <div className="mt-2 text-sm">{t('common.code')} <span className="font-mono font-semibold">{generatedCode}</span></div>
-                )}
-              </div>
-            </div>
-
-              <div className="text-xs text-gray-500">{t('contribute.redeem.note', { transferability: COIN_RULES.transferability })}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+const StatusBadge: React.FC<{ status: 'pending'|'approved'|'rejected' }> = ({ status }) => {
+  const map = {
+    pending: 'bg-amber-50 text-amber-700 border-amber-200',
+    approved: 'bg-green-50 text-green-700 border-green-200',
+    rejected: 'bg-rose-50 text-rose-700 border-rose-200',
+  } as const;
+  const label = {
+    pending: t('contribute.status.pending', { defaultValue: 'En attente' }),
+    approved: t('contribute.status.approved', { defaultValue: 'Validé' }),
+    rejected: t('contribute.status.rejected', { defaultValue: 'Refusé' }),
+  } as const;
+  return <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${map[status]}`}>{label[status]}</span>;
 };
+
+// ————————————————————————————————————————————————————————————————————————————
+// Page
+// ————————————————————————————————————————————————————————————————————————————
 
 const ContributePage: React.FC = () => {
   const { user } = useAuth();
-  const [species, setSpecies] = useState<SpeciesOpt[]>(FALLBACK_SPECIES);
-  const [tab, setTab] = useState<'propose' | 'mine' | 'leaderboard' | 'about'>('propose');
-  const [showUpgrade, setShowUpgrade] = useState(false);
-  const [showRedeem, setShowRedeem] = useState(false);
   const userId = user?.id || 'guest';
-  const [wallet, setWallet] = useState<number>(() => loadWallet(userId) ?? 0);
-  const [submissions, setSubmissions] = useState<ContributionBase[]>(() => loadSubmissions());
 
-  useEffect(() => {
-    const existing = loadWallet(userId);
-    if (existing === null) {
-      setWallet(COIN_RULES.initialGrant);
-      saveWallet(userId, COIN_RULES.initialGrant);
-    }
-  }, [userId]);
+  // États de base — déclarés AVANT tout calcul qui en dépend (évite TDZ)
+  const [species, setSpecies] = useState<SpeciesOpt[]>(FALLBACK_SPECIES);
+  const [submissions, setSubmissions] = useState<Contribution[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let aborted = false;
-    (async () => {
-      try {
-        const res = await fetch('/data/species.json', { cache: 'no-store' });
-        if (!res.ok) return;
-        const data = await res.json();
-        if (aborted) return;
-        if (Array.isArray(data?.species)) {
-          const opts: SpeciesOpt[] = data.species.map((s: any) => ({ id: s.id, label: s.names?.[1] || s.names?.[0] || s.id }));
-          if (opts.length) setSpecies(opts);
-        }
-      } catch {}
-    })();
-    return () => { aborted = true; };
-  }, []);
-
-  const mySubs = useMemo(() => submissions.filter(s => s.userId === userId), [submissions, userId]);
-  const approvedCoins = useMemo(() => mySubs.filter(s => s.status === 'approved').reduce((acc, s) => acc + (s.reward || 0), 0), [mySubs]);
-  const lockedStake = useMemo(() => mySubs.filter(s => s.stakeStatus === 'locked').reduce((acc, s) => acc + (s.stake || 0), 0), [mySubs]);
+  const [tab, setTab] = useState<'propose'|'mine'|'leaderboard'|'about'>('propose');
   const [type, setType] = useState<ContributionType>('morph');
-  const [speciesId, setSpeciesId] = useState<string>('python-regius');
+  const [speciesId, setSpeciesId] = useState<string>('');
   const [name, setName] = useState('');
-  const [genType, setGenType] = useState<'recessive' | 'incomplete' | 'dominant' | ''>('');
+  const [genType, setGenType] = useState<'recessive'|'incomplete'|'dominant'|''>('');
   const [aliases, setAliases] = useState('');
   const [notes, setNotes] = useState('');
   const [references, setReferences] = useState('');
   const [latin, setLatin] = useState('');
   const [commonNames, setCommonNames] = useState('');
   const [images, setImages] = useState<string[]>([]);
-  const resetForm = () => {
-    setName('');
-    setGenType('');
-    setAliases('');
-    setNotes('');
-    setReferences('');
-    setLatin('');
-    setCommonNames('');
-    setImages([]);
-  };
+
+  // Catalogue pour anti‑doublons
+  const [catalog, setCatalog] = useState<CatalogItem[]>([]);
+  const [catalogQ, setCatalogQ] = useState('');
+
+  // Édition
+  const [editing, setEditing] = useState<Contribution | null>(null);
+  const [eType, setEType] = useState<ContributionType>('morph');
+  const [eSpeciesId, setESpeciesId] = useState<string>('python-regius');
+  const [eName, setEName] = useState('');
+  const [eGenType, setEGenType] = useState<'recessive'|'incomplete'|'dominant'|''>('');
+  const [eAliases, setEAliases] = useState('');
+  const [eNotes, setENotes] = useState('');
+  const [eReferences, setEReferences] = useState('');
+  const [eLatin, setELatin] = useState('');
+  const [eCommonNames, setECommonNames] = useState('');
+  const [eImages, setEImages] = useState<string[]>([]);
+
+  const [wallet, setWallet] = useState<number>(0);
+  const [rewards30, setRewards30] = useState<number>(0);
+
+  const refreshWalletAndStats = useCallback(async () => {
+    if (!user?.id) { setWallet(0); setRewards30(0); return; }
+
+    await ensureInitialWallet(user.id);
+    
+    const [bal, r30] = await Promise.all([
+      fetchWalletBalance(user.id),
+      fetchRewardsLast30(user.id),
+    ]);
+    setWallet(bal);
+    setRewards30(r30);
+  }, [user?.id]);
+
+  useEffect(() => {
+    void refreshWalletAndStats();
+  }, [refreshWalletAndStats]);
+
+  // ——————————————————————————————————————————————————
+  // Effets
+  // ——————————————————————————————————————————————————
+
+  // Charger espèces + mes contributions
+  useEffect(() => {
+    let abort = false;
+    (async () => {
+      try {
+        const [sp, mine] = await Promise.all([
+          fetchSpecies().catch(() => FALLBACK_SPECIES),
+          user?.id ? fetchMyContributions(user.id) : Promise.resolve([]),
+        ]);
+        if (abort) return;
+        const finalSpecies = sp?.length ? sp : FALLBACK_SPECIES;
+        setSpecies(finalSpecies);
+        setSubmissions(mine);
+        // si aucune espèce sélectionnée, prendre la première
+        if (!speciesId && finalSpecies[0]?.id) setSpeciesId(finalSpecies[0].id);
+      } finally {
+        if (!abort) setLoading(false);
+      }
+    })();
+    return () => { abort = true; };
+  }, [user?.id]);
+
+  // Charger le catalogue dépendant du type / espèce pour anti‑doublon
+  useEffect(() => {
+    let abort = false;
+    (async () => {
+      try {
+        const list = await fetchCatalog(type, type === 'species' ? null : (speciesId || null));
+        if (!abort) setCatalog(list || []);
+      } catch {
+        if (!abort) setCatalog([]);
+      }
+    })();
+    return () => { abort = true; };
+  }, [type, speciesId]);
+
+  // ——————————————————————————————————————————————————
+  // Sélecteurs / dérivés
+  // ——————————————————————————————————————————————————
+
+  const mySubs = useMemo(() => submissions, [submissions]);
+  const approvedCoins = useMemo(
+    () => mySubs.filter(s => s.status === 'approved').reduce((acc, s) => acc + (s.reward || 0), 0),
+    [mySubs]
+  );
+  const lockedStake = useMemo(
+    () => mySubs.filter(s => s.stakeStatus === 'locked').reduce((acc, s) => acc + (s.stake || 0), 0),
+    [mySubs]
+  );
   const rewardForCurrent = REWARD_BY_TYPE[type];
 
+  const currentAliases = aliases.split(',').map(a => a.trim()).filter(Boolean);
+  const dupMatches = useMemo(
+    () => findDuplicatesForProposal({
+      type,
+      speciesId: type === 'species' ? null : (speciesId || null),
+      name: type === 'species' ? undefined : name,
+      latin: type === 'species' ? latin : undefined,
+      aliases: currentAliases,
+    }, catalog),
+    [type, speciesId, name, latin, aliases, catalog]
+  );
+
+  // ——————————————————————————————————————————————————
+  // Handlers
+  // ——————————————————————————————————————————————————
+
   const readFilesAsDataUrls = (files: FileList) => {
-    const arr = Array.from(files);
-    arr.forEach((file) => {
+    Array.from(files).forEach((file) => {
       if (!file.type.startsWith('image/')) return;
       if (file.size > MAX_IMAGE_MB * 1024 * 1024) {
         alert(`Image trop lourde (> ${MAX_IMAGE_MB} Mo): ${file.name}`);
@@ -318,148 +261,90 @@ const ContributePage: React.FC = () => {
         const url = String(e.target?.result || '');
         setImages((prev) => {
           if (prev.length >= MAX_IMAGES) return prev;
-          if (prev.includes(url)) return prev; 
+          if (prev.includes(url)) return prev;
           return [...prev, url];
         });
       };
       reader.readAsDataURL(file);
     });
   };
+  const onRemoveImage = (idx: number) => setImages((prev) => prev.filter((_, i) => i !== idx));
 
-  const onRemoveImage = (idx: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== idx));
+  const resetForm = () => {
+    setName(''); setGenType(''); setAliases(''); setNotes(''); setReferences('');
+    setLatin(''); setCommonNames(''); setImages([]);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit: React.FormEventHandler = async (e) => {
     e.preventDefault();
-    if (!userId) {
-      alert("Connecte-toi pour proposer une contribution.");
-      return;
-    }
+    if (!user?.id) { alert(t('contribute.errors.loginRequired', { defaultValue: 'Connecte‑toi pour proposer une contribution.' })); return; }
+    if (type !== 'species' && !speciesId) { alert(t('contribute.errors.speciesRequired', { defaultValue: 'Sélectionne une espèce.' })); return; }
+    if (type === 'species' && !latin.trim()) { alert(t('contribute.errors.latinRequired', { defaultValue: 'Le nom latin est requis.' })); return; }
+    if ([ 'morph','locality','alias','locus','group' ].includes(type) && !name.trim()) { alert(t('contribute.errors.nameRequired', { defaultValue: 'Le nom est requis.' })); return; }
+    if ((type === 'morph' || type === 'locus') && !genType) { alert(t('contribute.errors.genTypeRequired', { defaultValue: 'Sélectionne le type génétique.' })); return; }
 
-    if (type !== 'species' && !speciesId) {
-      alert('Sélectionne une espèce.');
+    if (dupMatches.length) {
+      alert(t('contribute.errors.duplicate', { defaultValue: 'Cette entrée existe déjà. Merci de vérifier pour éviter les doublons.' }));
       return;
-    }
-    if (type === 'species' && !latin.trim()) {
-      alert('Le nom latin de la nouvelle espèce est requis.');
-      return;
-    }
-    if (['morph', 'locality', 'alias', 'locus', 'group'].includes(type) && !name.trim()) {
-      alert('Le nom proposé est requis.');
-      return;
-    }
-    if (type === 'morph' || type === 'locus') {
-      if (!genType) {
-        alert("Sélectionne le type génétique (récessif/incomplet/dominant).");
-        return;
-      }
     }
 
     const deposit = COIN_RULES.stake.defaultDeposit;
     if (deposit > 0) {
       if (wallet < deposit) {
-        alert(`Il te faut au moins ${deposit} ⟡ disponibles pour soumettre (stake).`);
+        alert(t('contribute.errors.notEnoughStake', { defaultValue: 'Solde insuffisant pour soumettre.' }));
         return;
       }
-      const newBal = wallet - deposit;
-      setWallet(newBal);
-      saveWallet(userId, newBal);
     }
 
-    const payload: ContributionBase['payload'] = {
-      name: name.trim(),
+    const payload: Record<string, any> = {
+      name: name.trim() || undefined,
       genType: genType || undefined,
-      aliases: aliases
-        .split(',')
-        .map(a => a.trim())
-        .filter(Boolean),
+      aliases: aliases.split(',').map(a=>a.trim()).filter(Boolean),
       notes: notes.trim() || undefined,
-      references: references
-        .split(',')
-        .map(u => u.trim())
-        .filter(Boolean),
-      images: images,
+      references: references.split(',').map(u=>u.trim()).filter(Boolean),
+      images,
     };
-
     if (type === 'species') {
       payload['latin'] = latin.trim();
-      payload['commonNames'] = commonNames
-        .split(',')
-        .map(n => n.trim())
-        .filter(Boolean);
+      payload['commonNames'] = commonNames.split(',').map(n=>n.trim()).filter(Boolean);
     }
 
-    const newItem: ContributionBase = {
-      id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-      userId,
-      type,
-      speciesId: type === 'species' ? null : speciesId,
-      payload,
-      createdAt: new Date().toISOString(),
-      status: 'pending',
-      moderatorNote: null,
-      reward: rewardForCurrent,
-      stake: deposit,
-      stakeStatus: deposit > 0 ? 'locked' : undefined,
-    };
-
-    const all = [newItem, ...submissions];
-    setSubmissions(all);
-    saveSubmissions(all);
-    resetForm();
-    setTab('mine');
+    try {
+      const inserted = await submitContribution(user.id, {
+        type,
+        speciesId: type === 'species' ? null : speciesId,
+        payload,
+        reward: rewardForCurrent,
+        stake: deposit,
+      });
+      setSubmissions((prev) => [inserted, ...prev]);
+      resetForm();
+      setTab('mine');
+      await refreshWalletAndStats();
+    } catch (err: any) {
+      alert(err?.message || t('contribute.errors.submitFailed', { defaultValue: 'Erreur lors de la soumission.' }));
+    }
   };
 
-  const handleRedeem = () => {
-    setShowRedeem(true);
-  };
-
-  const leaderboard = useMemo(() => {
-    const map = new Map<string, { name: string; coins: number }>();
-    const sample: Array<{ id: string; name: string; coins: number }> = [
-      { id: 'u_demo_1', name: 'Ari', coins: 520 },
-      { id: 'u_demo_2', name: 'Léo', coins: 310 },
-      { id: 'u_demo_3', name: 'Maya', coins: 295 },
-    ];
-    sample.forEach(s => map.set(s.id, { name: s.name, coins: s.coins }));
-    const mine = mySubs.filter(s => s.status === 'approved').reduce((acc, s) => acc + (s.reward || 0), 0);
-    if (!map.has(userId)) map.set(userId, { name: user?.name || user?.email || 'Moi', coins: mine });
-    return Array.from(map, ([id, v]) => ({ id, ...v })).sort((a, b) => b.coins - a.coins).slice(0, 10);
-  }, [mySubs, userId, user]);
-
-  const [editing, setEditing] = useState<ContributionBase | null>(null);
-  const [eType, setEType] = useState<ContributionType>('morph');
-  const [eSpeciesId, setESpeciesId] = useState<string>('python-regius');
-  const [eName, setEName] = useState('');
-  const [eGenType, setEGenType] = useState<'recessive' | 'incomplete' | 'dominant' | ''>('');
-  const [eAliases, setEAliases] = useState('');
-  const [eNotes, setENotes] = useState('');
-  const [eReferences, setEReferences] = useState('');
-  const [eLatin, setELatin] = useState('');
-  const [eCommonNames, setECommonNames] = useState('');
-  const [eImages, setEImages] = useState<string[]>([]);
-  const openEdit = (s: ContributionBase) => {
+  const openEdit = (s: Contribution) => {
     setEditing(s);
     setEType(s.type);
-    setESpeciesId(s.speciesId || 'python-regius');
-    setEName((s.payload as any)?.name || '');
-    setEGenType(((s.payload as any)?.genType as any) || '');
-    setEAliases(((s.payload as any)?.aliases || []).join(', '));
-    setENotes((s.payload as any)?.notes || '');
-    setEReferences(((s.payload as any)?.references || []).join(', '));
-    setELatin((s.payload as any)?.latin || '');
-    setECommonNames(((s.payload as any)?.commonNames || []).join(', '));
-    setEImages((s.payload as any)?.images || []);
+    setESpeciesId(s.speciesId || speciesId || 'python-regius');
+    setEName(s.payload?.name || '');
+    setEGenType((s.payload?.genType as any) || '');
+    setEAliases((s.payload?.aliases || []).join(', '));
+    setENotes(s.payload?.notes || '');
+    setEReferences((s.payload?.references || []).join(', '));
+    setELatin(s.payload?.latin || '');
+    setECommonNames((s.payload?.commonNames || []).join(', '));
+    setEImages(s.payload?.images || []);
   };
-  const closeEdit = () => setEditing(null);
+
+  const removeEditImage = (idx: number) => setEImages((prev) => prev.filter((_, i) => i !== idx));
   const editReadFiles = (files: FileList) => {
     Array.from(files).forEach((file) => {
       if (!file.type.startsWith('image/')) return;
-      if (file.size > MAX_IMAGE_MB * 1024 * 1024) {
-        alert(`Image trop lourde (> ${MAX_IMAGE_MB} Mo): ${file.name}`);
-        return;
-      }
+      if (file.size > MAX_IMAGE_MB * 1024 * 1024) { alert(`Image trop lourde (> ${MAX_IMAGE_MB} Mo): ${file.name}`); return; }
       const reader = new FileReader();
       reader.onload = (e) => {
         const url = String(e.target?.result || '');
@@ -472,70 +357,59 @@ const ContributePage: React.FC = () => {
       reader.readAsDataURL(file);
     });
   };
-  const removeEditImage = (idx: number) => setEImages((prev) => prev.filter((_, i) => i !== idx));
-  const saveEdit = (e: React.FormEvent) => {
-    e.preventDefault();
+
+  const saveEdit: React.FormEventHandler = async (ev) => {
+    ev.preventDefault();
     if (!editing) return;
+    if (eType !== 'species' && !eSpeciesId) { alert(t('contribute.errors.speciesRequired', { defaultValue: 'Sélectionne une espèce.' })); return; }
+    if (eType === 'species' && !eLatin.trim()) { alert(t('contribute.errors.latinRequired', { defaultValue: 'Le nom latin est requis.' })); return; }
+    if ([ 'morph','locality','alias','locus','group' ].includes(eType) && !eName.trim()) { alert(t('contribute.errors.nameRequired', { defaultValue: 'Le nom est requis.' })); return; }
+    if ((eType === 'morph' || eType === 'locus') && !eGenType) { alert(t('contribute.errors.genTypeRequired', { defaultValue: 'Sélectionne le type génétique.' })); return; }
 
-    if (eType !== 'species' && !eSpeciesId) {
-      alert('Sélectionne une espèce.');
-      return;
-    }
-    if (eType === 'species' && !eLatin.trim()) {
-      alert('Le nom latin de la nouvelle espèce est requis.');
-      return;
-    }
-    if (['morph', 'locality', 'alias', 'locus', 'group'].includes(eType) && !eName.trim()) {
-      alert('Le nom proposé est requis.');
-      return;
-    }
-    if (eType === 'morph' || eType === 'locus') {
-      if (!eGenType) {
-        alert("Sélectionne le type génétique (récessif/incomplet/dominant).");
-        return;
-      }
-    }
-
-    const updatedPayload: ContributionBase['payload'] = {
-      name: eName.trim(),
+    const payload: Record<string, any> = {
+      name: eName.trim() || undefined,
       genType: eGenType || undefined,
-      aliases: eAliases.split(',').map(a => a.trim()).filter(Boolean),
+      aliases: eAliases.split(',').map(a=>a.trim()).filter(Boolean),
       notes: eNotes.trim() || undefined,
-      references: eReferences.split(',').map(u => u.trim()).filter(Boolean),
+      references: eReferences.split(',').map(u=>u.trim()).filter(Boolean),
       images: eImages,
     };
     if (eType === 'species') {
-      updatedPayload['latin'] = eLatin.trim();
-      updatedPayload['commonNames'] = eCommonNames.split(',').map(n => n.trim()).filter(Boolean);
+      payload['latin'] = eLatin.trim();
+      payload['commonNames'] = eCommonNames.split(',').map(n=>n.trim()).filter(Boolean);
     }
 
-    const updated: ContributionBase = {
-      ...editing,
-      type: eType,
-      speciesId: eType === 'species' ? null : eSpeciesId,
-      payload: updatedPayload,
-    };
-
-    const next = submissions.map((x) => (x.id === editing.id ? updated : x));
-    setSubmissions(next);
-    saveSubmissions(next);
-    setEditing(null);
-  };
-
-  const deleteSubmission = (s: ContributionBase) => {
-    if (s.status !== 'pending') {
-      alert('Seules les propositions en attente peuvent être supprimées.');
-      return;
+    try {
+      const updated = await updateContribution(editing.id, {
+        type: eType,
+        species_id: eType === 'species' ? null : eSpeciesId,
+        payload,
+      });
+      setSubmissions((prev) => prev.map(x => x.id === updated.id ? updated : x));
+      setEditing(null);
+    } catch (err: any) {
+      alert(err?.message || t('contribute.errors.updateFailed', { defaultValue: 'Erreur lors de la mise à jour.' }));
     }
-    if (!confirm('Supprimer définitivement cette proposition ?')) return;
-    const next = submissions.filter((x) => x.id !== s.id);
-    setSubmissions(next);
-    saveSubmissions(next);
   };
+
+  const deleteSubmission = async (s: Contribution) => {
+    if (s.status !== 'pending') { alert(t('contribute.errors.deleteOnlyPending', { defaultValue: 'Seules les propositions en attente peuvent être supprimées.' })); return; }
+    if (!confirm(t('contribute.confirm.delete', { defaultValue: 'Supprimer définitivement cette proposition ?' }))) return;
+    try {
+      await deleteContribution(s.id);
+      setSubmissions(prev => prev.filter(x => x.id !== s.id));
+    } catch (err: any) {
+      alert(err?.message || t('contribute.errors.deleteFailed', { defaultValue: 'Suppression impossible.' }));
+    }
+  };
+
+  // ——————————————————————————————————————————————————
+  // Rendu
+  // ——————————————————————————————————————————————————
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Top bar */}
+      {/* Header */}
       <div className="bg-white/80 backdrop-blur border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-4">
@@ -544,286 +418,273 @@ const ContributePage: React.FC = () => {
             </Link>
             <div className="flex items-center gap-2">
               <Sparkles className="h-6 w-6 text-green-600" />
-              <h1 className="text-2xl font-bold text-gray-900">{t('dashboard.contribute.title')}</h1>
+              <h1 className="text-2xl font-bold text-gray-900">{t('dashboard.contribute.title', { defaultValue: 'Contributions' })}</h1>
             </div>
           </div>
         </div>
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Intro + Wallet */}
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
           <Card className="p-6 lg:col-span-2">
             <div className="flex items-start gap-4">
               <Lightbulb className="h-10 w-10 text-amber-500" />
               <div>
-                <h2 className="text-xl font-bold text-gray-900 mb-1">{t('dashboard.contribute.subtitle')}</h2>
-                <p className="text-gray-600">{t('dashboard.contribute.description')}</p>
+                <h2 className="text-xl font-bold text-gray-900 mb-1">{t('dashboard.contribute.subtitle', { defaultValue: 'Participe à la base de connaissances' })}</h2>
+                <p className="text-gray-600">{t('dashboard.contribute.description', { defaultValue: 'Propose des espèces, morphs, locus (gènes), groupes allélique, localités ou alias documentés.' })}</p>
               </div>
             </div>
             <div className="grid sm:grid-cols-3 gap-4 mt-6">
               <div className="bg-gray-50 rounded-xl p-4">
                 <FilePlus2 className="h-5 w-5" />
-                <h3 className="text-lg font-semibold">{t('contribute.steps.propose.title')}</h3>
-                <p className="text-sm text-gray-600">{t('contribute.steps.propose.text')}</p>
+                <h3 className="text-lg font-semibold">{t('contribute.steps.propose.title', { defaultValue: 'Proposer' })}</h3>
+                <p className="text-sm text-gray-600">{t('contribute.steps.propose.text', { defaultValue: 'Décris précisément ta proposition avec sources.' })}</p>
               </div>
               <div className="bg-gray-50 rounded-xl p-4">
                 <ShieldCheck className="h-5 w-5" />
-                <h3 className="text-lg font-semibold">{t('contribute.steps.moderation.title')}</h3>
-                <p className="text-sm text-gray-600">{t('contribute.steps.moderation.text')}</p>
+                <h3 className="text-lg font-semibold">{t('contribute.steps.moderation.title', { defaultValue: 'Modération' })}</h3>
+                <p className="text-sm text-gray-600">{t('contribute.steps.moderation.text', { defaultValue: 'Notre équipe vérifie les doublons et la cohérence.' })}</p>
               </div>
               <div className="bg-gray-50 rounded-xl p-4">
                 <Coins className="h-5 w-5" />
-                <h3 className="text-lg font-semibold">{t('contribute.steps.reward.title')}</h3>
-                <p className="text-sm text-gray-600">{t('contribute.steps.reward.text')}</p>
+                <h3 className="text-lg font-semibold">{t('contribute.steps.reward.title', { defaultValue: 'Récompense' })}</h3>
+                <p className="text-sm text-gray-600">{t('contribute.steps.reward.text', { defaultValue: 'Gagne des coins si ta proposition est validée.' })}</p>
               </div>
             </div>
           </Card>
 
           <Card className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Coins className="h-6 w-6 text-yellow-500" />
-                <h3 className="text-lg font-bold">{t('contribute.wallet.title')}</h3>
-              </div>
-              <button onClick={handleRedeem} className="bg-green-600 hover:bg-green-700 text-white text-sm px-3 py-1.5 rounded-lg">{t('contribute.redeem.title')}</button>
+            <div className="flex items-center gap-2">
+              <Coins className="h-6 w-6 text-yellow-500" />
+              <h3 className="text-lg font-bold">{t('contribute.wallet.title', { defaultValue: 'Porte-monnaie' })}</h3>
             </div>
+
             <div className="mt-4">
               <p className="text-4xl font-extrabold text-gray-900">{wallet}</p>
-              <p className="text-sm text-gray-500">{t('contribute.wallet.balance')}</p>
+              <p className="text-sm text-gray-500">{t('contribute.wallet.balance', { defaultValue: 'Solde actuel (⟡)' })}</p>
             </div>
+
             <div className="grid grid-cols-2 gap-3 mt-5">
               <div className="bg-green-50 border border-green-100 rounded-xl p-3">
                 <BadgeCheck className="h-5 w-5 text-green-600" />
-                <p className="text-sm mt-1 text-gray-700"><span className="font-semibold">{approvedCoins}</span> {t('contribute.wallet.receivedValidated')}</p>
+                <p className="text-sm mt-1 text-gray-700">
+                  <span className="font-semibold">{rewards30}</span> {t('contribute.wallet.receivedLast30', { defaultValue: 'Écailles reçues (30 jours)' })}
+                </p>
               </div>
               <div className="bg-amber-50 border border-amber-100 rounded-xl p-3">
                 <Lock className="h-5 w-5 text-amber-600" />
-                <p className="text-sm mt-1 text-gray-700"><span className="font-semibold">{lockedStake}</span> {t('contribute.wallet.stakeLocked')}</p>
+                <p className="text-sm mt-1 text-gray-700">
+                  <span className="font-semibold">{lockedStake}</span> {t('contribute.wallet.stakeLocked', { defaultValue: 'stake actuellement bloqué' })}
+                </p>
               </div>
             </div>
-            <div className="mt-4 text-xs text-gray-600">{t('contribute.wallet.note', { initial: COIN_RULES.initialGrant, deposit: COIN_RULES.stake.defaultDeposit })}</div>
           </Card>
         </div>
 
+        {/* Onglets */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
           <div className="border-b px-4 sm:px-6">
             <nav className="flex flex-wrap gap-4">
-              {([
-                { id: 'propose', label: t('contribute.tabs.propose'), icon: FilePlus2 },
-                { id: 'mine', label: t('contribute.tabs.mine'), icon: ListChecks },
-                { id: 'leaderboard', label: t('contribute.tabs.leaderboard'), icon: Medal },
-                { id: 'about', label: t('contribute.tabs.about'), icon: HelpCircle },
-              ] as const).map((t) => (
-                <button
-                  key={t.id}
-                  onClick={() => setTab(t.id)}
-                  className={`flex items-center gap-2 py-3 border-b-2 -mb-[1px] ${
-                    tab === (t.id as any)
-                      ? 'text-green-600 border-green-600'
-                      : 'text-gray-600 border-transparent hover:text-gray-800'
-                  }`}
-                >
-                  <t.icon className="h-5 w-5" />
-                  <span className="font-medium">{t.label}</span>
+              {[
+                { id: 'propose', label: t('contribute.tabs.propose', { defaultValue: 'Proposer' }), icon: FilePlus2 },
+                { id: 'mine', label: t('contribute.tabs.mine', { defaultValue: 'Mes propositions' }), icon: ListChecks },
+                { id: 'leaderboard', label: t('contribute.tabs.leaderboard', { defaultValue: 'Leaderboard' }), icon: Medal },
+                { id: 'about', label: t('contribute.tabs.about', { defaultValue: 'À propos' }), icon: HelpCircle },
+              ].map(({ id, label, icon: Icon }) => (
+                <button key={id}
+                  onClick={() => setTab(id as any)}
+                  className={`flex items-center gap-2 py-3 border-b-2 -mb-[1px] ${tab===id ? 'text-green-600 border-green-600' : 'text-gray-600 border-transparent hover:text-gray-800'}`}>
+                  <Icon className="h-5 w-5" /><span className="font-medium">{label}</span>
                 </button>
               ))}
             </nav>
           </div>
 
           <div className="p-4 sm:p-6">
+            {/* ——————————————————— PROPOSER ——————————————————— */}
             {tab === 'propose' && (
-              <div>
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div className="md:col-span-2">
-                    <h3 className="text-lg font-bold mb-3">{t('contribute.form.title')}</h3>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid lg:grid-cols-3 gap-6">
+                {/* Formulaire */}
+                <div className="lg:col-span-2">
+                  <h3 className="text-lg font-bold mb-3">{t('contribute.form.title', { defaultValue: 'Nouvelle proposition' })}</h3>
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* Type + Espèce */}
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">{t('contribute.form.typeLabel', { defaultValue: 'Type' })}</label>
+                        <select className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={type} onChange={(e)=>setType(e.target.value as ContributionType)}>
+                          <option value="morph">{t('contribute.form.typeOptions.morph', { defaultValue: 'Morph (phénotype commercial)' })}</option>
+                          <option value="locus">{t('contribute.form.typeOptions.locus', { defaultValue: 'Locus / gène (symbole)' })}</option>
+                          <option value="group">{t('contribute.form.typeOptions.group', { defaultValue: 'Groupe allélique' })}</option>
+                          <option value="locality">{t('contribute.form.typeOptions.locality', { defaultValue: 'Localité' })}</option>
+                          <option value="alias">{t('contribute.form.typeOptions.alias', { defaultValue: 'Alias' })}</option>
+                          <option value="species">{t('contribute.form.typeOptions.species', { defaultValue: 'Espèce' })}</option>
+                        </select>
+                      </div>
+                      {type !== 'species' && (
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">{t('contribute.form.typeLabel')}</label>
-                          <select
-                            className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                            value={type}
-                            onChange={(e) => setType(e.target.value as ContributionType)}
-                          >
-                            <option value="morph">{t('contribute.form.typeOptions.morph')}</option>
-                            <option value="locality">{t('contribute.form.typeOptions.locality')}</option>
-                            <option value="alias">{t('contribute.form.typeOptions.alias')}</option>
-                            <option value="locus">{t('contribute.form.typeOptions.locus')}</option>
-                            <option value="group">{t('contribute.form.typeOptions.group')}</option>
-                            <option value="species">{t('contribute.form.typeOptions.species')}</option>
+                          <label className="block text-sm font-medium text-gray-700">{t('contribute.form.speciesLabel', { defaultValue: 'Espèce' })}</label>
+                          <select className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={speciesId} onChange={(e)=>setSpeciesId(e.target.value)}>
+                            {species.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
                           </select>
                         </div>
+                      )}
+                    </div>
 
-                        {type !== 'species' && (
+                    {/* Champs dynamiques */}
+                    {type === 'species' ? (
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">{t('contribute.form.latinNameLabel', { defaultValue: 'Nom latin' })}</label>
+                          <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={latin} onChange={(e)=>setLatin(e.target.value)} />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">{t('contribute.form.commonNamesLabel', { defaultValue: 'Noms communs (séparés par des virgules)' })}</label>
+                          <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={commonNames} onChange={(e)=>setCommonNames(e.target.value)} />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">{t('contribute.form.proposedNameLabel', { defaultValue: 'Nom proposé' })}</label>
+                          <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={name} onChange={(e)=>setName(e.target.value)} />
+                        </div>
+                        {(type === 'morph' || type === 'locus') && (
                           <div>
-                            <label className="block text-sm font-medium text-gray-700">{t('contribute.form.speciesLabel')}</label>
-                            <select
-                              className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                              value={speciesId}
-                              onChange={(e) => setSpeciesId(e.target.value)}
-                            >
-                              {species.map((s) => (
-                                <option key={s.id} value={s.id}>{s.label}</option>
-                              ))}
+                            <label className="block text-sm font-medium text-gray-700">{t('contribute.form.geneticTypeLabel', { defaultValue: 'Type génétique' })}</label>
+                            <select className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={genType} onChange={(e)=>setGenType(e.target.value as any)}>
+                              <option value="">{t('contribute.form.geneticTypePlaceholder', { defaultValue: '— Sélectionner —' })}</option>
+                              <option value="recessive">{t('contribute.form.geneticTypeRecessive', { defaultValue: 'Récessif' })}</option>
+                              <option value="incomplete">{t('contribute.form.geneticTypeIncomplete', { defaultValue: 'Incomplet (codominant)' })}</option>
+                              <option value="dominant">{t('contribute.form.geneticTypeDominant', { defaultValue: 'Dominant' })}</option>
                             </select>
                           </div>
                         )}
                       </div>
+                    )}
 
-                      {type === 'species' && (
-                        <div className="grid sm:grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700">{t('contribute.form.latinNameLabel')}</label>
-                            <input
-                              className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                              placeholder={t('contribute.form.latinNamePlaceholder')}
-                              value={latin}
-                              onChange={(e) => setLatin(e.target.value)}
-                            />
+                    {/* Métadonnées communes */}
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">{t('contribute.form.aliasesLabel', { defaultValue: 'Alias (séparés par des virgules)' })}</label>
+                        <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={aliases} onChange={(e)=>setAliases(e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">{t('contribute.form.referencesLabel', { defaultValue: 'Références (URLs, séparées par des virgules)' })}</label>
+                        <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" placeholder="https://…, https://…" value={references} onChange={(e)=>setReferences(e.target.value)} />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">{t('contribute.form.notesLabel', { defaultValue: 'Notes' })}</label>
+                      <textarea rows={4} className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={notes} onChange={(e)=>setNotes(e.target.value)} />
+                    </div>
+
+                    {/* Photos */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">{t('contribute.form.photosLabel', { defaultValue: 'Photos (optionnel)' })}</label>
+                      <div className="mt-1 flex items-center gap-3">
+                        <label className="inline-flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-gray-50">
+                          <Upload className="h-4 w-4" /><span className="text-sm">{t('contribute.form.photosUploadLabel', { defaultValue: 'Ajouter des photos' })}</span>
+                          <input type="file" multiple accept="image/*" className="hidden" onChange={(ev) => {
+                            const files = (ev.target as HTMLInputElement).files;
+                            if (files) readFilesAsDataUrls(files);
+                            (ev.target as HTMLInputElement).value = '';
+                          }}/>
+                        </label>
+                        <span className="text-xs text-gray-500">{t('contribute.form.photosUploadInfo', { defaultValue: 'Max {{maxImages}} images • {{maxSize}} Mo / image', maxImages: MAX_IMAGES, maxSize: MAX_IMAGE_MB })}</span>
+                      </div>
+                      <div className="mt-2"><Thumbs images={images} onRemove={onRemoveImage} /></div>
+                    </div>
+
+                    {/* Anti‑doublon + Submit */}
+                    <div className="flex flex-col gap-4">
+                      {/* Barre de recherche + liste */}
+                      <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                            <Search className="h-4 w-4" />
+                            {type === 'species'
+                              ? t('contribute.catalog.speciesTitle', { defaultValue: 'Espèces existantes' })
+                              : t('contribute.catalog.itemsForSpecies', { defaultValue: 'Éléments existants pour cette espèce' })}
+                            <span className="ml-2 text-gray-500 font-normal">({catalog.length})</span>
                           </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700">{t('contribute.form.commonNamesLabel')}</label>
-                            <input
-                              className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                              placeholder={t('contribute.form.commonNamesPlaceholder')}
-                              value={commonNames}
-                              onChange={(e) => setCommonNames(e.target.value)}
-                            />
-                          </div>
+                          <input
+                            value={catalogQ}
+                            onChange={(e)=>setCatalogQ(e.target.value)}
+                            placeholder={t('contribute.catalog.search', { defaultValue: 'Rechercher…' })}
+                            className="text-sm border rounded-md px-2 py-1"
+                          />
                         </div>
-                      )}
-
-                      {type !== 'species' && (
-                        <div className="grid sm:grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700">{t('contribute.form.proposedNameLabel')} {type === 'alias' ? '(alias)' : ''}</label>
-                            <input
-                              className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                              placeholder={type === 'alias' ? t('contribute.form.proposedNameAliasPlaceholder') : t('contribute.form.proposedNamePlaceholder')}
-                              value={name}
-                              onChange={(e) => setName(e.target.value)}
-                            />
-                          </div>
-
-                          {(type === 'morph' || type === 'locus') && (
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700">{t('contribute.form.geneticTypeLabel')}</label>
-                              <select
-                                className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                                value={genType}
-                                onChange={(e) => setGenType(e.target.value as any)}
-                              >
-                                <option value="">{t('contribute.form.geneticTypePlaceholder')}</option>
-                                <option value="recessive">{t('contribute.form.geneticTypeRecessive')}</option>
-                                <option value="incomplete">{t('contribute.form.geneticTypeIncomplete')}</option>
-                                <option value="dominant">{t('contribute.form.geneticTypeDominant')}</option>
-                              </select>
-                            </div>
+                        <div className="max-h-48 overflow-auto divide-y">
+                          {catalog
+                            .filter(c => {
+                              const q = catalogQ.toLowerCase();
+                              if (!q) return true;
+                              const hay = [c.name, c.latin || '', ...(c.aliases||[])].join(' ').toLowerCase();
+                              return hay.includes(q);
+                            })
+                            .slice(0, 60)
+                            .map(c => (
+                              <div key={c.id} className="py-1.5 text-sm">
+                                <div className="font-medium text-gray-900">{c.name}{c.latin ? <span className="text-gray-500"> — {c.latin}</span> : null}</div>
+                                {c.aliases?.length ? <div className="text-xs text-gray-600">{t('contribute.catalog.aliases', { defaultValue: 'alias' })}: {c.aliases.slice(0,6).join(', ')}{c.aliases.length>6 ? '…' : ''}</div> : null}
+                              </div>
+                            ))}
+                          {!catalog.length && (
+                            <div className="text-sm text-gray-500">{t('contribute.catalog.empty', { defaultValue: 'Aucun élément existant pour l’instant.' })}</div>
                           )}
                         </div>
+                      </div>
+
+                      {dupMatches.length > 0 && (
+                        <div className="text-sm text-rose-700 bg-rose-50 border border-rose-100 rounded-lg p-3">
+                          {t('contribute.catalog.duplicateWarning', { defaultValue: 'Potentiel doublon détecté. Vérifie avant de soumettre :'} as any)} ({dupMatches.length})
+                          <ul className="list-disc pl-5 mt-1">
+                            {dupMatches.slice(0, 3).map(d => (
+                              <li key={d.id}><strong>{d.name}</strong>{d.latin ? ` — ${d.latin}` : ''}</li>
+                            ))}
+                          </ul>
+                        </div>
                       )}
-
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700">{t('contribute.form.aliasesLabel')}</label>
-                          <input
-                            className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                            placeholder={t('contribute.form.aliasesPlaceholder')}
-                            value={aliases}
-                            onChange={(e) => setAliases(e.target.value)}
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700">{t('contribute.form.referencesLabel')}</label>
-                          <input
-                            className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                            placeholder="https://…, https://…"
-                            value={references}
-                            onChange={(e) => setReferences(e.target.value)}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-3">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700">{t('contribute.form.notesLabel')}</label>
-                          <textarea
-                            rows={4}
-                            className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                            placeholder={t('contribute.form.notesPlaceholder')}
-                            value={notes}
-                            onChange={(e) => setNotes(e.target.value)}
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700">{t('contribute.form.photosLabel')}</label>
-                          <div className="mt-1 flex items-center gap-3">
-                            <label className="inline-flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-gray-50">
-                              <Upload className="h-4 w-4" />
-                              <span className="text-sm">{t('contribute.form.photosUploadLabel')}</span>
-                              <input
-                                type="file"
-                                multiple
-                                accept="image/*"
-                                className="hidden"
-                                onChange={(ev) => {
-                                  const files = (ev.target as HTMLInputElement).files;
-                                  if (files) readFilesAsDataUrls(files);
-                                  (ev.target as HTMLInputElement).value = '';
-                                }}
-                              />
-                            </label>
-                            <span className="text-xs text-gray-500">{t('contribute.form.photosUploadInfo', { maxImages: MAX_IMAGES, maxSize: MAX_IMAGE_MB })}</span>
-                          </div>
-                          <div className="mt-2">
-                            <Thumbs images={images} onRemove={onRemoveImage} />
-                          </div>
-                        </div>
-                      </div>
 
                       <div className="flex items-center justify-between">
                         <div className="text-sm text-gray-600 space-y-0.5">
-                          <div>{t('contribute.form.estimatedReward')}: <span className="font-semibold">{rewardForCurrent} ⟡</span></div>
-                          <div className="text-amber-700">{t('contribute.form.stakeRequired')}: <span className="font-semibold">{COIN_RULES.stake.defaultDeposit} ⟡</span> ({t('contribute.form.refundedIfApproved')}, {t('contribute.form.burnedIfRejected')})</div>
+                          <div>{t('contribute.form.estimatedReward', { defaultValue: 'Récompense estimée' })}: <span className="font-semibold">{rewardForCurrent} ⟡</span></div>
+                          <div className="text-amber-700">{t('contribute.form.stakeRequired', { defaultValue: 'Stake requis' })}: <span className="font-semibold">{COIN_RULES.stake.defaultDeposit} ⟡</span></div>
                         </div>
-                        <button
-                          type="submit"
-                          className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-semibold"
-                        >
-                          {t('contribute.form.submitProposal')}
-                        </button>
+                        <button type="submit" className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-semibold">{t('contribute.form.submitProposal', { defaultValue: 'Soumettre' })}</button>
                       </div>
-                    </form>
-                  </div>
+                    </div>
+                  </form>
+                </div>
 
-                  <div>
-                    <h3 className="text-lg font-bold mb-3">{t('contribute.form.rewardsTitle')}</h3>
-                    <ul className="space-y-2">
-                      {(
-                        [
-                          ['species', 'Nouvelle espèce'],
-                          ['morph', 'Nouveau morph (confirmé)'],
-                          ['locus', 'Nouveau locus (gène)'],
-                          ['group', 'Nouveau groupe allélique'],
-                          ['locality', 'Nouvelle localité'],
-                          ['alias', 'Alias pertinent/documenté'],
-                        ] as Array<[ContributionType, string]>
-                      ).map(([key, label]) => (
-                        <li key={key} className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2">
-                          <span className="text-gray-700">{label}</span>
-                          <span className="font-semibold">{REWARD_BY_TYPE[key]} ⟡</span>
-                        </li>
-                      ))}
-                    </ul>
+                {/* Panneau latéral */}
+                <div>
+                  <h3 className="text-lg font-bold mb-3">{t('contribute.form.rewardsTitle', { defaultValue: 'Barème des récompenses' })}</h3>
+                  <ul className="space-y-2">
+                    {[
+                      ['species','Nouvelle espèce'],
+                      ['morph','Nouveau morph (confirmé)'],
+                      ['locus','Nouveau locus (gène)'],
+                      ['group','Nouveau groupe allélique'],
+                      ['locality','Nouvelle localité'],
+                      ['alias','Alias pertinent/documenté'],
+                    ].map(([key, label]) => (
+                      <li key={key} className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2">
+                        <span className="text-gray-700">{label}</span>
+                        <span className="font-semibold">{REWARD_BY_TYPE[key as keyof typeof REWARD_BY_TYPE]} ⟡</span>
+                      </li>
+                    ))}
+                  </ul>
 
-                    <div className="mt-6 bg-blue-50 border border-blue-100 rounded-xl p-4">
-                      <div className="flex items-start gap-2">
-                        <Users className="h-5 w-5 text-blue-600" />
-                        <div>
-                          <p className="font-semibold">{t('contribute.form.adviceTitle')}</p>
-                          <p className="text-sm text-blue-800">{t('contribute.form.adviceDescription')}</p>
-                        </div>
+                  <div className="mt-6 bg-blue-50 border border-blue-100 rounded-xl p-4">
+                    <div className="flex items-start gap-2">
+                      <Users className="h-5 w-5 text-blue-600" />
+                      <div>
+                        <p className="font-semibold">{t('contribute.form.adviceTitle', { defaultValue: 'Conseils' })}</p>
+                        <p className="text-sm text-blue-800">{t('contribute.form.adviceDescription', { defaultValue: 'Donne des sources, évite les doublons, distingue bien “morph” (phénotype) et “locus” (gène/symbole).' })}</p>
                       </div>
                     </div>
                   </div>
@@ -831,26 +692,27 @@ const ContributePage: React.FC = () => {
               </div>
             )}
 
+            {/* ——————————————————— MES PROPOSITIONS ——————————————————— */}
             {tab === 'mine' && (
               <div>
-                <h3 className="text-lg font-bold mb-4">{t('contribute.form.myProposals')}</h3>
-                {mySubs.length === 0 ? (
+                <h3 className="text-lg font-bold mb-4">{t('contribute.form.myProposals', { defaultValue: 'Mes propositions' })}</h3>
+                {!loading && mySubs.length === 0 ? (
                   <div className="text-center py-12">
                     <FilePlus2 className="h-10 w-10 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-600">{t('contribute.form.noProposals')}</p>
+                    <p className="text-gray-600">{t('contribute.form.noProposals', { defaultValue: 'Aucune proposition pour le moment.' })}</p>
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="min-w-full text-sm">
                       <thead>
                         <tr className="text-left text-gray-600 border-b">
-                          <th className="py-2 pr-4">{t('contribute.form.date')}</th>
-                          <th className="py-2 pr-4">{t('contribute.form.type')}</th>
-                          <th className="py-2 pr-4">{t('contribute.form.species')}</th>
-                          <th className="py-2 pr-4">{t('contribute.form.content')}</th>
-                          <th className="py-2 pr-4">{t('contribute.form.status')}</th>
-                          <th className="py-2 pr-4 text-right">{t('contribute.form.reward')}</th>
-                          <th className="py-2 pr-4 text-right">{t('contribute.form.actions')}</th>
+                          <th className="py-2 pr-4">{t('contribute.form.date', { defaultValue: 'Date' })}</th>
+                          <th className="py-2 pr-4">{t('contribute.form.type', { defaultValue: 'Type' })}</th>
+                          <th className="py-2 pr-4">{t('contribute.form.species', { defaultValue: 'Espèce' })}</th>
+                          <th className="py-2 pr-4">{t('contribute.form.content', { defaultValue: 'Contenu' })}</th>
+                          <th className="py-2 pr-4">{t('contribute.form.status', { defaultValue: 'Statut' })}</th>
+                          <th className="py-2 pr-4 text-right">{t('contribute.form.reward', { defaultValue: 'Récompense' })}</th>
+                          <th className="py-2 pr-4 text-right">{t('contribute.form.actions', { defaultValue: 'Actions' })}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -861,44 +723,33 @@ const ContributePage: React.FC = () => {
                             <td className="py-2 pr-4 whitespace-nowrap">{s.type === 'species' ? '—' : (species.find(sp => sp.id === s.speciesId)?.label || s.speciesId)}</td>
                             <td className="py-2 pr-4">
                               <div className="text-gray-900 font-medium">{s.payload?.name || s.payload?.latin || '—'}</div>
-                              {s.payload?.images?.length ? (
+                              {!!(s.payload?.images?.length) && (
                                 <div className="mt-2">
                                   <Thumbs images={s.payload.images.slice(0, 3)} />
                                   {s.payload.images.length > 3 && (
-                                    <div className="text-xs text-gray-500 mt-1">+ {s.payload.images.length - 3} {t('contribute.form.otherPhotos')}</div>
+                                    <div className="text-xs text-gray-500 mt-1">+ {s.payload.images.length - 3} {t('contribute.form.otherPhotos', { defaultValue: 'autres' })}</div>
                                   )}
                                 </div>
-                              ) : null}
-                              {s.stake ? (
+                              )}
+                              {!!s.stake && (
                                 <div className="text-xs text-amber-700 mt-1">
-                                  {t('contribute.form.stake')}: {s.stake} ⟡ — {s.stakeStatus === 'locked' ? t('contribute.form.locked') : s.stakeStatus === 'refunded' ? t('contribute.form.refunded') : t('contribute.form.burned')}
+                                  {t('contribute.form.stake', { defaultValue: 'Stake' })}: {s.stake} ⟡ — {s.stakeStatus === 'locked' ? t('contribute.form.locked', { defaultValue: 'bloqué' }) : t('contribute.form.released', { defaultValue: 'libéré' })}
                                 </div>
-                              ) : null}
-                              {s.moderatorNote && (
-                                <div className="text-xs text-gray-500 mt-1">{t('contribute.form.moderatorNote')}: {s.moderatorNote}</div>
                               )}
                             </td>
                             <td className="py-2 pr-4"><StatusBadge status={s.status} /></td>
-                            <td className="py-2 pr-4 text-right">{s.status === 'approved' ? (s.reward || 0) : '—'}</td>
-                            <td className="py-2 pr-4">
-                              <div className="flex gap-2 justify-end">
-                                <button
-                                  className={`inline-flex items-center gap-1 px-2 py-1 rounded-md border ${s.status === 'pending' ? 'hover:bg-gray-50' : 'opacity-50 cursor-not-allowed'}`}
-                                  onClick={() => s.status === 'pending' && openEdit(s)}
-                                  title={s.status === 'pending' ? 'Modifier' : 'Édition disponible uniquement en attente'}
-                                >
-                                  <Edit3 className="h-4 w-4" />
-                                  {t('contribute.form.edit')}
-                                </button>
-                                <button
-                                  className={`inline-flex items-center gap-1 px-2 py-1 rounded-md border text-rose-600 ${s.status === 'pending' ? 'hover:bg-rose-50' : 'opacity-50 cursor-not-allowed'}`}
-                                  onClick={() => s.status === 'pending' && deleteSubmission(s)}
-                                  title={s.status === 'pending' ? 'Supprimer' : 'Suppression disponible uniquement en attente'}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                  {t('contribute.form.delete')}
-                                </button>
-                              </div>
+                            <td className="py-2 pr-4 text-right">{s.reward || 0}</td>
+                            <td className="py-2 pr-4 text-right whitespace-nowrap">
+                              {s.status === 'pending' && (
+                                <div className="inline-flex gap-2">
+                                  <button onClick={() => openEdit(s)} className="inline-flex items-center gap-1 px-2 py-1 rounded-md border hover:bg-gray-50">
+                                    <Edit3 className="h-4 w-4" /> {t('contribute.form.edit', { defaultValue: 'Éditer' })}
+                                  </button>
+                                  <button onClick={() => deleteSubmission(s)} className="inline-flex items-center gap-1 px-2 py-1 rounded-md border hover:bg-rose-50 text-rose-700 border-rose-200">
+                                    <Trash2 className="h-4 w-4" /> {t('contribute.form.delete', { defaultValue: 'Supprimer' })}
+                                  </button>
+                                </div>
+                              )}
                             </td>
                           </tr>
                         ))}
@@ -909,178 +760,131 @@ const ContributePage: React.FC = () => {
               </div>
             )}
 
+            {/* ——————————————————— LEADERBOARD ——————————————————— */}
             {tab === 'leaderboard' && (
-              <div>
-                <h3 className="text-lg font-bold mb-4">{t('contribute.form.leaderboard')}</h3>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {leaderboard.map((u, idx) => (
-                    <div key={u.id} className="bg-gray-50 rounded-xl p-4 border border-gray-100 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${idx === 0 ? 'bg-yellow-500' : idx === 1 ? 'bg-gray-500' : idx === 2 ? 'bg-amber-700' : 'bg-green-600'}`}>{idx + 1}</div>
-                        <div>
-                          <div className="font-semibold">{u.name}</div>
-                          <div className="text-xs text-gray-500 flex items-center gap-1"><TrendingUp className="h-3 w-3" /> Écailles</div>
-                        </div>
-                      </div>
-                      <div className="text-xl font-extrabold">{u.coins}</div>
-                    </div>
-                  ))}
-                </div>
+              <div className="space-y-2">
+                <h3 className="text-lg font-bold">{t('contribute.leaderboard.title', { defaultValue: 'Contributeurs en tête' })}</h3>
+                <p className="text-gray-600 text-sm">{t('contribute.leaderboard.soon', { defaultValue: 'Bientôt disponible.' })}</p>
               </div>
             )}
 
+            {/* ——————————————————— ABOUT ——————————————————— */}
             {tab === 'about' && (
-              <div className="prose prose-sm max-w-none">
-                <h3>{t('contribute.form.rules')}</h3>
-                <ul>
-                  <li>{t('contribute.form.reliableSources')}</li>
-                  <li>{t('contribute.form.acceptedElements')}</li>
-                  <li>{t('contribute.form.duplicateProposals')}</li>
-                  <li>{t('contribute.form.moderation')}</li>
-                  <li>{t('contribute.form.rewards')}</li>
-                  <li>{t('contribute.form.initialGrant', { amount: COIN_RULES.initialGrant })}</li>
-                  <li>{t('contribute.form.defaultDeposit', { amount: COIN_RULES.stake.defaultDeposit })}</li>
-                </ul>
+              <div className="space-y-3">
+                <h3 className="text-lg font-bold">{t('contribute.about.title', { defaultValue: 'À propos des contributions' })}</h3>
+                <p className="text-gray-700 text-sm">
+                  {t('contribute.about.text', {
+                    defaultValue: '“Morph” correspond au phénotype/commercial name (ex. Banana), tandis que “Locus” désigne le gène/symbole (ex. T+ Albino). Le “Groupe allélique” relie des locus incompatibles. Les alias doivent pointer vers des références fiables.'
+                  })}
+                </p>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {showUpgrade && (
-        <UpgradeModal
-          onClose={() => { setShowUpgrade(false); setShowRedeem(false); }}
-          onUpgrade={(plan) => {
-            console.log(`[Contribute] Redeem coins toward ${plan} plan`);
-            setShowUpgrade(false);
-            setShowRedeem(false);
-          }}
-        />
-      )}
-
-      <RedeemCoinsModal
-        open={showRedeem}
-        wallet={wallet}
-        onClose={() => setShowRedeem(false)}
-        onDebit={(amount) => { const next = Math.max(0, wallet - amount); setWallet(next); saveWallet(userId, next); }}
-      />
-
+      {/* ——————————————————— MODALE ÉDITION ——————————————————— */}
       {editing && (
-        <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/30" onClick={closeEdit} />
-          <div className="absolute inset-0 grid place-items-center p-4">
-            <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl border">
-              <div className="flex items-center justify-between px-5 py-3 border-b">
-                <div className="flex items-center gap-2">
-                  <ImagePlus className="h-5 w-5 text-green-600" />
-                  <h4 className="font-semibold">{t('contribute.form.editProposal')}</h4>
-                </div>
-                <button className="p-2 hover:bg-gray-50 rounded-lg" onClick={closeEdit} aria-label="Fermer">
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-6">
+            <div className="flex items-start justify-between">
+              <h4 className="text-lg font-bold">{t('contribute.form.editProposal', { defaultValue: 'Éditer la proposition' })}</h4>
+              <button onClick={()=>setEditing(null)} className="p-1 rounded hover:bg-gray-100">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
 
-              <form onSubmit={saveEdit} className="p-5 space-y-4">
-                <div className="grid sm:grid-cols-2 gap-4">
+            <form onSubmit={saveEdit} className="mt-4 space-y-5">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">{t('contribute.form.typeLabel', { defaultValue: 'Type' })}</label>
+                  <select className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eType} onChange={(e)=>setEType(e.target.value as ContributionType)}>
+                    <option value="morph">{t('contribute.form.typeOptions.morph', { defaultValue: 'Morph' })}</option>
+                    <option value="locus">{t('contribute.form.typeOptions.locus', { defaultValue: 'Locus' })}</option>
+                    <option value="group">{t('contribute.form.typeOptions.group', { defaultValue: 'Groupe allélique' })}</option>
+                    <option value="locality">{t('contribute.form.typeOptions.locality', { defaultValue: 'Localité' })}</option>
+                    <option value="alias">{t('contribute.form.typeOptions.alias', { defaultValue: 'Alias' })}</option>
+                    <option value="species">{t('contribute.form.typeOptions.species', { defaultValue: 'Espèce' })}</option>
+                  </select>
+                </div>
+                {eType !== 'species' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">{t('contribute.form.addType')}</label>
-                    <select
-                      className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                      value={eType}
-                      onChange={(ev) => setEType(ev.target.value as ContributionType)}
-                    >
-                      <option value="morph">{t('contribute.form.morph')}</option>
-                      <option value="locality">{t('contribute.form.locality')}</option>
-                      <option value="alias">{t('contribute.form.alias')}</option>
-                      <option value="locus">{t('contribute.form.locus')}</option>
-                      <option value="group">{t('contribute.form.group')}</option>
-                      <option value="species">{t('contribute.form.species')}</option>
+                    <label className="block text-sm font-medium text-gray-700">{t('contribute.form.speciesLabel', { defaultValue: 'Espèce' })}</label>
+                    <select className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eSpeciesId} onChange={(e)=>setESpeciesId(e.target.value)}>
+                      {species.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
                     </select>
                   </div>
+                )}
+              </div>
 
-                  {eType !== 'species' && (
+              {eType === 'species' ? (
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">{t('contribute.form.latinNameLabel', { defaultValue: 'Nom latin' })}</label>
+                    <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eLatin} onChange={(e)=>setELatin(e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">{t('contribute.form.commonNamesLabel', { defaultValue: 'Noms communs' })}</label>
+                    <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eCommonNames} onChange={(e)=>setECommonNames(e.target.value)} />
+                  </div>
+                </div>
+              ) : (
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">{t('contribute.form.proposedNameLabel', { defaultValue: 'Nom proposé' })}</label>
+                    <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eName} onChange={(e)=>setEName(e.target.value)} />
+                  </div>
+                  {(eType === 'morph' || eType === 'locus') && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">{t('contribute.form.concernedSpecies')}</label>
-                      <select
-                        className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500"
-                        value={eSpeciesId}
-                        onChange={(e) => setESpeciesId(e.target.value)}
-                      >
-                        {species.map((s) => (
-                          <option key={s.id} value={s.id}>{s.label}</option>
-                        ))}
+                      <label className="block text-sm font-medium text-gray-700">{t('contribute.form.geneticTypeLabel', { defaultValue: 'Type génétique' })}</label>
+                      <select className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eGenType} onChange={(e)=>setEGenType(e.target.value as any)}>
+                        <option value="">{t('contribute.form.geneticTypePlaceholder', { defaultValue: '— Sélectionner —' })}</option>
+                        <option value="recessive">{t('contribute.form.geneticTypeRecessive', { defaultValue: 'Récessif' })}</option>
+                        <option value="incomplete">{t('contribute.form.geneticTypeIncomplete', { defaultValue: 'Incomplet (codominant)' })}</option>
+                        <option value="dominant">{t('contribute.form.geneticTypeDominant', { defaultValue: 'Dominant' })}</option>
                       </select>
                     </div>
                   )}
                 </div>
+              )}
 
-                {eType === 'species' ? (
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">{t('contribute.form.latinName')}</label>
-                      <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eLatin} onChange={(e)=>setELatin(e.target.value)} />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">{t('contribute.form.commonNames')}</label>
-                      <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eCommonNames} onChange={(e)=>setECommonNames(e.target.value)} />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">{t('contribute.form.proposedName')}</label>
-                      <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eName} onChange={(e)=>setEName(e.target.value)} />
-                    </div>
-                    {(eType === 'morph' || eType === 'locus') && (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">{t('contribute.form.geneticType')}</label>
-                        <select className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eGenType} onChange={(e)=>setEGenType(e.target.value as any)}>
-                          <option value="">{t('common.select')}</option>
-                          <option value="recessive">{t('contribute.form.recessive')}</option>
-                          <option value="incomplete">{t('contribute.form.incomplete')}</option>
-                          <option value="dominant">{t('contribute.form.dominant')}</option>
-                        </select>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">{t('contribute.form.aliases')}</label>
-                    <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eAliases} onChange={(e)=>setEAliases(e.target.value)} />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">{t('contribute.form.references')}</label>
-                    <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eReferences} onChange={(e)=>setEReferences(e.target.value)} />
-                  </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">{t('contribute.form.aliasesLabel', { defaultValue: 'Alias' })}</label>
+                  <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eAliases} onChange={(e)=>setEAliases(e.target.value)} />
                 </div>
-
-                <div className="space-y-2">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">{t('contribute.form.notes')}</label>
-                    <textarea rows={3} className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eNotes} onChange={(e)=>setENotes(e.target.value)} />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">{t('contribute.form.photos')}</label>
-                    <div className="mt-1 flex items-center gap-3">
-                      <label className="inline-flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-gray-50">
-                        <Upload className="h-4 w-4" />
-                        <span className="text-sm">{t('contribute.form.addPhotos')}</span>
-                        <input type="file" multiple accept="image/*" className="hidden" onChange={(ev)=>{ const f=(ev.target as HTMLInputElement).files; if(f) editReadFiles(f); (ev.target as HTMLInputElement).value=''; }} />
-                      </label>
-                      <span className="text-xs text-gray-500">{t('contribute.form.photoLimit', { maxImages: MAX_IMAGES, maxSize: MAX_IMAGE_MB })}</span>
-                    </div>
-                    <div className="mt-2"><Thumbs images={eImages} onRemove={removeEditImage} /></div>
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">{t('contribute.form.referencesLabel', { defaultValue: 'Références' })}</label>
+                  <input className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eReferences} onChange={(e)=>setEReferences(e.target.value)} />
                 </div>
+              </div>
 
-                <div className="flex items-center justify-end gap-2 pt-2">
-                  <button type="button" onClick={closeEdit} className="px-4 py-2 rounded-lg border hover:bg-gray-50">{t('common.cancel')}</button>
-                  <button type="submit" className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700">{t('common.save')}</button>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">{t('contribute.form.notesLabel', { defaultValue: 'Notes' })}</label>
+                <textarea rows={4} className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500" value={eNotes} onChange={(e)=>setENotes(e.target.value)} />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">{t('contribute.form.photosLabel', { defaultValue: 'Photos' })}</label>
+                <div className="mt-1 flex items-center gap-3">
+                  <label className="inline-flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <Upload className="h-4 w-4" /><span className="text-sm">{t('contribute.form.photosUploadLabel', { defaultValue: 'Ajouter des photos' })}</span>
+                    <input type="file" multiple accept="image/*" className="hidden" onChange={(ev) => {
+                      const files = (ev.target as HTMLInputElement).files;
+                      if (files) editReadFiles(files);
+                      (ev.target as HTMLInputElement).value = '';
+                    }}/>
+                  </label>
+                  <span className="text-xs text-gray-500">{t('contribute.form.photosUploadInfo', { defaultValue: 'Max {{maxImages}} images • {{maxSize}} Mo / image', maxImages: MAX_IMAGES, maxSize: MAX_IMAGE_MB })}</span>
                 </div>
-              </form>
-            </div>
+                <div className="mt-2"><Thumbs images={eImages} onRemove={removeEditImage} /></div>
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <button type="button" onClick={()=>setEditing(null)} className="px-4 py-2 rounded-lg border">{t('common.cancel', { defaultValue: 'Annuler' })}</button>
+                <button type="submit" className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white">{t('common.save', { defaultValue: 'Enregistrer' })}</button>
+              </div>
+            </form>
           </div>
         </div>
       )}

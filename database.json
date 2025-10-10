@@ -1,0 +1,65 @@
+{
+	"snakes": {
+		"species": {
+			"python-regius": {
+				"common_name": "Python royal",
+				"scientific_name": "Python regius",
+				"origin": "Afrique de l'Ouest et du Centre",
+				"habitat": "Savane, forêts claires",
+				"average_size_cm": 120,
+				"average_lifespan_years": 25,
+				"diet": ["Souris", "Rats"],
+				"temperature_range_c": {
+					"day": "30-32",
+					"night": "25-27"
+				},
+				"humidity_range_percent": "50-70",
+				"morphs": {
+					"bel": {
+						"name": "Blue Eyed Leucistic",
+						"genetic_type": "Co-dominant",
+						"genes": ["Lesser", "Mojave"],
+						"picture": "base64_picture_data",
+						"description": "Serpent entièrement blanc aux yeux bleus, souvent issu du croisement de deux morphs à gène co-dominant comme Mojave et Lesser."
+					},
+					"banana": {
+						"name": "Banana",
+						"genetic_type": "Co-dominant",
+						"genes": ["Banana"],
+						"picture": "base64_picture_data",
+						"description": "Coloration jaune vif avec des taches violettes ou brunes caractéristiques."
+					},
+					"pied": {
+						"name": "Piebald",
+						"genetic_type": "Récessif",
+						"genes": ["Pied"],
+						"picture": "base64_picture_data",
+						"description": "Présente des zones dépigmentées blanches mélangées à la coloration naturelle du serpent."
+					}
+				},
+				"locus": {
+					"albino": {
+						"gene": "Tyr",
+						"type": "Récessif",
+						"effect": "Absence de mélanine, coloration jaune et blanche avec yeux rouges."
+					},
+					"pastel": {
+						"gene": "Pastel",
+						"type": "Co-dominant",
+						"effect": "Accentue les contrastes et éclaircit la couleur de fond."
+					},
+					"spider": {
+						"gene": "Spider",
+						"type": "Dominant",
+						"effect": "Motif réticulé particulier avec parfois des troubles neurologiques (wobble)."
+					}
+				},
+				"aliases": {
+					"lesser_platinum": "Lesser",
+					"super_mojave": "Blue Eyed Leucistic (BEL)",
+					"clown": "Pattern clown avec dessins réduits et taches caractéristiques"
+				}
+			}
+		}
+	}
+}

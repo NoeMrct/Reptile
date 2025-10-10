@@ -1,55 +1,23 @@
+// ContributionsTab.tsx
 import React, { useEffect, useMemo, useState } from 'react';
+import { CheckCircle2, XCircle, Eye, Download, Search as SearchIcon, Undo2, ClipboardList, Tag } from 'lucide-react';
 import {
-  CheckCircle2,
-  XCircle,
-  Eye,
-  Download,
-  Search as SearchIcon,
-  Undo2,
-  ClipboardList,
-  Tag,
-  Image as ImageIcon,
-} from 'lucide-react';
-import {
-  ResponsiveContainer,
-  BarChart, Bar,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
-
-type ContributionType = 'species' | 'morph' | 'locality' | 'alias' | 'locus' | 'group';
-type ContributionStatus = 'pending' | 'approved' | 'rejected';
-type StakeStatus = 'locked' | 'refunded' | 'burned';
-
-interface SpeciesOpt { id: string; label: string; }
-
-interface ContributionBase {
-  id: string;
-  userId: string;
-  type: ContributionType;
-  speciesId?: string | null;
-  payload: Record<string, any> & { images?: string[] };
-  createdAt: string;
-  status: ContributionStatus;
-  moderatorNote?: string | null;
-  reward?: number;
-  stake?: number;
-  stakeStatus?: StakeStatus;
-  decidedAt?: string;
-  decidedBy?: string;
-}
-
-const STORAGE_KEYS = {
-  SUBMISSIONS: 'contrib_submissions',
-  WALLET: 'contrib_wallet',
-} as const;
+import { useAuth } from '../../context/AuthContext';
+import {
+  SpeciesOpt,
+  Contribution,
+  ContributionType,
+  ContributionStatus,
+  fetchSpecies,
+  adminFetchContributions,
+  adminDecide,
+  adminReopen
+} from '../../lib/contribApi';
 
 const REWARD_BY_TYPE: Record<ContributionType, number> = {
-  species: 250,
-  morph: 80,
-  locality: 40,
-  alias: 15,
-  locus: 60,
-  group: 50,
+  species: 250, morph: 80, locality: 40, alias: 15, locus: 60, group: 50,
 };
 
 const FALLBACK_SPECIES: SpeciesOpt[] = [
@@ -57,29 +25,6 @@ const FALLBACK_SPECIES: SpeciesOpt[] = [
   { id: 'pantherophis-guttatus', label: 'Corn Snake' },
   { id: 'morelia-viridis', label: 'Green Tree Python' },
 ];
-
-function loadSubmissions(): ContributionBase[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEYS.SUBMISSIONS);
-    return raw ? (JSON.parse(raw) as ContributionBase[]) : [];
-  } catch { return []; }
-}
-function saveSubmissions(all: ContributionBase[]) {
-  localStorage.setItem(STORAGE_KEYS.SUBMISSIONS, JSON.stringify(all));
-}
-function loadWallet(userId: string): number {
-  try {
-    const raw = localStorage.getItem(`${STORAGE_KEYS.WALLET}:${userId}`);
-    return raw ? Number(raw) : 0;
-  } catch { return 0; }
-}
-function saveWallet(userId: string, balance: number) {
-  localStorage.setItem(`${STORAGE_KEYS.WALLET}:${userId}`, String(balance));
-}
-function credit(userId: string, delta: number) {
-  const cur = loadWallet(userId);
-  saveWallet(userId, Math.max(0, cur + delta));
-}
 
 const StatusBadge: React.FC<{ s: ContributionStatus }> = ({ s }) => {
   const map: Record<ContributionStatus, string> = {
@@ -100,32 +45,37 @@ const TypePill: React.FC<{ t: ContributionType }> = ({ t }) => {
   return <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-gray-100 border"><Tag className="h-3 w-3"/>{lbl[t]}</span>;
 };
 
-export default function AdminContributions() {
+export default function ContributionsTab() {
+  const { user } = useAuth();
+  const moderatorId = user?.id || 'admin';
+
   const [species, setSpecies] = useState<SpeciesOpt[]>(FALLBACK_SPECIES);
-  const [items, setItems] = useState<ContributionBase[]>(() => loadSubmissions());
+  const [items, setItems] = useState<Contribution[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [q, setQ] = useState('');
   const [type, setType] = useState<'all' | ContributionType>('all');
   const [status, setStatus] = useState<'all' | ContributionStatus>('all');
   const [selected, setSelected] = useState<Record<string, boolean>>({});
-  const [detail, setDetail] = useState<ContributionBase | null>(null);
+  const [detail, setDetail] = useState<Contribution | null>(null);
   const [note, setNote] = useState('');
   const [action, setAction] = useState<'approve'|'reject'|null>(null);
 
   useEffect(() => {
-    let aborted = false;
+    let abort = false;
     (async () => {
       try {
-        const res = await fetch('/data/species.json', { cache: 'no-store' });
-        if (!res.ok) return;
-        const data = await res.json();
-        if (aborted) return;
-        if (Array.isArray(data?.species)) {
-          const opts: SpeciesOpt[] = data.species.map((s: any) => ({ id: s.id, label: s.names?.[1] || s.names?.[0] || s.id }));
-          if (opts.length) setSpecies(opts);
-        }
-      } catch {}
+        const sp = await fetchSpecies().catch(() => FALLBACK_SPECIES);
+        // ⚠️ Important : récupérer TOUTES les contributions au chargement
+        const list = await adminFetchContributions({ status: 'all' });
+        if (abort) return;
+        setSpecies(sp?.length ? sp : FALLBACK_SPECIES);
+        setItems(list);
+      } finally {
+        if (!abort) setLoading(false);
+      }
     })();
-    return () => { aborted = true; };
+    return () => { abort = true; };
   }, []);
 
   const kpis = useMemo(() => {
@@ -172,34 +122,16 @@ export default function AdminContributions() {
   };
   const selectedIds = useMemo(() => Object.entries(selected).filter(([,v])=>v).map(([k])=>k), [selected]);
 
-  const decide = (ids: string[], decision: 'approve'|'reject') => {
-    const now = new Date().toISOString();
-    const next = items.map(i => {
-      if (!ids.includes(i.id)) return i;
-      const reward = i.reward ?? REWARD_BY_TYPE[i.type];
-      const stake = i.stake ?? 0;
-      if (decision === 'approve') {
-        credit(i.userId, reward + (i.stakeStatus==='locked' ? stake : 0));
-        return {
-          ...i,
-          status: 'approved' as ContributionStatus,
-          stakeStatus: i.stakeStatus==='locked' ? 'refunded' : i.stakeStatus,
-          moderatorNote: note || i.moderatorNote || null,
-          decidedAt: now,
-          decidedBy: 'admin',
-        };
-      } else {
-        return {
-          ...i,
-          status: 'rejected' as ContributionStatus,
-          stakeStatus: i.stakeStatus==='locked' ? 'burned' : i.stakeStatus,
-          moderatorNote: note || i.moderatorNote || null,
-          decidedAt: now,
-          decidedBy: 'admin',
-        };
-      }
-    });
-    setItems(next); saveSubmissions(next); setSelected({}); setAction(null); setNote('');
+  const decide = async (ids: string[], decision: 'approve'|'reject') => {
+    try {
+      await adminDecide(ids, decision, moderatorId, note || undefined);
+      // refresh selon les filtres en cours (incluant 'all')
+      const list = await adminFetchContributions({ q, type, status });
+      setItems(list);
+      setSelected({}); setAction(null); setNote('');
+    } catch (e: any) {
+      alert(e?.message || 'Action impossible.');
+    }
   };
 
   const exportCSV = () => {
@@ -221,14 +153,6 @@ export default function AdminContributions() {
     URL.revokeObjectURL(url);
   };
 
-  const KPI = (label: string, value: React.ReactNode, sub?: string) => (
-    <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className="text-2xl font-semibold text-gray-900">{value}</p>
-      {sub && <p className="text-xs text-gray-500 mt-1">{sub}</p>}
-    </div>
-  );
-
   const section = (title: string, children: React.ReactNode, actions?: React.ReactNode) => (
     <div className="bg-white rounded-xl shadow-sm p-6">
       <div className="flex items-center justify-between mb-4">
@@ -243,70 +167,107 @@ export default function AdminContributions() {
     <div className="space-y-6">
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {KPI('Total', kpis.total)}
-        {KPI('En attente', kpis.p)}
-        {KPI('Validées', kpis.a)}
-        {KPI('Refusées', kpis.r)}
-        {KPI('Taux d\'acceptation', `${kpis.rate}%`, 'sur décisions')}
-        {KPI('Délai moyen', `${kpis.avgH} h`, 'appr./refus')}
+        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
+          <p className="text-xs text-gray-500">Total</p>
+          <p className="text-2xl font-semibold text-gray-900">{kpis.total}</p>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
+          <p className="text-xs text-gray-500">En attente</p>
+          <p className="text-2xl font-semibold text-gray-900">{kpis.p}</p>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
+          <p className="text-xs text-gray-500">Validées</p>
+          <p className="text-2xl font-semibold text-gray-900">{kpis.a}</p>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
+          <p className="text-xs text-gray-500">Refusées</p>
+          <p className="text-2xl font-semibold text-gray-900">{kpis.r}</p>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
+          <p className="text-xs text-gray-500">Taux d'acceptation</p>
+          <p className="text-2xl font-semibold text-gray-900">{kpis.rate}%</p>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
+          <p className="text-xs text-gray-500">Délai moyen</p>
+          <p className="text-2xl font-semibold text-gray-900">{kpis.avgH} h</p>
+        </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        {section('Répartition par type & statut', (
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={kpis.byType}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="type" /><YAxis />
-                <Tooltip /><Legend />
-                <Bar dataKey="pending" name="En attente" fill="#f59e0b" />
-                <Bar dataKey="approved" name="Validées" fill="#16a34a" />
-                <Bar dataKey="rejected" name="Refusées" fill="#ef4444" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        ))}
+      {/* Répartition par type & statut (pleine largeur) */}
+      {section('Répartition par type & statut', (
+        <div className="h-72">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={kpis.byType as any}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="type" /><YAxis />
+              <Tooltip /><Legend />
+              <Bar dataKey="pending" name="En attente" fill="#f59e0b" />
+              <Bar dataKey="approved" name="Validées" fill="#16a34a" />
+              <Bar dataKey="rejected" name="Refusées" fill="#ef4444" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      ))}
 
-        {section('Filtres & actions', (
-          <div className="flex flex-col gap-3 md:flex-row md:items-end">
-            <div className="flex-1">
-              <label className="block text-xs text-gray-600">Recherche</label>
-              <div className="relative">
-                <SearchIcon className="absolute left-2 top-2.5 h-4 w-4 text-gray-400"/>
-                <input value={q} onChange={(e)=>setQ(e.target.value)} placeholder="id, user, nom, espèce…" className="pl-8 w-full border rounded-lg p-2" />
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs text-gray-600">Type</label>
-              <select value={type} onChange={(e)=>setType(e.target.value as any)} className="border rounded-lg p-2">
-                <option value="all">Tous</option>
-                <option value="species">Espèce</option>
-                <option value="morph">Morph</option>
-                <option value="locality">Localité</option>
-                <option value="alias">Alias</option>
-                <option value="locus">Locus</option>
-                <option value="group">Groupe</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs text-gray-600">Statut</label>
-              <select value={status} onChange={(e)=>setStatus(e.target.value as any)} className="border rounded-lg p-2">
-                <option value="all">Tous</option>
-                <option value="pending">En attente</option>
-                <option value="approved">Validé</option>
-                <option value="rejected">Refusé</option>
-              </select>
-            </div>
-            <div className="flex gap-2">
-              <button onClick={exportCSV} className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border"><Download className="h-4 w-4"/> Export CSV</button>
-              <button disabled={!selectedIds.length} onClick={()=>setAction('approve')} className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg border ${selectedIds.length? 'hover:bg-green-50' : 'opacity-50 cursor-not-allowed'}`}><CheckCircle2 className="h-4 w-4 text-green-600"/> Approuver ({selectedIds.length})</button>
-              <button disabled={!selectedIds.length} onClick={()=>setAction('reject')} className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg border ${selectedIds.length? 'hover:bg-rose-50' : 'opacity-50 cursor-not-allowed'}`}><XCircle className="h-4 w-4 text-rose-600"/> Refuser ({selectedIds.length})</button>
+      {/* Filtres & actions — déplacé juste au-dessus du tableau */}
+      {section('Filtres & actions', (
+        <div className="flex flex-col gap-3 md:flex-row md:items-end">
+          <div className="flex-1">
+            <label className="block text-xs text-gray-600">Recherche</label>
+            <div className="relative">
+              <SearchIcon className="absolute left-2 top-2.5 h-4 w-4 text-gray-400"/>
+              <input value={q} onChange={(e)=>setQ(e.target.value)} placeholder="id, user, nom, espèce…" className="pl-8 w-full border rounded-lg p-2" />
             </div>
           </div>
-        ))}
-      </div>
+          <div>
+            <label className="block text-xs text-gray-600">Type</label>
+            <select value={type} onChange={(e)=>setType(e.target.value as any)} className="border rounded-lg p-2">
+              <option value="all">Tous</option>
+              <option value="species">Espèce</option>
+              <option value="morph">Morph</option>
+              <option value="locality">Localité</option>
+              <option value="alias">Alias</option>
+              <option value="locus">Locus</option>
+              <option value="group">Groupe</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-600">Statut</label>
+            <select value={status} onChange={(e)=>setStatus(e.target.value as any)} className="border rounded-lg p-2">
+              <option value="all">Tous</option>
+              <option value="pending">En attente</option>
+              <option value="approved">Validé</option>
+              <option value="rejected">Refusé</option>
+            </select>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={exportCSV} className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border"><Download className="h-4 w-4"/> Export CSV</button>
+            <button
+              disabled={!selectedIds.length}
+              onClick={() => setAction('approve')}
+              className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg border ${selectedIds.length ? 'hover:bg-green-50' : 'opacity-50 cursor-not-allowed'}`}
+            >
+              <CheckCircle2 className="h-4 w-4 text-green-600" /> Approuver ({selectedIds.length})
+            </button>
 
-      {section('Contributions', (
+            <button
+              disabled={!selectedIds.length}
+              onClick={() => setAction('reject')}
+              className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg border ${selectedIds.length ? 'hover:bg-rose-50' : 'opacity-50 cursor-not-allowed'}`}
+            >
+              <XCircle className="h-4 w-4 text-rose-600" /> Refuser ({selectedIds.length})
+            </button>
+          </div>
+        </div>
+      ))}
+
+      {/* Tableau des contributions */}
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Contributions</h3>
+          <div className="text-sm text-gray-600">{filtered.length} éléments • {selectedIds.length} sélectionné(s)</div>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead>
@@ -324,7 +285,8 @@ export default function AdminContributions() {
               </tr>
             </thead>
             <tbody>
-              {filtered.length===0 && (
+              {loading && <tr><td colSpan={10} className="p-6 text-gray-500">Chargement…</td></tr>}
+              {!loading && filtered.length===0 && (
                 <tr><td className="p-6 text-gray-500" colSpan={10}>Aucune contribution trouvée.</td></tr>
               )}
               {filtered.map(i => {
@@ -342,8 +304,14 @@ export default function AdminContributions() {
                       {i.payload?.aliases?.length ? <div className="text-xs text-gray-500">alias: {(i.payload.aliases as string[]).slice(0,3).join(', ')}{(i.payload.aliases.length>3?'…':'')}</div> : null}
                       {i.moderatorNote && <div className="text-xs text-gray-500 mt-1">note: {i.moderatorNote}</div>}
                     </td>
-                    <td className="p-2 text-xs text-gray-600">{i.stake ? `${i.stake} ⟡ (${i.stakeStatus||'—'})` : '—'}</td>
-                    <td className="p-2 text-xs text-gray-600">{i.reward ? `${i.reward} ⟡` : `${REWARD_BY_TYPE[i.type]} ⟡`}</td>
+                    <td className="p-2 text-xs text-gray-600">
+                      {i.stake != null
+                        ? `${i.stake} ⟡ (${i.stakeStatus ? ({ locked: 'Bloqué', refunded: 'Remboursé', burned: 'Brûlé' } as const)[i.stakeStatus] : '—'})`
+                        : '—'}
+                    </td>
+                    <td className="p-2 text-xs text-gray-600">
+                      {i.reward != null ? `${i.reward} ⟡` : `${REWARD_BY_TYPE[i.type]} ⟡`}
+                    </td>
                     <td className="p-2"><StatusBadge s={i.status}/></td>
                     <td className="p-2">
                       <div className="flex items-center gap-2">
@@ -354,7 +322,7 @@ export default function AdminContributions() {
                             <button onClick={()=>{ setSelected({ [i.id]: true }); setAction('reject'); }} className="px-2 py-1 text-xs rounded border hover:bg-rose-50 inline-flex items-center gap-1"><XCircle className="h-4 w-4 text-rose-600"/>Refuser</button>
                           </>
                         ) : (
-                          <button onClick={()=>{ /* Option: revenir à pending */ const next = items.map(x=> x.id===i.id ? { ...x, status: 'pending' as ContributionStatus, decidedAt: undefined } : x); setItems(next); saveSubmissions(next); }} className="px-2 py-1 text-xs rounded border hover:bg-amber-50 inline-flex items-center gap-1"><Undo2 className="h-4 w-4"/>Réouvrir</button>
+                          <button onClick={()=>adminReopen(i.id).then(()=>adminFetchContributions({ q, type, status }).then(setItems))} className="px-2 py-1 text-xs rounded border hover:bg-amber-50 inline-flex items-center gap-1"><Undo2 className="h-4 w-4"/>Réouvrir</button>
                         )}
                       </div>
                     </td>
@@ -364,9 +332,7 @@ export default function AdminContributions() {
             </tbody>
           </table>
         </div>
-      ), (
-        <div className="text-sm text-gray-600">{filtered.length} éléments • {selectedIds.length} sélectionné(s)</div>
-      ))}
+      </div>
 
       {action && (
         <div className="fixed inset-0 z-50">
@@ -383,7 +349,7 @@ export default function AdminContributions() {
               <div className="p-5 space-y-4">
                 <div className="text-sm text-gray-600">Note au contributeur (optionnelle)</div>
                 <textarea rows={4} value={note} onChange={(e)=>setNote(e.target.value)} className="w-full border rounded-lg p-2" placeholder={action==='approve' ? 'Merci, c\'est validé !' : 'Merci, nous ne pouvons pas accepter car…'} />
-                <div className="text-xs text-gray-500">Les stakes seront {action==='approve' ? 'remboursés' : 'brûlés'} automatiquement. Les récompenses sont créditées au wallet du contributeur lors d\'une approbation.</div>
+                <div className="text-xs text-gray-500">Les stakes seront {action==='approve' ? 'remboursés' : 'brûlés'} automatiquement.</div>
               </div>
               <div className="px-5 py-3 border-t flex items-center justify-end gap-2">
                 <button onClick={()=>{ setAction(null); setNote(''); }} className="px-4 py-2 rounded-lg border">Annuler</button>
@@ -406,45 +372,21 @@ export default function AdminContributions() {
                 </div>
                 <button className="p-2 hover:bg-gray-50 rounded-lg" onClick={()=>setDetail(null)}>✕</button>
               </div>
-              <div className="p-5 space-y-4">
-                <div className="grid sm:grid-cols-2 gap-4 text-sm">
+              <div className="p-5 space-y-4 text-sm">
+                <div className="grid sm:grid-cols-2 gap-4">
                   <div><span className="text-gray-500">ID</span><div className="font-mono">{detail.id}</div></div>
-                  <div><span className="text-gray-500">Utilisateur</span><div>{detail.userId}</div></div>
-                  <div><span className="text-gray-500">Type</span><div><TypePill t={detail.type}/></div></div>
-                  <div><span className="text-gray-500">Espèce</span><div>{detail.type==='species' ? '—' : (species.find(s=>s.id===detail.speciesId!)?.label || detail.speciesId)}</div></div>
-                  <div><span className="text-gray-500">Créée</span><div>{new Date(detail.createdAt).toLocaleString()}</div></div>
-                  <div><span className="text-gray-500">Statut</span><div><StatusBadge s={detail.status}/></div></div>
+                  <div><span className="text-gray-500">Utilisateur</span><div className="font-mono">{detail.userId}</div></div>
+                  <div><span className="text-gray-500">Type</span><div className="">{detail.type}</div></div>
+                  <div><span className="text-gray-500">Espèce</span><div className="">{detail.speciesId || '—'}</div></div>
+                  <div><span className="text-gray-500">Créée</span><div className="">{new Date(detail.createdAt).toLocaleString()}</div></div>
+                  <div><span className="text-gray-500">Statut</span><div className=""><strong>{detail.status}</strong></div></div>
+                  {detail.decidedAt && <div><span className="text-gray-500">Décidée</span><div className="">{new Date(detail.decidedAt).toLocaleString()}</div></div>}
+                  {detail.moderatorNote && <div className="sm:col-span-2"><span className="text-gray-500">Note</span><div className="">{detail.moderatorNote}</div></div>}
                 </div>
-
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <div className="font-semibold mb-2">Contenu</div>
-                  <div className="grid sm:grid-cols-2 gap-3 text-sm">
-                    {detail.payload?.name && <div><span className="text-gray-500">Nom</span><div>{detail.payload.name}</div></div>}
-                    {detail.payload?.latin && <div><span className="text-gray-500">Nom latin</span><div>{detail.payload.latin}</div></div>}
-                    {detail.payload?.genType && <div><span className="text-gray-500">Génétique</span><div>{detail.payload.genType}</div></div>}
-                    {detail.payload?.aliases?.length ? <div className="sm:col-span-2"><span className="text-gray-500">Alias</span><div>{detail.payload.aliases.join(', ')}</div></div> : null}
-                    {detail.payload?.notes && <div className="sm:col-span-2"><span className="text-gray-500">Notes</span><div className="whitespace-pre-wrap">{detail.payload.notes}</div></div>}
-                    {detail.payload?.references?.length ? <div className="sm:col-span-2"><span className="text-gray-500">Références</span><div className="break-words">{detail.payload.references.join(', ')}</div></div> : null}
-                  </div>
+                <div>
+                  <div className="text-gray-500">Contenu</div>
+                  <pre className="bg-gray-50 border rounded-lg p-3 whitespace-pre-wrap">{JSON.stringify(detail.payload, null, 2)}</pre>
                 </div>
-
-                {detail.payload?.images?.length ? (
-                  <div>
-                    <div className="font-semibold mb-2 flex items-center gap-2"><ImageIcon className="h-4 w-4"/> Photos ({detail.payload.images.length})</div>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                      {detail.payload.images.map((src, idx) => (
-                        <img key={idx} src={src} alt={`img-${idx}`} className="w-full h-24 object-cover rounded-lg border" />
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-
-                {detail.status==='pending' && (
-                  <div className="flex items-center justify-end gap-2">
-                    <button onClick={()=>{ setSelected({ [detail.id]: true }); setAction('reject'); }} className="px-3 py-2 rounded-lg border hover:bg-rose-50 inline-flex items-center gap-1"><XCircle className="h-4 w-4 text-rose-600"/> Refuser</button>
-                    <button onClick={()=>{ setSelected({ [detail.id]: true }); setAction('approve'); }} className="px-3 py-2 rounded-lg border hover:bg-green-50 inline-flex items-center gap-1"><CheckCircle2 className="h-4 w-4 text-green-600"/> Approuver</button>
-                  </div>
-                )}
               </div>
             </div>
           </div>
